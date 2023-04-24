@@ -1,0 +1,64 @@
+﻿@using Microsoft.AspNetCore.Identity
+
+@using Utal.Icc.Mm.Mvc.Models
+
+@inject UserManager<IccUser> _userManager
+
+@{
+	var user = await this._userManager.GetUserAsync(this.User);
+}
+
+<div id="header" class="app-header">
+	<div class="mobile-toggler">
+		<button type="button" class="menu-toggler" data-toggle="sidebar-mobile">
+			<span class="bar"></span>
+			<span class="bar"></span>
+		</button>
+	</div>
+	<div class="brand">
+		<div class="desktop-toggler">
+			<button type="button" class="menu-toggler" data-toggle="sidebar-minify">
+				<span class="bar"></span>
+				<span class="bar"></span>
+			</button>
+		</div>
+		@this.Html.ActionLink("Memorias", "Index", "Home", new { area = string.Empty }, new { @id = "brand", @class = "h3 text-dark" })
+	</div>
+	<div class="menu d-flex justify-content-end">
+		<div class="menu-item dropdown">
+			<a href="#" data-bs-toggle="dropdown" data-bs-display="static" class="menu-link">
+				@if (this.User.Identity!.IsAuthenticated) {
+					<div class="menu-img">
+						@if (user is Teacher) {
+							<i class="fa-solid fa-user-tie"></i>
+						} else if (user is Student) {
+							<i class="fa-solid fa fa-user-graduate"></i>
+						}
+					</div>
+					<div class="menu-text">¡Hola @((await this._userManager.GetUserAsync(this.User))?.FirstName)!</div>
+				} else {
+					<div class="menu-img">
+						<i class="fa-solid fa-fingerprint"></i>
+					</div>
+					<div class="menu-text">Ingresar</div>
+				}
+			</a>
+			<div class="dropdown-menu dropdown-menu-end me-lg-3">
+				@if (this.User.Identity!.IsAuthenticated) {
+					<a class="dropdown-item d-flex align-items-center" href="@this.Url.Action("Index", "Profile", new { area = "Account" })">Mi información <i class="fa fa-user-circle fa-fw ms-auto text-gray-400 f-s-16"></i></a>
+					@if (user is Teacher) {
+						<a class="dropdown-item d-flex align-items-center" href="@this.Url.Action("Teacher", "Profile", new { area = "Account" })">Mi perfil<i class="fa fa-user-tie fa-fw ms-auto text-gray-400 f-s-16"></i></a>
+					}
+					@if (user is Student) {
+						<a class="dropdown-item d-flex align-items-center" href="@this.Url.Action("Student", "Profile", new { area = "Account" })">Mi perfil <i class="fa fa-user-graduate fa-fw ms-auto text-gray-400 f-s-16"></i></a>
+					}
+					<a class="dropdown-item d-flex align-items-center" href="@this.Url.Action("ChangePassword", "Profile", new { area = "Account" })">Contraseña <i class="fa fa-key fa-fw ms-auto text-gray-400 f-s-16"></i></a>
+					<div class="dropdown-divider"></div>
+					<a class="dropdown-item d-flex align-items-center" href="@this.Url.Action("Index", "SignOut", new { area = "Account" })">Cerrar sesión <i class="fa fa-toggle-off fa-fw ms-auto text-gray-400 f-s-16"></i></a>
+				} else {
+					<a class="dropdown-item d-flex align-items-center" href="@this.Url.Action("Index", "SignIn", new { area = "Account" })">Iniciar sesión <i class="fa fa-arrow-right-to-bracket fa-fw ms-auto text-gray-400 f-s-16"></i></a>
+				}
+			</div>
+		</div>
+	</div>
+</div>

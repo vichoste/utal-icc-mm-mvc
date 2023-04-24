@@ -1,0 +1,24 @@
+﻿@using Microsoft.AspNetCore.Identity
+
+@using Utal.Icc.Mm.Mvc.Models
+
+@inject UserManager<IccUser> _userManager
+
+@{
+	this.ViewData["Title"] = "Inicio";
+	var user = await this._userManager.GetUserAsync(this.User);
+}
+
+<div class="container">
+	<partial name="_Alerts" />
+	<div class="text-center">
+		@if (!this.User.Identity!.IsAuthenticated || user is null) {
+			<h1 class="display-4">¡Bienvenido!</h1>
+			<h3 class="display-6">Por favor, inicia sesión para ingresar a la plataforma.</h3>
+		} else if (user is not null && user.IsDeactivated) {
+			<h1 class="display-4">Tu cuenta está desactivada.</h1>
+		} else if (user is not null) {
+			<h1 class="display-4">¡Bienvenido @(user?.FirstName)!</h1>
+		}
+	</div>
+</div>
