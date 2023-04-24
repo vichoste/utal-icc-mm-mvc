@@ -19,17 +19,17 @@ public static class CareerDirectorSeeder {
 		var userManager = services.GetRequiredService<UserManager<IccUser>>();
 		string email, password, firstName, lastName, rut;
 		if (env.IsDevelopment()) {
-			email = configuration["CareerDirectorEmail"] ?? throw new InvalidOperationException("Career director's email is not set");
-			password = configuration["CareerDirectorPassword"] ?? throw new InvalidOperationException("Career director's password is not set");
-			firstName = configuration["CareerDirectorFirstName"] ?? throw new InvalidOperationException("Career director's first name is not set");
-			lastName = configuration["CareerDirectorLastName"] ?? throw new InvalidOperationException("Career director's last name is not set");
-			rut = configuration["CareerDirectorRut"] ?? throw new InvalidOperationException("Career director's RUT is not set");
+			email = configuration["IccCareerDirectorEmail"] ?? throw new InvalidOperationException("Career director's email is not set");
+			password = configuration["IccCareerDirectorPassword"] ?? throw new InvalidOperationException("Career director's password is not set");
+			firstName = configuration["IccCareerDirectorFirstName"] ?? throw new InvalidOperationException("Career director's first name is not set");
+			lastName = configuration["IccCareerDirectorLastName"] ?? throw new InvalidOperationException("Career director's last name is not set");
+			rut = configuration["IccCareerDirectorRut"] ?? throw new InvalidOperationException("Career director's RUT is not set");
 		} else {
-			email = Environment.GetEnvironmentVariable("CAREER_DIRECTOR_EMAIL") ?? throw new InvalidOperationException("Career director's email is not set");
-			password = Environment.GetEnvironmentVariable("CAREER_DIRECTOR_PASSWORD") ?? throw new InvalidOperationException("Career director's password is not set");
-			firstName = Environment.GetEnvironmentVariable("CAREER_DIRECTOR_FIRST_NAME") ?? throw new InvalidOperationException("Career director's first name is not set");
-			lastName = Environment.GetEnvironmentVariable("CAREER_DIRECTOR_LAST_NAME") ?? throw new InvalidOperationException("Career director's last name is not set");
-			rut = Environment.GetEnvironmentVariable("CAREER_DIRECTOR_RUT") ?? throw new InvalidOperationException("Career director's RUT is not set");
+			email = Environment.GetEnvironmentVariable("ICC_CAREER_DIRECTOR_EMAIL") ?? throw new InvalidOperationException("Career director's email is not set");
+			password = Environment.GetEnvironmentVariable("ICC_CAREER_DIRECTOR_PASSWORD") ?? throw new InvalidOperationException("Career director's password is not set");
+			firstName = Environment.GetEnvironmentVariable("ICC_CAREER_DIRECTOR_FIRST_NAME") ?? throw new InvalidOperationException("Career director's first name is not set");
+			lastName = Environment.GetEnvironmentVariable("ICC_CAREER_DIRECTOR_LAST_NAME") ?? throw new InvalidOperationException("Career director's last name is not set");
+			rut = Environment.GetEnvironmentVariable("ICC_CAREER_DIRECTOR_RUT") ?? throw new InvalidOperationException("Career director's RUT is not set");
 		}
 		var careerDirector = await userManager.FindByEmailAsync(email);
 		if (careerDirector == null) {

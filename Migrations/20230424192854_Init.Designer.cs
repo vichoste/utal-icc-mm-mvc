@@ -12,7 +12,7 @@ using Utal.Icc.Mm.Mvc.Data;
 namespace Utal.Icc.Mm.Mvc.Migrations
 {
     [DbContext(typeof(IccDbContext))]
-    [Migration("20230424190435_Init")]
+    [Migration("20230424192854_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -24,36 +24,6 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("IccCommiteeRejectionIccTeacher", b =>
-                {
-                    b.Property<string>("CommiteeRejectionsWhichIDidNotSupportId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("WhoDidntRejectId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("CommiteeRejectionsWhichIDidNotSupportId", "WhoDidntRejectId");
-
-                    b.HasIndex("WhoDidntRejectId");
-
-                    b.ToTable("IccCommiteeRejectionIccTeacher");
-                });
-
-            modelBuilder.Entity("IccCommiteeRejectionIccTeacher1", b =>
-                {
-                    b.Property<string>("CommiteeRejectionsWhichIDidSupportId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("WhoRejectedId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("CommiteeRejectionsWhichIDidSupportId", "WhoRejectedId");
-
-                    b.HasIndex("WhoRejectedId");
-
-                    b.ToTable("IccCommiteeRejectionIccTeacher1");
-                });
 
             modelBuilder.Entity("IccStudentIccTeacherMemoir", b =>
                 {
@@ -383,6 +353,34 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                     b.UseTphMappingStrategy();
                 });
 
+            modelBuilder.Entity("Utal.Icc.Mm.Mvc.Models.IccVote", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("IccCommiteeRejectionId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("IssuerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("MemoirId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IccCommiteeRejectionId");
+
+                    b.HasIndex("IssuerId");
+
+                    b.HasIndex("MemoirId");
+
+                    b.ToTable("IccVote");
+                });
+
             modelBuilder.Entity("Utal.Icc.Mm.Mvc.Models.IccStudentMemoir", b =>
                 {
                     b.HasBaseType("Utal.Icc.Mm.Mvc.Models.IccMemoir");
@@ -477,36 +475,6 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                     b.HasDiscriminator().HasValue("IccTeacher");
                 });
 
-            modelBuilder.Entity("IccCommiteeRejectionIccTeacher", b =>
-                {
-                    b.HasOne("Utal.Icc.Mm.Mvc.Models.IccCommiteeRejection", null)
-                        .WithMany()
-                        .HasForeignKey("CommiteeRejectionsWhichIDidNotSupportId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Utal.Icc.Mm.Mvc.Models.IccTeacher", null)
-                        .WithMany()
-                        .HasForeignKey("WhoDidntRejectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("IccCommiteeRejectionIccTeacher1", b =>
-                {
-                    b.HasOne("Utal.Icc.Mm.Mvc.Models.IccCommiteeRejection", null)
-                        .WithMany()
-                        .HasForeignKey("CommiteeRejectionsWhichIDidSupportId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Utal.Icc.Mm.Mvc.Models.IccTeacher", null)
-                        .WithMany()
-                        .HasForeignKey("WhoRejectedId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("IccStudentIccTeacherMemoir", b =>
                 {
                     b.HasOne("Utal.Icc.Mm.Mvc.Models.IccStudent", null)
@@ -597,6 +565,25 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                     b.Navigation("Student");
                 });
 
+            modelBuilder.Entity("Utal.Icc.Mm.Mvc.Models.IccVote", b =>
+                {
+                    b.HasOne("Utal.Icc.Mm.Mvc.Models.IccCommiteeRejection", null)
+                        .WithMany("IccVotes")
+                        .HasForeignKey("IccCommiteeRejectionId");
+
+                    b.HasOne("Utal.Icc.Mm.Mvc.Models.IccTeacher", "Issuer")
+                        .WithMany()
+                        .HasForeignKey("IssuerId");
+
+                    b.HasOne("Utal.Icc.Mm.Mvc.Models.IccMemoir", "Memoir")
+                        .WithMany()
+                        .HasForeignKey("MemoirId");
+
+                    b.Navigation("Issuer");
+
+                    b.Navigation("Memoir");
+                });
+
             modelBuilder.Entity("Utal.Icc.Mm.Mvc.Models.IccStudentMemoir", b =>
                 {
                     b.HasOne("Utal.Icc.Mm.Mvc.Models.IccTeacher", "GuideTeacher")
@@ -663,6 +650,11 @@ namespace Utal.Icc.Mm.Mvc.Migrations
             modelBuilder.Entity("Utal.Icc.Mm.Mvc.Models.IccTeacherMemoir", b =>
                 {
                     b.Navigation("AssistantTeachers");
+                });
+
+            modelBuilder.Entity("Utal.Icc.Mm.Mvc.Models.IccCommiteeRejection", b =>
+                {
+                    b.Navigation("IccVotes");
                 });
 
             modelBuilder.Entity("Utal.Icc.Mm.Mvc.Models.IccStudent", b =>

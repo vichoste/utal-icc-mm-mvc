@@ -264,51 +264,33 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "IccCommiteeRejectionIccTeacher",
+                name: "IccVote",
                 columns: table => new
                 {
-                    CommiteeRejectionsWhichIDidNotSupportId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    WhoDidntRejectId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IssuerId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    MemoirId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    IccCommiteeRejectionId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_IccCommiteeRejectionIccTeacher", x => new { x.CommiteeRejectionsWhichIDidNotSupportId, x.WhoDidntRejectId });
+                    table.PrimaryKey("PK_IccVote", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_IccCommiteeRejectionIccTeacher_AspNetUsers_WhoDidntRejectId",
-                        column: x => x.WhoDidntRejectId,
+                        name: "FK_IccVote_AspNetUsers_IssuerId",
+                        column: x => x.IssuerId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_IccCommiteeRejectionIccTeacher_IccRejection_CommiteeRejectionsWhichIDidNotSupportId",
-                        column: x => x.CommiteeRejectionsWhichIDidNotSupportId,
+                        name: "FK_IccVote_IccMemoir_MemoirId",
+                        column: x => x.MemoirId,
+                        principalTable: "IccMemoir",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_IccVote_IccRejection_IccCommiteeRejectionId",
+                        column: x => x.IccCommiteeRejectionId,
                         principalTable: "IccRejection",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "IccCommiteeRejectionIccTeacher1",
-                columns: table => new
-                {
-                    CommiteeRejectionsWhichIDidSupportId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    WhoRejectedId = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_IccCommiteeRejectionIccTeacher1", x => new { x.CommiteeRejectionsWhichIDidSupportId, x.WhoRejectedId });
-                    table.ForeignKey(
-                        name: "FK_IccCommiteeRejectionIccTeacher1_AspNetUsers_WhoRejectedId",
-                        column: x => x.WhoRejectedId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_IccCommiteeRejectionIccTeacher1_IccRejection_CommiteeRejectionsWhichIDidSupportId",
-                        column: x => x.CommiteeRejectionsWhichIDidSupportId,
-                        principalTable: "IccRejection",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -356,16 +338,6 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_IccCommiteeRejectionIccTeacher_WhoDidntRejectId",
-                table: "IccCommiteeRejectionIccTeacher",
-                column: "WhoDidntRejectId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_IccCommiteeRejectionIccTeacher1_WhoRejectedId",
-                table: "IccCommiteeRejectionIccTeacher1",
-                column: "WhoRejectedId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_IccMemoir_GuideTeacherId",
                 table: "IccMemoir",
                 column: "GuideTeacherId");
@@ -399,6 +371,21 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                 name: "IX_IccStudentMemoirIccTeacher_MemoirsWhichIAssistId",
                 table: "IccStudentMemoirIccTeacher",
                 column: "MemoirsWhichIAssistId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_IccVote_IccCommiteeRejectionId",
+                table: "IccVote",
+                column: "IccCommiteeRejectionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_IccVote_IssuerId",
+                table: "IccVote",
+                column: "IssuerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_IccVote_MemoirId",
+                table: "IccVote",
+                column: "MemoirId");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_AspNetUserClaims_AspNetUsers_UserId",
@@ -459,16 +446,13 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "IccCommiteeRejectionIccTeacher");
-
-            migrationBuilder.DropTable(
-                name: "IccCommiteeRejectionIccTeacher1");
-
-            migrationBuilder.DropTable(
                 name: "IccStudentIccTeacherMemoir");
 
             migrationBuilder.DropTable(
                 name: "IccStudentMemoirIccTeacher");
+
+            migrationBuilder.DropTable(
+                name: "IccVote");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

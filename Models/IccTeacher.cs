@@ -67,15 +67,5 @@ public class IccTeacher : IccUser {
 	/// </summary>
 	[InverseProperty("Teacher")]
 	public virtual ICollection<IccTeacherRejection> MemoirsWhichIRejected { get; set; } = new HashSet<IccTeacherRejection>();
-	/// <summary>
-	/// <see cref="IccCommiteeRejection">Rejectons as the commitee</see> that this teacher didn't support.
-	/// </summary>
-	[InverseProperty("WhoDidntReject")]
-	public virtual ICollection<IccCommiteeRejection> CommiteeRejectionsWhichIDidNotSupport { get; set; } = new HashSet<IccCommiteeRejection>();
-	/// <summary>
-	/// <see cref="IccCommiteeRejection">Rejectons as the commitee</see> that this teacher supported.
-	/// </summary>
-	[InverseProperty("WhoRejected")]
-	public virtual ICollection<IccCommiteeRejection> CommiteeRejectionsWhichIDidSupport { get; set; } = new HashSet<IccCommiteeRejection>();
 	#endregion
 }

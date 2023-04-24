@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Utal.Icc.Mm.Mvc.Models;
+﻿namespace Utal.Icc.Mm.Mvc.Models;
 
 /// <summary>
 /// A <see cref="IccMemoir">memoir</see> created by a <see cref="IccStudent">teacher</see>.

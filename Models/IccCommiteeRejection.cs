@@ -5,11 +5,7 @@
 /// </summary>
 public class IccCommiteeRejection : IccRejection {
 	/// <summary>
-	/// <see cref="IccTeacher">Teachers</see> from the commitee who didn't reject the <see cref="IccMemoir">memoir</see>.
+	/// <see cref="IccVote">Votes</see> to consider in this rejection.
 	/// </summary>
-	public virtual ICollection<IccTeacher> WhoDidntReject { get; set; } = new HashSet<IccTeacher>();
-	/// <summary>
-	/// <see cref="IccTeacher">Teachers</see> from the commitee who rejected the <see cref="IccMemoir">memoir</see>.
-	/// </summary>
-	public virtual ICollection<IccTeacher> WhoRejected { get; set; } = new HashSet<IccTeacher>();
+	public virtual ICollection<IccVote> IccVotes { get; set; } = new HashSet<IccVote>();
 }
