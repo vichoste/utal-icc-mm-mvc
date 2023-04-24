@@ -43,11 +43,6 @@
 										<span class="menu-text">Solicitudes</span>
 									</a>
 								</div>
-								<div class="menu-item">
-									<a href="@this.Url.Action("List", "Course", new { area = "University" })" class="menu-link">
-										<span class="menu-text">Cursos</span>
-									</a>
-								</div>
 							</div>
 						</div>
 					}
@@ -67,22 +62,6 @@
 								<div class="menu-item">
 									<a href="@this.Url.Action("Teachers", "User", new { area = "University" })" class="menu-link">
 										<span class="menu-text">Profesores</span>
-									</a>
-								</div>
-							</div>
-						</div>
-					}
-					@if (this.User.IsInRole("Course")) {
-						<div class="menu-item has-sub">
-							<a href="#" class="menu-link">
-								<span class="menu-icon"><i class="fa fa-person-chalkboard"></i></span>
-								<span class="menu-text">Profesor del curso</span>
-								<span class="menu-caret"><b class="caret"></b></span>
-							</a>
-							<div class="menu-submenu">
-								<div class="menu-item">
-									<a href="@this.Url.Action("List", "Course", new { area = "University" })" class="menu-link">
-										<span class="menu-text">Mis cursos</span>
 									</a>
 								</div>
 							</div>
@@ -155,11 +134,6 @@
 								<div class="menu-item">
 									<a href="@this.Url.Action("Index", "Memoir", new { area = "University" })" class="menu-link">
 										<span class="menu-text">Mi memoria de título</span>
-									</a>
-								</div>
-								<div class="menu-item">
-									<a href="@this.Url.Action("Index", "Course", new { area = "University" })" class="menu-link">
-										<span class="menu-text">Mi curso</span>
 									</a>
 								</div>
 							</div>

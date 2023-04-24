@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Utal.Icc.Mm.Mvc.Areas.University.ViewModels.User;
+namespace Utal.Icc.Mm.Mvc.Areas.University.Models.User;
 
 public class TransferViewModel {
 	[Display(Name = "ID del director de carrera actual")]

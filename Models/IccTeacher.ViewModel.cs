@@ -32,6 +32,22 @@ public class IccTeacherViewModel : IccUserViewModel {
 	[Display(Name = "Especialización")]
 	public string Specialization { get; set; } = string.Empty;
 	/// <summary>
+	/// Check if this teacher is a guide teacher.
+	/// </summary>
+	public bool IsGuide { get; set; }
+	/// <summary>
+	/// Check if this teacher is an assistant teacher.
+	/// </summary>
+	public bool IsAssistant { get; set; }
+	/// <summary>
+	/// Check if this teacher is a member of the memoir commitee.
+	/// </summary>
+	public bool IsCommittee { get; set; }
+	/// <summary>
+	/// Check if this teacher is the director of the Computer Engineering carrer.
+	/// </summary>
+	public bool IsDirector { get; set; }
+	/// <summary>
 	/// <see cref="IccStudentMemoir">Student memoirs</see> which they guide.
 	/// </summary>
 	public virtual ICollection<IccStudentMemoirViewModel> MemoirsWhichIGuide { get; set; } = new HashSet<IccStudentMemoirViewModel>();

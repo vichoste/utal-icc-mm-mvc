@@ -20,10 +20,6 @@ public class IccTeacher : IccUser {
 		/// </summary>
 		Commitee,
 		/// <summary>
-		/// Mentor of the Computer Engineering's memoir courses.
-		/// </summary>
-		Course,
-		/// <summary>
 		/// They are able to be mentor of a group of <see cref="IccStudent">memorists</see> ("Profesor guía").
 		/// </summary>
 		Guide,
@@ -49,6 +45,7 @@ public class IccTeacher : IccUser {
 	/// </summary>
 	public string Specialization { get; set; } = string.Empty;
 	#endregion
+
 	#region Student memoirs
 	/// <summary>
 	/// <see cref="IccStudentMemoir">Student memoirs</see> which they guide.
@@ -61,6 +58,7 @@ public class IccTeacher : IccUser {
 	[InverseProperty("AssistantTeachers")]
 	public virtual ICollection<IccStudentMemoir> MemoirsWhichIAssist { get; set; } = new HashSet<IccStudentMemoir>();
 	#endregion
+
 	#region Rejections
 	/// <summary>
 	/// Teacher rejections for memoir proposals.

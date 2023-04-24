@@ -65,12 +65,14 @@ public class IccMemoir {
 	/// </summary>
 	public DateTimeOffset UpdatedAt { get; set; }
 	#endregion
+
 	#region Student
 	/// <summary>
 	/// <see cref="IccStudent">Student</see> of the <see cref="IccTeacher">teacher</see>'s <see cref="IccMemoir">memoir</see>. It may be selected by the teacher previously or with <see cref="IccTeacherMemoir.Candidates">a list of candidates</see>.
 	/// </summary>
 	public virtual IccStudent? Student { get; set; }
 	#endregion
+
 	#region Teacher
 	/// <summary>
 	/// <see cref="IccTeacher">Guide teacher</see> of the memoir.
@@ -81,6 +83,7 @@ public class IccMemoir {
 	/// </summary>
 	public virtual ICollection<IccTeacher> AssistantTeachers { get; set; } = new HashSet<IccTeacher>();
 	#endregion
+
 	#region Commitee
 	/// <summary>
 	/// <see cref="IccCommiteeRejection">Rejections</see> made by the <see cref="IccTeacher">commitee</see>.

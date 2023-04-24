@@ -7,22 +7,21 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 using Utal.Icc.Mm.Mvc.Areas.University.Helpers;
-using Utal.Icc.Mm.Mvc.Areas.University.ViewModels.User;
-using Utal.Icc.Mm.Mvc.Models;
+using Utal.Icc.Mm.Mvc.Areas.University.Models.User;
 using Utal.Icc.Mm.Mvc.Models;
 
 namespace Utal.Icc.Mm.Mvc.Areas.University.Controllers;
 
 [Area("University"), Authorize]
 public class UserController : Controller {
-	private readonly UserManager<ApplicationUser> _userManager;
-	private readonly IUserStore<ApplicationUser> _userStore;
-	private readonly IUserEmailStore<ApplicationUser> _emailStore;
+	private readonly UserManager<IccUser> _userManager;
+	private readonly IUserStore<IccUser> _userStore;
+	private readonly IUserEmailStore<IccUser> _emailStore;
 
-	public UserController(UserManager<ApplicationUser> userManager, IUserStore<ApplicationUser> userStore) {
+	public UserController(UserManager<IccUser> userManager, IUserStore<IccUser> userStore) {
 		this._userManager = userManager;
 		this._userStore = userStore;
-		this._emailStore = (IUserEmailStore<ApplicationUser>)this._userStore;
+		this._emailStore = (IUserEmailStore<IccUser>)this._userStore;
 	}
 
 	[Authorize(Roles = "Director")]
@@ -38,14 +37,17 @@ public class UserController : Controller {
 			searchString = currentFilter;
 		}
 		this.ViewData["CurrentFilter"] = searchString;
-		var users = (await this._userManager.GetUsersInRoleAsync("Student")).Select(u => new IccUserViewModel {
-			Id = u.Id,
-			FirstName = u.FirstName,
-			LastName = u.LastName,
-			UniversityId = u.UniversityId,
-			Rut = u.Rut,
-			Email = u.Email,
-			IsDeactivated = u.IsDeactivated,
+		var users = (await this._userManager.GetUsersInRoleAsync("Student")).Select(u => {
+			var student = u as IccStudent;
+			return new IccStudentViewModel {
+				Id = student!.Id,
+				FirstName = student.FirstName,
+				LastName = student.LastName,
+				UniversityId = student.UniversityId,
+				Rut = student.Rut,
+				Email = student.Email,
+				IsDeactivated = student.IsDeactivated
+			};
 		}).AsQueryable();
 		var paginator = Paginator<IccUserViewModel>.Create(users, pageNumber ?? 1, 10);
 		if (!string.IsNullOrEmpty(sortOrder)) {
@@ -70,13 +72,16 @@ public class UserController : Controller {
 			searchString = currentFilter;
 		}
 		this.ViewData["CurrentFilter"] = searchString;
-		var users = (await this._userManager.GetUsersInRoleAsync("Teacher")).Select(u => new IccUserViewModel {
-			Id = u.Id,
-			FirstName = u.FirstName,
-			LastName = u.LastName,
-			Rut = u.Rut,
-			Email = u.Email,
-			IsDeactivated = u.IsDeactivated,
+		var users = (await this._userManager.GetUsersInRoleAsync("Teacher")).Select(u => {
+			var teacher = u as IccTeacher;
+			return new IccTeacherViewModel {
+				Id = teacher!.Id,
+				FirstName = teacher.FirstName,
+				LastName = teacher.LastName,
+				Rut = teacher.Rut,
+				Email = teacher.Email,
+				IsDeactivated = teacher.IsDeactivated,
+			};
 		}).AsQueryable();
 		var paginator = Paginator<IccUserViewModel>.Create(users, pageNumber ?? 1, 10);
 		if (!string.IsNullOrEmpty(sortOrder)) {
@@ -100,11 +105,11 @@ public class UserController : Controller {
 			using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
 			var records = csv.GetRecords<CsvFileHelper>();
 			foreach (var record in records) {
-				var user = new ApplicationUser {
-					FirstName = record.FirstName,
-					LastName = record.LastName,
-					UniversityId = record.UniversityId,
-					Rut = record.Rut,
+				var user = new IccStudent {
+					FirstName = record.FirstName!,
+					LastName = record.LastName!,
+					UniversityId = record.UniversityId!,
+					Rut = record.Rut!,
 					CreatedAt = DateTimeOffset.Now,
 					UpdatedAt = DateTimeOffset.Now
 				};
@@ -135,7 +140,7 @@ public class UserController : Controller {
 	public IActionResult CreateTeacher() => this.View(new IccUserViewModel());
 
 	[Authorize(Roles = "Director"), HttpPost, ValidateAntiForgeryToken]
-	public async Task<IActionResult> CreateTeacher([FromForm] IccUserViewModel input) {
+	public async Task<IActionResult> CreateTeacher([FromForm] IccTeacherViewModel input) {
 		var roles = new List<string>();
 		if (input.IsGuide) {
 			roles.Add("Guide");
@@ -143,13 +148,10 @@ public class UserController : Controller {
 		if (input.IsAssistant) {
 			roles.Add("Assistant");
 		}
-		if (input.IsCourse) {
-			roles.Add("Course");
-		}
 		if (input.IsCommittee) {
 			roles.Add("Committee");
 		}
-		var user = new ApplicationUser {
+		var user = new IccUser {
 			FirstName = input.FirstName,
 			LastName = input.LastName,
 			Rut = input.Rut,
@@ -172,24 +174,36 @@ public class UserController : Controller {
 			this.TempData["ErrorMessage"] = "Error al obtener al usuario.";
 			return this.RedirectToAction("Students", "User", new { area = "University" });
 		}
-		var output = new IccUserViewModel {
-			Id = user.Id,
-			FirstName = user.FirstName,
-			LastName = user.LastName,
-			Rut = user.Rut,
-			Email = user.Email,
-			CreatedAt = user.CreatedAt,
-			UpdatedAt = user.UpdatedAt,
-		};
 		if (await this._userManager.IsInRoleAsync(user, "Student")) {
-			output.UniversityId = user.UniversityId;
+			var student = user as IccStudent;
+			var output = new IccStudentViewModel {
+				Id = student!.Id,
+				FirstName = student.FirstName,
+				LastName = student.LastName,
+				Rut = student.Rut,
+				Email = student.Email,
+				CreatedAt = student.CreatedAt,
+				UpdatedAt = student.UpdatedAt,
+				UniversityId = student.UniversityId
+			};
+			return this.View(output);
 		} else if (await this._userManager.IsInRoleAsync(user, "Teacher")) {
-			output.IsAssistant = await this._userManager.IsInRoleAsync(user, "Assistant");
-			output.IsCommittee = await this._userManager.IsInRoleAsync(user, "Committee");
-			output.IsCourse = await this._userManager.IsInRoleAsync(user, "Course");
-			output.IsGuide = await this._userManager.IsInRoleAsync(user, "Guide");
+			var teacher = user as IccTeacher;
+			var output = new IccTeacherViewModel {
+				Id = teacher!.Id,
+				FirstName = teacher.FirstName,
+				LastName = teacher.LastName,
+				Rut = teacher.Rut,
+				Email = teacher.Email,
+				CreatedAt = teacher.CreatedAt,
+				UpdatedAt = teacher.UpdatedAt,
+				IsAssistant = await this._userManager.IsInRoleAsync(user, "Assistant"),
+				IsCommittee = await this._userManager.IsInRoleAsync(user, "Committee"),
+				IsGuide = await this._userManager.IsInRoleAsync(user, "Guide")
+			};
+			return this.View(output);
 		}
-		return this.View(output);
+		return this.View();
 	}
 
 	[Authorize(Roles = "Director"), HttpPost, ValidateAntiForgeryToken]
@@ -226,7 +240,7 @@ public class UserController : Controller {
 			if (input.IsCourse) {
 				rankRoles.Add("Course");
 			}
-			if (input.IsCommittee) {
+			if (input.IsCommitee) {
 				rankRoles.Add("Committee");
 			}
 			_ = await this._userManager.AddToRolesAsync(user, rankRoles);
@@ -244,7 +258,7 @@ public class UserController : Controller {
 		};
 		if (await this._userManager.IsInRoleAsync(user, "Teacher")) {
 			output.IsAssistant = await this._userManager.IsInRoleAsync(user, "Assistant");
-			output.IsCommittee = await this._userManager.IsInRoleAsync(user, "Committee");
+			output.IsCommitee = await this._userManager.IsInRoleAsync(user, "Committee");
 			output.IsCourse = await this._userManager.IsInRoleAsync(user, "Course");
 			output.IsGuide = await this._userManager.IsInRoleAsync(user, "Guide");
 		}

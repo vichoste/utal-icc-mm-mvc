@@ -21,6 +21,8 @@ public class IccUserViewModel : ViewModel {
 	/// </summary>
 	[DataType(DataType.EmailAddress), Display(Name = "E-mail"), EmailAddress]
 	public string? Email { get; set; }
+	[DataType(DataType.Password), Display(Name = "Contraseña")]
+	public string? Password { get; set; }
 	/// <summary>
 	/// User's chlean RUT.
 	/// </summary>

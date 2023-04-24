@@ -12,10 +12,6 @@ public class IccStudent : IccUser {
 	/// </summary>
 	public enum StudentRole {
 		/// <summary>
-		/// If the student has completed all the memoir courses.
-		/// </summary>
-		Complete,
-		/// <summary>
 		/// <see cref="IccMemoir">Memorist</see> student.
 		/// </summary>
 		Memorist,
@@ -45,6 +41,7 @@ public class IccStudent : IccUser {
 	/// </summary>
 	public bool IsWorking { get; set; }
 	#endregion
+
 	#region Memoirs
 	/// <summary>
 	/// <see cref="IccMemoir">Student memoirs</see> which they own.
