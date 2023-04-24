@@ -29,9 +29,9 @@
 			<a href="#" data-bs-toggle="dropdown" data-bs-display="static" class="menu-link">
 				@if (this.User.Identity!.IsAuthenticated) {
 					<div class="menu-img">
-						@if (user is Teacher) {
+						@if (user is IccTeacher) {
 							<i class="fa-solid fa-user-tie"></i>
-						} else if (user is Student) {
+						} else if (user is IccStudent) {
 							<i class="fa-solid fa fa-user-graduate"></i>
 						}
 					</div>
@@ -46,10 +46,10 @@
 			<div class="dropdown-menu dropdown-menu-end me-lg-3">
 				@if (this.User.Identity!.IsAuthenticated) {
 					<a class="dropdown-item d-flex align-items-center" href="@this.Url.Action("Index", "Profile", new { area = "Account" })">Mi información <i class="fa fa-user-circle fa-fw ms-auto text-gray-400 f-s-16"></i></a>
-					@if (user is Teacher) {
+					@if (user is IccTeacher) {
 						<a class="dropdown-item d-flex align-items-center" href="@this.Url.Action("Teacher", "Profile", new { area = "Account" })">Mi perfil<i class="fa fa-user-tie fa-fw ms-auto text-gray-400 f-s-16"></i></a>
 					}
-					@if (user is Student) {
+					@if (user is IccStudent) {
 						<a class="dropdown-item d-flex align-items-center" href="@this.Url.Action("Student", "Profile", new { area = "Account" })">Mi perfil <i class="fa fa-user-graduate fa-fw ms-auto text-gray-400 f-s-16"></i></a>
 					}
 					<a class="dropdown-item d-flex align-items-center" href="@this.Url.Action("ChangePassword", "Profile", new { area = "Account" })">Contraseña <i class="fa fa-key fa-fw ms-auto text-gray-400 f-s-16"></i></a>

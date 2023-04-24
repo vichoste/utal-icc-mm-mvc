@@ -14,8 +14,8 @@ public static class RoleSeeder {
 	/// <exception cref="Exception"></exception>
 	public static async Task SeedAsync(IServiceProvider services) {
 		var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-		var teacherRoles = Enum.GetNames(typeof(Teacher.TeacherRole));
-		var studentRoles = Enum.GetNames(typeof(Student.StudentRole));
+		var teacherRoles = Enum.GetNames(typeof(IccTeacher.TeacherRole));
+		var studentRoles = Enum.GetNames(typeof(IccStudent.StudentRole));
 		foreach (var roleName in teacherRoles.Concat(studentRoles)) {
 			var roleExists = await roleManager.RoleExistsAsync(roleName);
 			if (!roleExists) {

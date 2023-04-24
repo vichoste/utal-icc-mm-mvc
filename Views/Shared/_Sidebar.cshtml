@@ -19,7 +19,7 @@
 				<div class="menu-header">
 					Mis roles y herramientas
 				</div>
-				@if (user is Teacher) {
+				@if (user is IccTeacher) {
 					@if (this.User.IsInRole("Director")) {
 						<div class="menu-item has-sub">
 							<a href="#" class="menu-link">
@@ -173,7 +173,7 @@
 						</div>
 					</div>
 				}
-				@if (user is Student && !this.User.IsInRole("Memorist")) {
+				@if (user is IccStudent && !this.User.IsInRole("Memorist")) {
 					<div class="menu-item has-sub">
 						<a href="#" class="menu-link">
 							<span class="menu-icon"><i class="fa fa-user-graduate"></i></span>

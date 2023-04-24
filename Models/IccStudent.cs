@@ -3,7 +3,8 @@
 /// <summary>
 /// Represents a student from the Computer Engineering carrer at University of Talca.
 /// </summary>
-public class Student : IccUser {
+public class IccStudent : IccUser {
+	#region Properties
 	/// <summary>
 	/// Roles a student can have.
 	/// </summary>
@@ -41,4 +42,5 @@ public class Student : IccUser {
 	/// Checks if the student is working.
 	/// </summary>
 	public bool IsWorking { get; set; }
+	#endregion
 }

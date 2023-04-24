@@ -12,18 +12,21 @@ public class IccDbContext : IdentityDbContext<IccUser> {
 	/// <summary>
 	/// Students dataset.
 	/// </summary>
-	public DbSet<Student> Students { get; set; }
+	public DbSet<IccStudent> Students { get; set; }
 	/// <summary>
 	/// Teachers dataset.
 	/// </summary>
-	public DbSet<Teacher> Teachers { get; set; }
+	public DbSet<IccTeacher> Teachers { get; set; }
+	/// <summary>
+	/// Memoirs dataset.
+	/// </summary>
+	public DbSet<IccMemoir> Memoirs { get; set; }
 
 	/// <summary>
 	/// Creates the database context.
 	/// </summary>
 	/// <param name="options">Database options.</param>
-	public IccDbContext(DbContextOptions<IccDbContext> options) : base(options) {
-	}
+	public IccDbContext(DbContextOptions<IccDbContext> options) : base(options) { }
 
 	/// <summary>
 	/// Overrides the database context's creation behavior.
@@ -31,7 +34,7 @@ public class IccDbContext : IdentityDbContext<IccUser> {
 	/// <param name="builder">Builder.</param>
 	protected override void OnModelCreating(ModelBuilder builder) {
 		base.OnModelCreating(builder);
-		_ = builder.Entity<Student>().HasBaseType<IccUser>();
-		_ = builder.Entity<Teacher>().HasBaseType<IccUser>();
+		_ = builder.Entity<IccStudent>().HasBaseType<IccUser>();
+		_ = builder.Entity<IccTeacher>().HasBaseType<IccUser>();
 	}
 }

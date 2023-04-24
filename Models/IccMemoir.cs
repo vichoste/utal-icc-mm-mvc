@@ -3,7 +3,16 @@
 /// <summary>
 /// Represents a memoir.
 /// </summary>
-public class Memoir {
+public class IccMemoir {
+	/// <summary>
+	/// Memoir phase.
+	/// </summary>
+	public enum MemoirPhase {
+		Draft,
+		Submitted,
+		Accepted,
+		Rejected
+	}
 	/// <summary>
 	/// Memoir ID.
 	/// </summary>
@@ -27,5 +36,5 @@ public class Memoir {
 	/// <summary>
 	/// Rejections for this memoir (if they have one or more).
 	/// </summary>
-	public ICollection<Rejection> Rejections { get; set; } = new HashSet<Rejection>();
+	public ICollection<CommiteeRejection> CommiteeRejections { get; set; } = new HashSet<CommiteeRejection>();
 }

@@ -1,9 +1,9 @@
 ﻿namespace Utal.Icc.Mm.Mvc.Models;
 
 /// <summary>
-/// Rejection reason for a <see cref="Memoir">memoir</see>.
+/// Rejection reason for a <see cref="IccMemoir">memoir</see>.
 /// </summary>
-public class Rejection {
+public class IccRejection {
 	/// <summary>
 	/// Rejection ID.
 	/// </summary>
@@ -13,13 +13,9 @@ public class Rejection {
 	/// </summary>
 	public string Reason { get; set; } = string.Empty;
 	/// <summary>
-	/// Linked memoir.
+	/// Linked <see cref="IccMemoir">memoir</see>.
 	/// </summary>
-	public Memoir Memoir { get; set; }
-	/// <summary>
-	/// Linked memoir ID.
-	/// </summary>
-	public int MemoirId { get; set; }
+	public IccMemoir? Memoir { get; set; }
 	/// <summary>
 	/// Memoir creation timestamp.
 	/// </summary>
