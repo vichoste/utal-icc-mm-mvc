@@ -22,6 +22,11 @@ public class IccUserViewModel {
 	[Display(Name = "Apellido")]
 	public string LastName { get; set; } = string.Empty;
 	/// <summary>
+	/// User's email.
+	/// </summary>
+	[DataType(DataType.EmailAddress), Display(Name = "E-mail"), EmailAddress]
+	public string? Email { get; set; }
+	/// <summary>
 	/// User's chlean RUT.
 	/// </summary>
 	[Display(Name = "RUT")]

@@ -17,6 +17,8 @@ public static class CareerDirectorSeeder {
 	/// <exception cref="InvalidOperationException"></exception>
 	public static async Task SeedAsync(IServiceProvider services, IConfiguration configuration, IWebHostEnvironment env) {
 		var userManager = services.GetRequiredService<UserManager<IccUser>>();
+		var userStore = services.GetRequiredService<IUserStore<IccUser>>();
+		var emailStore = services.GetRequiredService<IUserEmailStore<IccUser>>();
 		string email, password, firstName, lastName, rut;
 		if (env.IsDevelopment()) {
 			email = configuration["IccCareerDirectorEmail"] ?? throw new InvalidOperationException("Career director's email is not set");
@@ -42,6 +44,8 @@ public static class CareerDirectorSeeder {
 				CreatedAt = DateTimeOffset.UtcNow,
 				UpdatedAt = DateTimeOffset.UtcNow
 			};
+			await userStore.SetUserNameAsync(careerDirector, email, CancellationToken.None);
+			await emailStore.SetEmailAsync(careerDirector, email, CancellationToken.None);
 			var result = await userManager.CreateAsync(careerDirector, password);
 			if (!result.Succeeded) {
 				var errors = result.Errors.Select(e => e.Description);
