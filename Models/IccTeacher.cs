@@ -20,20 +20,20 @@ public class IccTeacher : IccUser {
 		/// <summary>
 		/// Mentor of the Computer Engineering's memoir courses.
 		/// </summary>
-		CourseMentor,
+		CourseTeacher,
 		/// <summary>
-		/// Mentor of a memorist ("Profesor guía").
+		/// They are able to be mentor of a group of <see cref="IccStudent">memorists</see> ("Profesor guía").
 		/// </summary>
-		GuideMentor,
+		GuideTeacher,
 		/// <summary>
-		/// Assistant mentor of a memorist ("Profesor co-guía").
+		/// They are able to be co-mentor of a group of <see cref="IccStudent">memorists</see> ("Profesor co-guía").
 		/// </summary>
-		AssistantMentor,
-		/// <summary>
-		/// Guest teacher. They may be not part of the Computer Engineering carrer at University of Talca.
-		/// </summary>
-		Guest
+		AssistantTeacher
 	}
+	/// <summary>
+	/// Indicates if this teacher is not necessarily a teacher from the Computer Engineering carrer.
+	/// </summary>
+	public bool IsGuest { get; set; }
 	/// <summary>
 	/// Teacher's office location.
 	/// </summary>
@@ -47,8 +47,15 @@ public class IccTeacher : IccUser {
 	/// </summary>
 	public string Specialization { get; set; } = string.Empty;
 	#endregion
-	#region Memoirs
+	#region Student memoirs
+	/// <summary>
+	/// <see cref="IccStudentMemoir">Student memoirs</see> which they guide.
+	/// </summary>
 	public virtual ICollection<IccStudentMemoir> MemoirsWhichIGuide { get; set; } = new HashSet<IccStudentMemoir>();
+	/// <summary>
+	/// <see cref="IccStudentMemoir">Student memoirs</see> which they assist.
+	/// </summary>
+	public virtual ICollection<IccStudentMemoir> MemoirsWhichIAssist { get; set; } = new HashSet<IccStudentMemoir>();
 	#endregion
 	#region Rejections
 	/// <summary>
@@ -56,12 +63,12 @@ public class IccTeacher : IccUser {
 	/// </summary>
 	public virtual ICollection<IccTeacherRejection> TeacherRejections { get; set; } = new HashSet<IccTeacherRejection>();
 	/// <summary>
-	/// <see cref="CommiteeRejection">Rejectons as the commitee</see> that this teacher didn't support.
+	/// <see cref="IccCommiteeRejection">Rejectons as the commitee</see> that this teacher didn't support.
 	/// </summary>
-	public virtual ICollection<CommiteeRejection> CommiteeRejectionsWhichIDidNotSupport { get; set; } = new HashSet<CommiteeRejection>();
+	public virtual ICollection<IccCommiteeRejection> CommiteeRejectionsWhichIDidNotSupport { get; set; } = new HashSet<IccCommiteeRejection>();
 	/// <summary>
-	/// <see cref="CommiteeRejection">Rejectons as the commitee</see> that this teacher supported.
+	/// <see cref="IccCommiteeRejection">Rejectons as the commitee</see> that this teacher supported.
 	/// </summary>
-	public virtual ICollection<CommiteeRejection> CommiteeRejectionsWhichIDidSupport { get; set; } = new HashSet<CommiteeRejection>();
+	public virtual ICollection<IccCommiteeRejection> CommiteeRejectionsWhichIDidSupport { get; set; } = new HashSet<IccCommiteeRejection>();
 	#endregion
 }

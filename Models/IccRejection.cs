@@ -13,15 +13,15 @@ public class IccRejection {
 	/// </summary>
 	public string Reason { get; set; } = string.Empty;
 	/// <summary>
-	/// Linked <see cref="IccMemoir">memoir</see>.
+	/// Rejected <see cref="IccMemoir">memoir</see>.
 	/// </summary>
 	public IccMemoir? Memoir { get; set; }
 	/// <summary>
-	/// Memoir creation timestamp.
+	/// Rejection creation timestamp.
 	/// </summary>
 	public DateTimeOffset CreatedAt { get; set; }
 	/// <summary>
-	/// Memoir updated timestamp.
+	/// Rejection updated timestamp.
 	/// </summary>
 	public DateTimeOffset UpdatedAt { get; set; }
 }

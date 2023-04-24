@@ -9,7 +9,7 @@ public class IccMemoir {
 	/// </summary>
 	public enum MemoirPhase {
 		Draft,
-		Submitted,
+		Visible,
 		Accepted,
 		Rejected
 	}
@@ -34,7 +34,15 @@ public class IccMemoir {
 	/// </summary>
 	public DateTimeOffset UpdatedAt { get; set; }
 	/// <summary>
-	/// Rejections for this memoir (if they have one or more).
+	/// <see cref="IccTeacher">Guide teacher</see> of the memoir.
 	/// </summary>
-	public ICollection<CommiteeRejection> CommiteeRejections { get; set; } = new HashSet<CommiteeRejection>();
+	public virtual IccTeacher? GuideTeacher { get; set; }
+	/// <summary>
+	/// <see cref="IccTeacher">Assistant teachers</see> of the memoir.
+	/// </summary>
+	public virtual ICollection<IccTeacher> AssistantTeachers { get; set; } = new HashSet<IccTeacher>();
+	/// <summary>
+	/// <see cref="IccCommiteeRejection">Rejections</see> made by the <see cref="IccTeacher">commitee</see>.
+	/// </summary>
+	public ICollection<IccCommiteeRejection> CommiteeRejections { get; set; } = new HashSet<IccCommiteeRejection>();
 }

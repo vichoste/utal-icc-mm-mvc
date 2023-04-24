@@ -1,9 +1,9 @@
 ﻿namespace Utal.Icc.Mm.Mvc.Models;
 
 /// <summary>
-/// Rejection made by the Commitee.
+/// Rejection made by the Commitee to a <see cref="IccMemoir">memoir</see>.
 /// </summary>
-public class CommiteeRejection {
+public class IccCommiteeRejection {
 	/// <summary>
 	/// <see cref="IccTeacher">Teachers</see> from the commitee who didn't reject the <see cref="IccMemoir">memoir</see>.
 	/// </summary>

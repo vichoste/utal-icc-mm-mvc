@@ -5,15 +5,7 @@
 /// </summary>
 public class IccStudentMemoir : IccMemoir {
 	/// <summary>
-	/// Guide mentor.
-	/// </summary>
-	public virtual IccTeacher? GuideMentor { get; set; }
-	/// <summary>
-	/// Assistant mentors.
-	/// </summary>
-	public virtual ICollection<IccTeacher> AssistantMentors { get; set; } = new HashSet<IccTeacher>();
-	/// <summary>
-	/// Rejections made by teachers.
+	/// <see cref="IccTeacherRejection">Rejections</see> made by the <see cref="IccTeacher">guide teachers</see>.
 	/// </summary>
 	public virtual ICollection<IccTeacherRejection> TeacherRejections { get; set; } = new HashSet<IccTeacherRejection>();
 }

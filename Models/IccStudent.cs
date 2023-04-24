@@ -14,7 +14,7 @@ public class IccStudent : IccUser {
 		/// </summary>
 		Complete,
 		/// <summary>
-		/// Memorist student.
+		/// <see cref="IccMemoir">Memorist</see> student.
 		/// </summary>
 		Memorist,
 		/// <summary>
@@ -42,5 +42,19 @@ public class IccStudent : IccUser {
 	/// Checks if the student is working.
 	/// </summary>
 	public bool IsWorking { get; set; }
+	#endregion
+	#region Memoirs
+	/// <summary>
+	/// <see cref="IccStudentMemoir">Student memoirs</see> which they own.
+	/// </summary>
+	public virtual ICollection<IccStudentMemoir> MemoirsWhichIOwn { get; set; } = new HashSet<IccStudentMemoir>();
+	/// <summary>
+	/// <see cref="IccTeacherMemoir">Teacher memoirs</see> which they are candidates of.
+	/// </summary>
+	public virtual ICollection<IccTeacherMemoir> MemoirsWhichImCandidate { get; set; } = new HashSet<IccTeacherMemoir>();
+	/// <summary>
+	/// <see cref="IccTeacherMemoir">Teacher memoirs</see> which they are part of.
+	/// </summary>
+	public virtual ICollection<IccStudentMemoir> MemoirsWhichImPartOf { get; set; } = new HashSet<IccStudentMemoir>();
 	#endregion
 }
