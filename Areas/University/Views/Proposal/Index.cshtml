@@ -1,0 +1,125 @@
+@using Utal.Icc.Mm.Mvc
+@using Utal.Icc.Mm.Mvc.ViewModels
+@using Utal.Icc.Mm.Mvc.ViewModels.Shared
+
+@model Paginator<MemoirViewModel>
+
+@{
+	this.ViewData["Title"] = "Mis propuestas";
+}
+
+<div class="container">
+	<partial name="_Alerts" />
+	<div class="row justify-content-center">
+		<div class="col-12 col-md-10 mb-3">
+			<h2>@this.ViewData["Title"]</h2>
+		</div>
+		@if (this.User.IsInRole("Student")) {
+			<div class="col-12 col-md-2 mb-3">
+				@this.Html.ActionLink("Crear propuesta", "Guides", "Proposal", new { area = "University" }, new { @class = "btn btn-success"})
+			</div>
+		} else if (this.User.IsInRole("Guide")) {
+			<div class="col-12 col-md-2 mb-3">
+				@this.Html.ActionLink("Crear propuesta", "Create", "Proposal", new { area = "University" }, new { @class = "btn btn-success"})
+			</div>
+		}
+		<div class="col-12 mb-3">
+			<partial name="_Filter" , model=@(new FilterPartialViewModel("Index", "Proposal", "University")) />
+		</div>
+	</div>
+	<div class="row justify-content-center">
+		<div class="col-12">
+			<div class="table-responsive">
+				<table class="table table-bordered">
+					<thead class="table-dark">
+						<tr>
+							<th>
+								<a asp-action="Index" asp-route-sortOrder="@this.ViewData["TitleSortParam"]" asp-route-currentFilter="@this.ViewData["CurrentFilter"]">
+									Título
+								</a>
+							</th>
+							@if (this.User.IsInRole("Student")) {
+								<th>
+									<a asp-action="Index" asp-route-sortOrder="@this.ViewData["GuideNameSortParam"]" asp-route-currentFilter="@this.ViewData["CurrentFilter"]">
+										<span>Profesor guía</span>
+									</a>
+								</th>
+							}
+							<th>
+								<a asp-action="Index" asp-route-sortOrder="@this.ViewData["UpdatedAtSortParam"]" asp-route-currentFilter="@this.ViewData["CurrentFilter"]">
+									Fecha de actualización
+								</a>
+							</th>
+							<th>Estado</th>
+							<th>Acciones</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var item in this.Model) {
+							<tr>
+								<td>@item.Title</td>
+								@if (this.User.IsInRole("Student")) {
+									<td>@item.GuideName</td>
+								}
+								<td>@item.UpdatedAt</td>
+								<td>
+									@if (this.User.IsInRole("Student")) {
+										@switch (item.Phase) {
+											case "DraftByStudent":
+												<span class="badge bg-secondary">Borrador</span>
+												break;
+											case "SentToGuide":
+												<span class="badge bg-primary">Enviada</span>
+												break;
+											case "ApprovedByGuide":
+												<span class="badge bg-success">Aprobada</span>
+												break;
+											case "RejectedByGuide":
+												<span class="badge bg-danger">Rechazada</span>
+												break;
+										}
+									} else if (this.User.IsInRole("Guide")) {
+										@switch (item.Phase) {
+											case "DraftByGuide":
+												<span class="badge bg-secondary">Borrador</span>
+												break;
+											case "PublishedByGuide":
+												<span class="badge bg-primary">Publicada</span>
+												break;
+											case "ReadyByGuide":
+												<span class="badge bg-success">Lista</span>
+												break;
+										}
+									}
+								</td>
+								<td>
+									@if (this.User.IsInRole("Student")) {
+										@if (item.Phase == "DraftByStudent") {
+											@this.Html.ActionLink("Editar", "Edit", "Proposal", new { area = "University", id = item.Id }, new { @class = "btn btn-yellow mb-3"})
+											@this.Html.ActionLink("Eliminar", "Delete", "Proposal", new { area = "University", id = item.Id }, new { @class = "btn btn-danger mb-3"})
+											@this.Html.ActionLink("Enviar", "Send", "Proposal", new { area = "University", id = item.Id }, new { @class = "btn btn-primary mb-3"})
+										} else {
+											@this.Html.ActionLink("Ver", "View", "Proposal", new { area = "University", id = item.Id }, new { @class = "btn btn-primary mb-3"})
+										}
+									} else if (this.User.IsInRole("Guide")) {
+										@if (item.Phase == "DraftByGuide") {
+											@this.Html.ActionLink("Editar", "Edit", "Proposal", new { area = "University", id = item.Id }, new { @class = "btn btn-yellow mb-3"})
+											@this.Html.ActionLink("Eliminar", "Delete", "Proposal", new { area = "University", id = item.Id }, new { @class = "btn btn-danger mb-3"})
+											@this.Html.ActionLink("Publicar", "Send", "Proposal", new { area = "University", id = item.Id }, new { @class = "btn btn-primary mb-3"})
+										} else if (item.Phase == "PublishedByGuide") {
+											@this.Html.ActionLink("Postulaciones", "Students", "Proposal",new { area = "University", id = item.Id }, new { @class = "btn btn-secondary mb-3"})
+											@this.Html.ActionLink("Ver", "View", "Proposal", new { area = "University", id = item.Id }, new { @class = "btn btn-primary mb-3"})
+										} else if (item.Phase == "ReadyByGuide") {
+											@this.Html.ActionLink("Ver", "View", "Proposal", new { area = "University", id = item.Id }, new { @class = "btn btn-primary mb-3"})
+										}
+									}
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+				<partial name="_Paginator" , model=@(new PaginatorPartialViewModel("Index", this.Model.PageIndex, this.Model.TotalPages, this.Model.HasPreviousPage, this.Model.HasNextPage)) />
+			</div>
+		</div>
+	</div>
+</div>

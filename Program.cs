@@ -30,6 +30,20 @@ _ = app.UseStaticFiles();
 _ = app.UseRouting();
 _ = app.UseAuthentication();
 _ = app.UseAuthorization();
+_ = app.MapAreaControllerRoute(
+	name: "Account",
+	areaName: "Account",
+	pattern: "Account/{controller=SignIn}/{action=Index}/{id?}"
+);
+_ = app.MapAreaControllerRoute(
+	name: "University",
+	areaName: "University",
+	pattern: "University/{controller=Memoir}/{action=Index}/{id?}"
+);
+_ = app.MapControllerRoute(
+	name: "default",
+	pattern: "{controller=Home}/{action=Index}/{id?}"
+);
 _ = app.MapControllerRoute(
 	name: "default",
 	pattern: "{controller=Home}/{action=Index}/{id?}");

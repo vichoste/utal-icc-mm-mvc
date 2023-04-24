@@ -1,9 +1,11 @@
-﻿namespace Utal.Icc.Mm.Mvc.Models;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Utal.Icc.Mm.Mvc.Models;
 
 /// <summary>
 /// Represents a vote from a <see cref="IccTeacher">teacher</see> against a <see cref="IccMemoir"/>
 /// </summary>
-public class IccVote {
+public class IccVoteViewModel {
 	/// <summary>
 	/// Vote type.
 	/// </summary>
@@ -20,15 +22,19 @@ public class IccVote {
 	/// <summary>
 	/// Vote ID.
 	/// </summary>
+	[Display(Name = "ID")]
 	public string? Id { get; set; }
 	/// <inheritdoc cref="VoteType"></inheritdoc>
+	[Display(Name = "Voto")]
 	public VoteType Type { get; set; }
 	/// <summary>
 	/// <see cref="IccTeacher">Teacher from the commitee</see> who did this vote.
 	/// </summary>
-	public virtual IccTeacher? Issuer { get; set; }
+	[Display(Name = "Votante")]
+	public IccTeacherViewModel? Issuer { get; set; }
 	/// <summary>
 	/// <see cref="IccMemoir">Memoir</see> that was voted.
 	/// </summary>
-	public virtual IccMemoir? Memoir { get; set; }
+	[Display(Name = "Memoria")]
+	public IccMemoirViewModel? Memoir { get; set; }
 }
