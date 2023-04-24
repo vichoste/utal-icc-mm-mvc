@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using static Utal.Icc.Mm.Mvc.Models.IccMemoir;
 
 namespace Utal.Icc.Mm.Mvc.Models;
 
@@ -9,15 +10,15 @@ public class IccMemoirViewModel : ViewModel {
 	/// <summary>
 	/// Memoir title.
 	/// </summary>
-	/// </summary>
 	[Display(Name = "Título")]
 	public string Title { get; set; } = string.Empty;
 	/// <summary>
 	/// Memoir description.
 	/// </summary>
-	/// </summary>
 	[Display(Name = "Descripción")]
 	public string Description { get; set; } = string.Empty;
+	/// <inheritdoc cref="MemoirPhase"></inheritdoc>
+	public MemoirPhase Phase { get; set; }
 	/// <summary>
 	/// <see cref="IccStudent">Student</see> of the <see cref="IccTeacher">teacher</see>'s <see cref="IccMemoir">memoir</see>. It may be selected by the teacher previously or with <see cref="IccTeacherMemoir.Candidates">a list of candidates</see>.
 	/// </summary>

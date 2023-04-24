@@ -139,13 +139,13 @@ public class ProposalController : Controller {
 		this.ViewData["CurrentFilter"] = searchString;
 		IQueryable<IccMemoirViewModel> memoirs = null!;
 		if (this.User.IsInRole("Student")) {
-			memoirs = this._dbContext.Memoirs!
-				.Include(m => m.Owner)
-				.Where(m => m.Owner!.Id == this._userManager.GetUserId(this.User)
-					&& m.Phase != Phase.SentToCommittee && m.Phase != Phase.RejectedByCommittee
-					&& m.Phase != Phase.ApprovedByCommittee && m.Phase != Phase.InProgress
-					&& m.Phase != Phase.Abandoned && m.Phase != Phase.Completed
-					&& m.Phase != Phase.RejectedByDirector && m.Phase != Phase.ApprovedByDirector)
+			memoirs = this._dbContext.IccStudentMemoirs!
+				.Include(m => m.GuideTeacher)
+				.Where(m => m.GuideTeacher!.Id == this._userManager.GetUserId(this.User)
+					&& m.Phase != IccMemoir.MemoirPhase.SentToCommittee && m.Phase != IccMemoir.MemoirPhase.RejectedByCommittee
+					&& m.Phase != IccMemoir.MemoirPhase.ApprovedByCommittee && m.Phase != IccMemoir.MemoirPhase.InProgress
+					&& m.Phase != IccMemoir.MemoirPhase.Abandoned && m.Phase != IccMemoir.MemoirPhase.Completed
+					&& m.Phase != IccMemoir.MemoirPhase.RejectedByDirector && m.Phase != IccMemoir.MemoirPhase.ApprovedByDirector)
 				.Include(m => m.Guide).AsNoTracking()
 				.Select(m => new IccMemoirViewModel {
 					Id = m.Id,
@@ -155,13 +155,13 @@ public class ProposalController : Controller {
 					UpdatedAt = m.UpdatedAt
 				});
 		} else if (this.User.IsInRole("Guide")) {
-			memoirs = this._dbContext.Memoirs!
+			memoirs = this._dbContext.IccMemoirs!
 				.Include(m => m.Owner)
 				.Where(m => m.Owner!.Id == this._userManager.GetUserId(this.User)
-					&& m.Phase != Phase.SentToCommittee && m.Phase != Phase.RejectedByCommittee
-					&& m.Phase != Phase.ApprovedByCommittee && m.Phase != Phase.InProgress
-					&& m.Phase != Phase.Abandoned && m.Phase != Phase.Completed
-					&& m.Phase != Phase.RejectedByDirector && m.Phase != Phase.ApprovedByDirector)
+					&& m.Phase != IccMemoir.MemoirPhase.SentToCommittee && m.Phase != IccMemoir.MemoirPhase.RejectedByCommittee
+					&& m.Phase != IccMemoir.MemoirPhase.ApprovedByCommittee && m.Phase != IccMemoir.MemoirPhase.InProgress
+					&& m.Phase != IccMemoir.MemoirPhase.Abandoned && m.Phase != IccMemoir.MemoirPhase.Completed
+					&& m.Phase != IccMemoir.MemoirPhase.RejectedByDirector && m.Phase != IccMemoir.MemoirPhase.ApprovedByDirector)
 				.Include(m => m.Guide)
 				.Include(m => m.Memorist).AsNoTracking()
 				.Select(m => new IccMemoirViewModel {
@@ -207,8 +207,8 @@ public class ProposalController : Controller {
 		this.ViewData["CurrentFilter"] = searchString;
 		IQueryable<IccMemoirViewModel> memoirs = null!;
 		if (this.User.IsInRole("Student")) {
-			memoirs = this._dbContext.Memoirs!
-				.Where(m => m.Phase == Phase.PublishedByGuide)
+			memoirs = this._dbContext.IccMemoirs!
+				.Where(m => m.Phase == IccMemoir.MemoirPhase.PublishedByGuide)
 				.Include(m => m.Guide).AsNoTracking()
 				.Select(m => new IccMemoirViewModel {
 					Id = m.Id,
@@ -218,10 +218,10 @@ public class ProposalController : Controller {
 					UpdatedAt = m.UpdatedAt
 				});
 		} else if (this.User.IsInRole("Guide")) {
-			memoirs = this._dbContext.Memoirs!
+			memoirs = this._dbContext.IccMemoirs!
 				.Include(m => m.Guide)
 				.Where(m => m.Guide!.Id == user.Id
-					&& (m.Phase == Phase.SentToGuide || m.Phase == Phase.ApprovedByGuide))
+					&& (m.Phase == IccMemoir.MemoirPhase.SentToGuide || m.Phase == IccMemoir.MemoirPhase.ApprovedByGuide))
 				.Include(m => m.Memorist).AsNoTracking()
 				.Select(m => new IccMemoirViewModel {
 					Id = m.Id,
@@ -259,14 +259,14 @@ public class ProposalController : Controller {
 			searchString = currentFilter;
 		}
 		this.ViewData["CurrentFilter"] = searchString;
-		var memoirs = this._dbContext.Memoirs!
+		var memoirs = this._dbContext.IccMemoirs!
 			.Include(m => m.Memorist)
 			.Where(m => (m!.Candidates!.Contains(user) || m.Memorist == user)
-				&& (m.Phase == Phase.PublishedByGuide || m.Phase == Phase.ReadyByGuide)
-				&& m.Phase != Phase.SentToCommittee && m.Phase != Phase.RejectedByCommittee
-				&& m.Phase != Phase.ApprovedByCommittee && m.Phase != Phase.InProgress
-				&& m.Phase != Phase.Abandoned && m.Phase != Phase.Completed
-				&& m.Phase != Phase.RejectedByDirector && m.Phase != Phase.ApprovedByDirector)
+				&& (m.Phase == IccMemoir.MemoirPhase.PublishedByGuide || m.Phase == IccMemoir.MemoirPhase.ReadyByGuide)
+				&& m.Phase != IccMemoir.MemoirPhase.SentToCommittee && m.Phase != IccMemoir.MemoirPhase.RejectedByCommittee
+				&& m.Phase != IccMemoir.MemoirPhase.ApprovedByCommittee && m.Phase != IccMemoir.MemoirPhase.InProgress
+				&& m.Phase != IccMemoir.MemoirPhase.Abandoned && m.Phase != IccMemoir.MemoirPhase.Completed
+				&& m.Phase != IccMemoir.MemoirPhase.RejectedByDirector && m.Phase != IccMemoir.MemoirPhase.ApprovedByDirector)
 			.Include(m => m.Guide).AsNoTracking()
 			.Select(m => new IccMemoirViewModel {
 				Id = m.Id,
@@ -304,7 +304,7 @@ public class ProposalController : Controller {
 			this.TempData["ErrorMessage"] = "Tu cuenta está desactivada.";
 			return this.RedirectToAction("Index", "Home", new { area = "" });
 		}
-		var guide = await this._userManager.FindByIdAsync(id);
+		var guide = await this._userManager.FindByIdAsync(id) as IccTeacher;
 		if (guide is null) {
 			this.TempData["ErrorMessage"] = "Error al obtener al profesor guía.";
 			return this.RedirectToAction("Guide", "Proposal", new { area = "University" });
@@ -314,13 +314,16 @@ public class ProposalController : Controller {
 			return this.RedirectToAction("Guide", "Proposal", new { area = "University" });
 		}
 		await this.PopulateAssistants(guide);
-		var output = new IccMemoirViewModel {
-			GuideId = guide.Id,
-			GuideName = $"{guide.FirstName} {guide.LastName}",
-			GuideEmail = guide.Email,
-			Office = guide.Office,
-			Schedule = guide.Schedule,
-			Specialization = guide.Specialization,
+		var output = new IccStudentMemoirViewModel {
+			GuideTeacher = new IccTeacherViewModel {
+				Id = guide.Id,
+				FirstName = guide.FirstName,
+				LastName = guide.LastName,
+				Email = guide.Email,
+				Office = guide.Office,
+				Schedule = guide.Schedule,
+				Specialization = guide.Specialization,
+			}
 		};
 		return this.View(output);
 	}
@@ -334,7 +337,7 @@ public class ProposalController : Controller {
 		}
 		IccUser? guide = null!;
 		if (this.User.IsInRole("Student")) {
-			guide = (await this._userManager.FindByIdAsync(input.GuideId!))!;
+			guide = await this._userManager.FindByIdAsync(input.GuideTeacher!.Id);
 			if (guide is null) {
 				this.ViewData["ErrorMessage"] = "Error al obtener al profesor guía.";
 				return this.RedirectToAction("Guide", "Proposal", new { area = "University" });
@@ -346,7 +349,7 @@ public class ProposalController : Controller {
 		} else if (this.User.IsInRole("Guide")) {
 			guide = (await this._userManager.GetUserAsync(this.User))!;
 		}
-		var assistants = input.Assistants!.Select(async a => await this._userManager.FindByIdAsync(a!)).Select(a => a.Result).Where(u => !u!.IsDeactivated).ToList();
+		var assistants = input.AssistantTeachers!.Select(async a => await this._userManager.FindByIdAsync(a!)).Select(a => a.Result).Where(u => !u!.IsDeactivated).ToList();
 		var memoir = new Memoir {
 			Id = Guid.NewGuid().ToString(),
 			Title = input.Title,
@@ -359,12 +362,12 @@ public class ProposalController : Controller {
 		};
 		if (this.User.IsInRole("Student")) {
 			memoir.Memorist = await this._userManager.GetUserAsync(this.User);
-			memoir.Phase = Phase.DraftByStudent;
+			memoir.Phase = IccMemoir.MemoirPhase.DraftByStudent;
 		} else if (this.User.IsInRole("Guide")) {
 			memoir.Requirements = input.Requirements;
-			memoir.Phase = Phase.DraftByGuide;
+			memoir.Phase = IccMemoir.MemoirPhase.DraftByGuide;
 		}
-		_ = await this._dbContext.Memoirs!.AddAsync(memoir);
+		_ = await this._dbContext.IccMemoirs!.AddAsync(memoir);
 		_ = await this._dbContext.SaveChangesAsync();
 		this.TempData["SuccessMessage"] = "Tu propouesta ha sido registrada correctamente.";
 		return this.RedirectToAction("Index", "Proposal", new { area = "University" });
@@ -379,27 +382,27 @@ public class ProposalController : Controller {
 		}
 		IccMemoir? memoir = null!;
 		if (this.User.IsInRole("Student")) {
-			memoir = await this._dbContext.Memoirs!
+			memoir = await this._dbContext.IccMemoirs!
 				.Include(m => m.Owner)
 				.Where(m => m.Owner!.Id == this._userManager.GetUserId(this.User)
-					&& m.Phase != Phase.SentToCommittee && m.Phase != Phase.RejectedByCommittee
-					&& m.Phase != Phase.ApprovedByCommittee && m.Phase != Phase.InProgress
-					&& m.Phase != Phase.Abandoned && m.Phase != Phase.Completed
-					&& m.Phase != Phase.RejectedByDirector && m.Phase != Phase.ApprovedByDirector)
+					&& m.Phase != IccMemoir.MemoirPhase.SentToCommittee && m.Phase != IccMemoir.MemoirPhase.RejectedByCommittee
+					&& m.Phase != IccMemoir.MemoirPhase.ApprovedByCommittee && m.Phase != IccMemoir.MemoirPhase.InProgress
+					&& m.Phase != IccMemoir.MemoirPhase.Abandoned && m.Phase != IccMemoir.MemoirPhase.Completed
+					&& m.Phase != IccMemoir.MemoirPhase.RejectedByDirector && m.Phase != IccMemoir.MemoirPhase.ApprovedByDirector)
 				.Include(m => m.Guide)
 				.Include(m => m.Assistants).AsNoTracking()
-				.FirstOrDefaultAsync(m => m.Id == id && (m.Phase == Phase.DraftByStudent || m.Phase == Phase.RejectedByGuide));
+				.FirstOrDefaultAsync(m => m.Id == id && (m.Phase == IccMemoir.MemoirPhase.DraftByStudent || m.Phase == IccMemoir.MemoirPhase.RejectedByGuide));
 		} else if (this.User.IsInRole("Guide")) {
-			memoir = await this._dbContext.Memoirs!
+			memoir = await this._dbContext.IccMemoirs!
 				.Include(m => m.Owner)
 				.Where(m => m.Owner!.Id == this._userManager.GetUserId(this.User)
-					&& m.Phase != Phase.SentToCommittee && m.Phase != Phase.RejectedByCommittee
-					&& m.Phase != Phase.ApprovedByCommittee && m.Phase != Phase.InProgress
-					&& m.Phase != Phase.Abandoned && m.Phase != Phase.Completed
-					&& m.Phase != Phase.RejectedByDirector && m.Phase != Phase.ApprovedByDirector)
+					&& m.Phase != IccMemoir.MemoirPhase.SentToCommittee && m.Phase != IccMemoir.MemoirPhase.RejectedByCommittee
+					&& m.Phase != IccMemoir.MemoirPhase.ApprovedByCommittee && m.Phase != IccMemoir.MemoirPhase.InProgress
+					&& m.Phase != IccMemoir.MemoirPhase.Abandoned && m.Phase != IccMemoir.MemoirPhase.Completed
+					&& m.Phase != IccMemoir.MemoirPhase.RejectedByDirector && m.Phase != IccMemoir.MemoirPhase.ApprovedByDirector)
 				.Include(m => m.Guide)
 				.Include(m => m.Assistants).AsNoTracking()
-				.FirstOrDefaultAsync(m => m.Id == id && (m.Phase == Phase.DraftByGuide || m.Phase == Phase.RejectedByGuide));
+				.FirstOrDefaultAsync(m => m.Id == id && (m.Phase == IccMemoir.MemoirPhase.DraftByGuide || m.Phase == IccMemoir.MemoirPhase.RejectedByGuide));
 		}
 		if (memoir is null) {
 			this.TempData["ErrorMessage"] = "Error al obtener la propuesta";
@@ -440,26 +443,26 @@ public class ProposalController : Controller {
 		}
 		IccMemoir? memoir = null!;
 		if (this.User.IsInRole("Student")) {
-			memoir = await this._dbContext.Memoirs!
+			memoir = await this._dbContext.IccMemoirs!
 				.Include(m => m.Owner)
 				.Where(m => m.Owner!.Id == this._userManager.GetUserId(this.User)
-					&& m.Phase != Phase.SentToCommittee && m.Phase != Phase.RejectedByCommittee
-					&& m.Phase != Phase.ApprovedByCommittee && m.Phase != Phase.InProgress
-					&& m.Phase != Phase.Abandoned && m.Phase != Phase.Completed
-					&& m.Phase != Phase.RejectedByDirector && m.Phase != Phase.ApprovedByDirector)
+					&& m.Phase != IccMemoir.MemoirPhase.SentToCommittee && m.Phase != IccMemoir.MemoirPhase.RejectedByCommittee
+					&& m.Phase != IccMemoir.MemoirPhase.ApprovedByCommittee && m.Phase != IccMemoir.MemoirPhase.InProgress
+					&& m.Phase != IccMemoir.MemoirPhase.Abandoned && m.Phase != IccMemoir.MemoirPhase.Completed
+					&& m.Phase != IccMemoir.MemoirPhase.RejectedByDirector && m.Phase != IccMemoir.MemoirPhase.ApprovedByDirector)
 				.Include(m => m.Guide)
 				.Include(m => m.Assistants)
-				.FirstOrDefaultAsync(m => m.Id == input.Id && (m.Phase == Phase.DraftByStudent || m.Phase == Phase.RejectedByGuide));
+				.FirstOrDefaultAsync(m => m.Id == input.Id && (m.Phase == IccMemoir.MemoirPhase.DraftByStudent || m.Phase == IccMemoir.MemoirPhase.RejectedByGuide));
 		} else if (this.User.IsInRole("Guide")) {
-			memoir = await this._dbContext.Memoirs!
+			memoir = await this._dbContext.IccMemoirs!
 				.Include(m => m.Owner)
 				.Where(m => m.Owner!.Id == this._userManager.GetUserId(this.User)
-					&& m.Phase != Phase.SentToCommittee && m.Phase != Phase.RejectedByCommittee
-					&& m.Phase != Phase.ApprovedByCommittee && m.Phase != Phase.InProgress
-					&& m.Phase != Phase.Abandoned && m.Phase != Phase.Completed
-					&& m.Phase != Phase.RejectedByDirector && m.Phase != Phase.ApprovedByDirector)
+					&& m.Phase != IccMemoir.MemoirPhase.SentToCommittee && m.Phase != IccMemoir.MemoirPhase.RejectedByCommittee
+					&& m.Phase != IccMemoir.MemoirPhase.ApprovedByCommittee && m.Phase != IccMemoir.MemoirPhase.InProgress
+					&& m.Phase != IccMemoir.MemoirPhase.Abandoned && m.Phase != IccMemoir.MemoirPhase.Completed
+					&& m.Phase != IccMemoir.MemoirPhase.RejectedByDirector && m.Phase != IccMemoir.MemoirPhase.ApprovedByDirector)
 				.Include(m => m.Assistants)
-				.FirstOrDefaultAsync(m => m.Id == input.Id && (m.Phase == Phase.DraftByGuide || m.Phase == Phase.RejectedByGuide));
+				.FirstOrDefaultAsync(m => m.Id == input.Id && (m.Phase == IccMemoir.MemoirPhase.DraftByGuide || m.Phase == IccMemoir.MemoirPhase.RejectedByGuide));
 		}
 		if (memoir is null) {
 			this.TempData["ErrorMessage"] = "Error al obtener la propuesta";
@@ -485,11 +488,11 @@ public class ProposalController : Controller {
 				memoir.Requirements = input.Requirements;
 			}
 			memoir.Assistants = assistants;
-			if (memoir.Phase == Phase.RejectedByGuide) {
-				memoir.Phase = Phase.SentToGuide;
+			if (memoir.Phase == IccMemoir.MemoirPhase.RejectedByGuide) {
+				memoir.Phase = IccMemoir.MemoirPhase.SentToGuide;
 			}
 			memoir.UpdatedAt = DateTimeOffset.Now;
-			_ = this._dbContext.Memoirs!.Update(memoir);
+			_ = this._dbContext.IccMemoirs!.Update(memoir);
 			_ = await this._dbContext.SaveChangesAsync();
 		}
 		await this.PopulateAssistants(memoir.Guide!);
@@ -524,17 +527,17 @@ public class ProposalController : Controller {
 		}
 		IccMemoir? memoir = null!;
 		if (this.User.IsInRole("Student")) {
-			memoir = await this._dbContext.Memoirs!
+			memoir = await this._dbContext.IccMemoirs!
 				.Include(m => m.Owner).AsNoTracking()
 				.FirstOrDefaultAsync(m => m.Owner!.Id == this._userManager.GetUserId(this.User)
 					&& m.Id == id
-					&& m.Phase == Phase.DraftByStudent);
+					&& m.Phase == IccMemoir.MemoirPhase.DraftByStudent);
 		} else if (this.User.IsInRole("Guide")) {
-			memoir = await this._dbContext.Memoirs!
+			memoir = await this._dbContext.IccMemoirs!
 				.Include(m => m.Owner).AsNoTracking()
 				.FirstOrDefaultAsync(m => m.Owner!.Id == this._userManager.GetUserId(this.User)
 					&& m.Id == id
-					&& m.Phase == Phase.DraftByGuide);
+					&& m.Phase == IccMemoir.MemoirPhase.DraftByGuide);
 		}
 		if (memoir is null) {
 			this.TempData["ErrorMessage"] = "Error al obtener la propuesta";
@@ -556,23 +559,23 @@ public class ProposalController : Controller {
 		}
 		IccMemoir? memoir = null!;
 		if (this.User.IsInRole("Student")) {
-			memoir = await this._dbContext.Memoirs!
+			memoir = await this._dbContext.IccMemoirs!
 				.Include(m => m.Owner)
 				.FirstOrDefaultAsync(m => m.Owner!.Id == this._userManager.GetUserId(this.User)
 					&& m.Id == input.Id
-					&& m.Phase == Phase.DraftByStudent);
+					&& m.Phase == IccMemoir.MemoirPhase.DraftByStudent);
 		} else if (this.User.IsInRole("Guide")) {
-			memoir = await this._dbContext.Memoirs!
+			memoir = await this._dbContext.IccMemoirs!
 				.Include(m => m.Owner)
 				.FirstOrDefaultAsync(m => m.Owner!.Id == this._userManager.GetUserId(this.User)
 					&& m.Id == input.Id
-					&& m.Phase == Phase.DraftByGuide);
+					&& m.Phase == IccMemoir.MemoirPhase.DraftByGuide);
 		}
 		if (memoir is null) {
 			this.TempData["ErrorMessage"] = "Error al obtener la propuesta";
 			return this.RedirectToAction("Index", "Proposal", new { area = "University" });
 		}
-		_ = this._dbContext.Memoirs!.Remove(memoir);
+		_ = this._dbContext.IccMemoirs!.Remove(memoir);
 		_ = await this._dbContext.SaveChangesAsync();
 		this.TempData["SuccessMessage"] = "Tu propuesta ha sido eliminada correctamente.";
 		return this.RedirectToAction("Index", "Proposal", new { area = "University" });
@@ -587,25 +590,25 @@ public class ProposalController : Controller {
 		}
 		IccMemoir? memoir = null!;
 		if (this.User.IsInRole("Student")) {
-			memoir = await this._dbContext.Memoirs!
+			memoir = await this._dbContext.IccMemoirs!
 				.Include(m => m.Owner)
 				.Where(m => m.Owner!.Id == this._userManager.GetUserId(this.User)
-					&& m.Phase != Phase.SentToCommittee && m.Phase != Phase.RejectedByCommittee
-					&& m.Phase != Phase.ApprovedByCommittee && m.Phase != Phase.InProgress
-					&& m.Phase != Phase.Abandoned && m.Phase != Phase.Completed
-					&& m.Phase != Phase.RejectedByDirector && m.Phase != Phase.ApprovedByDirector)
+					&& m.Phase != IccMemoir.MemoirPhase.SentToCommittee && m.Phase != IccMemoir.MemoirPhase.RejectedByCommittee
+					&& m.Phase != IccMemoir.MemoirPhase.ApprovedByCommittee && m.Phase != IccMemoir.MemoirPhase.InProgress
+					&& m.Phase != IccMemoir.MemoirPhase.Abandoned && m.Phase != IccMemoir.MemoirPhase.Completed
+					&& m.Phase != IccMemoir.MemoirPhase.RejectedByDirector && m.Phase != IccMemoir.MemoirPhase.ApprovedByDirector)
 				.Include(m => m.Guide).AsNoTracking()
-				.FirstOrDefaultAsync(m => m.Id == id && m.Phase == Phase.DraftByStudent);
+				.FirstOrDefaultAsync(m => m.Id == id && m.Phase == IccMemoir.MemoirPhase.DraftByStudent);
 		} else if (this.User.IsInRole("Guide")) {
-			memoir = await this._dbContext.Memoirs!
+			memoir = await this._dbContext.IccMemoirs!
 				.Include(m => m.Owner)
 				.Where(m => m.Owner!.Id == this._userManager.GetUserId(this.User)
-					&& m.Phase != Phase.SentToCommittee && m.Phase != Phase.RejectedByCommittee
-					&& m.Phase != Phase.ApprovedByCommittee && m.Phase != Phase.InProgress
-					&& m.Phase != Phase.Abandoned && m.Phase != Phase.Completed
-					&& m.Phase != Phase.RejectedByDirector && m.Phase != Phase.ApprovedByDirector)
+					&& m.Phase != IccMemoir.MemoirPhase.SentToCommittee && m.Phase != IccMemoir.MemoirPhase.RejectedByCommittee
+					&& m.Phase != IccMemoir.MemoirPhase.ApprovedByCommittee && m.Phase != IccMemoir.MemoirPhase.InProgress
+					&& m.Phase != IccMemoir.MemoirPhase.Abandoned && m.Phase != IccMemoir.MemoirPhase.Completed
+					&& m.Phase != IccMemoir.MemoirPhase.RejectedByDirector && m.Phase != IccMemoir.MemoirPhase.ApprovedByDirector)
 				.Include(m => m.Guide).AsNoTracking()
-				.FirstOrDefaultAsync(m => m.Id == id && m.Phase == Phase.DraftByGuide);
+				.FirstOrDefaultAsync(m => m.Id == id && m.Phase == IccMemoir.MemoirPhase.DraftByGuide);
 		}
 		if (memoir is null) {
 			this.TempData["ErrorMessage"] = "Error al obtener la propuesta";
@@ -634,25 +637,25 @@ public class ProposalController : Controller {
 		}
 		IccMemoir? memoir = null!;
 		if (this.User.IsInRole("Student")) {
-			memoir = await this._dbContext.Memoirs!
+			memoir = await this._dbContext.IccMemoirs!
 				.Include(m => m.Owner)
 				.Where(m => m.Owner!.Id == this._userManager.GetUserId(this.User)
-					&& m.Phase != Phase.SentToCommittee && m.Phase != Phase.RejectedByCommittee
-					&& m.Phase != Phase.ApprovedByCommittee && m.Phase != Phase.InProgress
-					&& m.Phase != Phase.Abandoned && m.Phase != Phase.Completed
-					&& m.Phase != Phase.RejectedByDirector && m.Phase != Phase.ApprovedByDirector)
+					&& m.Phase != IccMemoir.MemoirPhase.SentToCommittee && m.Phase != IccMemoir.MemoirPhase.RejectedByCommittee
+					&& m.Phase != IccMemoir.MemoirPhase.ApprovedByCommittee && m.Phase != IccMemoir.MemoirPhase.InProgress
+					&& m.Phase != IccMemoir.MemoirPhase.Abandoned && m.Phase != IccMemoir.MemoirPhase.Completed
+					&& m.Phase != IccMemoir.MemoirPhase.RejectedByDirector && m.Phase != IccMemoir.MemoirPhase.ApprovedByDirector)
 				.Include(m => m.Guide)
-				.FirstOrDefaultAsync(m => m.Id == input.Id && m.Phase == Phase.DraftByStudent);
+				.FirstOrDefaultAsync(m => m.Id == input.Id && m.Phase == IccMemoir.MemoirPhase.DraftByStudent);
 		} else if (this.User.IsInRole("Guide")) {
-			memoir = await this._dbContext.Memoirs!
+			memoir = await this._dbContext.IccMemoirs!
 				.Include(m => m.Owner)
 				.Where(m => m.Owner!.Id == this._userManager.GetUserId(this.User)
-					&& m.Phase != Phase.SentToCommittee && m.Phase != Phase.RejectedByCommittee
-					&& m.Phase != Phase.ApprovedByCommittee && m.Phase != Phase.InProgress
-					&& m.Phase != Phase.Abandoned && m.Phase != Phase.Completed
-					&& m.Phase != Phase.RejectedByDirector && m.Phase != Phase.ApprovedByDirector)
+					&& m.Phase != IccMemoir.MemoirPhase.SentToCommittee && m.Phase != IccMemoir.MemoirPhase.RejectedByCommittee
+					&& m.Phase != IccMemoir.MemoirPhase.ApprovedByCommittee && m.Phase != IccMemoir.MemoirPhase.InProgress
+					&& m.Phase != IccMemoir.MemoirPhase.Abandoned && m.Phase != IccMemoir.MemoirPhase.Completed
+					&& m.Phase != IccMemoir.MemoirPhase.RejectedByDirector && m.Phase != IccMemoir.MemoirPhase.ApprovedByDirector)
 				.Include(m => m.Guide)
-				.FirstOrDefaultAsync(m => m.Id == input.Id && m.Phase == Phase.DraftByGuide);
+				.FirstOrDefaultAsync(m => m.Id == input.Id && m.Phase == IccMemoir.MemoirPhase.DraftByGuide);
 		}
 		if (memoir is null) {
 			this.TempData["ErrorMessage"] = "Error al obtener la propuesta";
@@ -663,14 +666,14 @@ public class ProposalController : Controller {
 			return this.RedirectToAction("Index", "Proposal", new { area = "University" });
 		}
 		if (this.User.IsInRole("Student")) {
-			memoir.Phase = Phase.SentToGuide;
+			memoir.Phase = IccMemoir.MemoirPhase.SentToGuide;
 		} else if (this.User.IsInRole("Guide")) {
-			memoir.Phase = Phase.PublishedByGuide;
+			memoir.Phase = IccMemoir.MemoirPhase.PublishedByGuide;
 		}
 		memoir.WhoRejected = null;
 		memoir.Reason = string.Empty;
 		memoir.UpdatedAt = DateTimeOffset.Now;
-		_ = this._dbContext.Memoirs!.Update(memoir);
+		_ = this._dbContext.IccMemoirs!.Update(memoir);
 		_ = await this._dbContext.SaveChangesAsync();
 		if (this.User.IsInRole("Student")) {
 			this.TempData["SuccessMessage"] = "Tu propuesta ha sido enviada correctamente.";
@@ -689,24 +692,24 @@ public class ProposalController : Controller {
 		}
 		IccMemoir? memoir = null!;
 		if (this.User.IsInRole("Student")) {
-			memoir = await this._dbContext.Memoirs!
-				.Where(m => m.Phase != Phase.SentToCommittee
-					&& m.Phase != Phase.RejectedByCommittee && m.Phase != Phase.ApprovedByCommittee
-					&& m.Phase != Phase.InProgress && m.Phase != Phase.Abandoned
-					&& m.Phase != Phase.Completed && m.Phase != Phase.RejectedByDirector
-					&& m.Phase != Phase.ApprovedByDirector)
+			memoir = await this._dbContext.IccMemoirs!
+				.Where(m => m.Phase != IccMemoir.MemoirPhase.SentToCommittee
+					&& m.Phase != IccMemoir.MemoirPhase.RejectedByCommittee && m.Phase != IccMemoir.MemoirPhase.ApprovedByCommittee
+					&& m.Phase != IccMemoir.MemoirPhase.InProgress && m.Phase != IccMemoir.MemoirPhase.Abandoned
+					&& m.Phase != IccMemoir.MemoirPhase.Completed && m.Phase != IccMemoir.MemoirPhase.RejectedByDirector
+					&& m.Phase != IccMemoir.MemoirPhase.ApprovedByDirector)
 				.Include(m => m.Owner)
 				.Include(m => m.Guide)
 				.Include(m => m.WhoRejected)
 				.Include(m => m.Assistants).AsNoTracking()
 				.FirstOrDefaultAsync(m => m.Id == id);
 		} else if (this.User.IsInRole("Guide")) {
-			memoir = await this._dbContext.Memoirs!
-				.Where(m => m.Phase != Phase.SentToCommittee
-					&& m.Phase != Phase.RejectedByCommittee && m.Phase != Phase.ApprovedByCommittee
-					&& m.Phase != Phase.InProgress && m.Phase != Phase.Abandoned
-					&& m.Phase != Phase.Completed && m.Phase != Phase.RejectedByDirector
-					&& m.Phase != Phase.ApprovedByDirector)
+			memoir = await this._dbContext.IccMemoirs!
+				.Where(m => m.Phase != IccMemoir.MemoirPhase.SentToCommittee
+					&& m.Phase != IccMemoir.MemoirPhase.RejectedByCommittee && m.Phase != IccMemoir.MemoirPhase.ApprovedByCommittee
+					&& m.Phase != IccMemoir.MemoirPhase.InProgress && m.Phase != IccMemoir.MemoirPhase.Abandoned
+					&& m.Phase != IccMemoir.MemoirPhase.Completed && m.Phase != IccMemoir.MemoirPhase.RejectedByDirector
+					&& m.Phase != IccMemoir.MemoirPhase.ApprovedByDirector)
 				.Include(m => m.Owner)
 				.Include(m => m.Memorist)
 				.Include(m => m.Assistants).AsNoTracking()
@@ -720,7 +723,7 @@ public class ProposalController : Controller {
 			Id = id,
 			Title = memoir.Title,
 			Description = memoir.Description,
-			Phase = memoir.Phase.ToString(),
+			Phase = memoir.IccMemoir.MemoirPhase.ToString(),
 			Assistants = memoir.Assistants!.Select(a => $"{a!.FirstName} {a.LastName}").ToList(),
 			CreatedAt = memoir.CreatedAt,
 			UpdatedAt = memoir.UpdatedAt,
@@ -754,15 +757,15 @@ public class ProposalController : Controller {
 			this.TempData["ErrorMessage"] = "Tu cuenta está desactivada.";
 			return this.RedirectToAction("Index", "Home", new { area = "" });
 		}
-		var memoir = await this._dbContext.Memoirs!
-			.Where(m => m.Phase != Phase.SentToCommittee
-				&& m.Phase != Phase.RejectedByCommittee && m.Phase != Phase.ApprovedByCommittee
-				&& m.Phase != Phase.InProgress && m.Phase != Phase.Abandoned
-				&& m.Phase != Phase.Completed && m.Phase != Phase.RejectedByDirector
-				&& m.Phase != Phase.ApprovedByDirector)
+		var memoir = await this._dbContext.IccMemoirs!
+			.Where(m => m.Phase != IccMemoir.MemoirPhase.SentToCommittee
+				&& m.Phase != IccMemoir.MemoirPhase.RejectedByCommittee && m.Phase != IccMemoir.MemoirPhase.ApprovedByCommittee
+				&& m.Phase != IccMemoir.MemoirPhase.InProgress && m.Phase != IccMemoir.MemoirPhase.Abandoned
+				&& m.Phase != IccMemoir.MemoirPhase.Completed && m.Phase != IccMemoir.MemoirPhase.RejectedByDirector
+				&& m.Phase != IccMemoir.MemoirPhase.ApprovedByDirector)
 			.Include(p => p.Guide).AsNoTracking()
 			.FirstOrDefaultAsync(m => m.Id == id
-				&& m.Phase == Phase.PublishedByGuide);
+				&& m.Phase == IccMemoir.MemoirPhase.PublishedByGuide);
 		if (memoir is null) {
 			this.TempData["ErrorMessage"] = "Error al obtener la propuesta";
 			return this.RedirectToAction("Applications", "Proposal", new { area = "University" });
@@ -782,22 +785,22 @@ public class ProposalController : Controller {
 			this.TempData["ErrorMessage"] = "Tu cuenta está desactivada.";
 			return this.RedirectToAction("Index", "Home", new { area = "" });
 		}
-		var memoir = await this._dbContext.Memoirs!
-			.Where(m => m.Phase != Phase.SentToCommittee
-				&& m.Phase != Phase.RejectedByCommittee && m.Phase != Phase.ApprovedByCommittee
-				&& m.Phase != Phase.InProgress && m.Phase != Phase.Abandoned
-				&& m.Phase != Phase.Completed && m.Phase != Phase.RejectedByDirector
-				&& m.Phase != Phase.ApprovedByDirector)
+		var memoir = await this._dbContext.IccMemoirs!
+			.Where(m => m.Phase != IccMemoir.MemoirPhase.SentToCommittee
+				&& m.Phase != IccMemoir.MemoirPhase.RejectedByCommittee && m.Phase != IccMemoir.MemoirPhase.ApprovedByCommittee
+				&& m.Phase != IccMemoir.MemoirPhase.InProgress && m.Phase != IccMemoir.MemoirPhase.Abandoned
+				&& m.Phase != IccMemoir.MemoirPhase.Completed && m.Phase != IccMemoir.MemoirPhase.RejectedByDirector
+				&& m.Phase != IccMemoir.MemoirPhase.ApprovedByDirector)
 			.Include(p => p.Guide)
 			.FirstOrDefaultAsync(m => m.Id == input.Id
-				&& m.Phase == Phase.PublishedByGuide);
+				&& m.Phase == IccMemoir.MemoirPhase.PublishedByGuide);
 		if (memoir is null) {
 			this.TempData["ErrorMessage"] = "Error al obtener la propuesta";
 			return this.RedirectToAction("Applications", "Proposal", new { area = "University" });
 		}
 		memoir.Candidates!.Add(user);
 		memoir.UpdatedAt = DateTimeOffset.Now;
-		_ = this._dbContext.Memoirs!.Update(memoir);
+		_ = this._dbContext.IccMemoirs!.Update(memoir);
 		_ = await this._dbContext.SaveChangesAsync();
 		this.TempData["SuccessMessage"] = "Has postulado a la propuesta correctamente.";
 		return this.RedirectToAction("Applications", "Proposal", new { area = "University" });
@@ -810,17 +813,17 @@ public class ProposalController : Controller {
 			this.TempData["ErrorMessage"] = "Tu cuenta está desactivada.";
 			return this.RedirectToAction("Index", "Home", new { area = "" });
 		}
-		var memoir = await this._dbContext.Memoirs!
+		var memoir = await this._dbContext.IccMemoirs!
 			.Include(m => m.Guide)
 			.Where(m => m.Guide!.Id == user.Id
-				&& m.Phase != Phase.SentToCommittee
-				&& m.Phase != Phase.RejectedByCommittee && m.Phase != Phase.ApprovedByCommittee
-				&& m.Phase != Phase.InProgress && m.Phase != Phase.Abandoned
-				&& m.Phase != Phase.Completed && m.Phase != Phase.RejectedByDirector
-				&& m.Phase != Phase.ApprovedByDirector)
+				&& m.Phase != IccMemoir.MemoirPhase.SentToCommittee
+				&& m.Phase != IccMemoir.MemoirPhase.RejectedByCommittee && m.Phase != IccMemoir.MemoirPhase.ApprovedByCommittee
+				&& m.Phase != IccMemoir.MemoirPhase.InProgress && m.Phase != IccMemoir.MemoirPhase.Abandoned
+				&& m.Phase != IccMemoir.MemoirPhase.Completed && m.Phase != IccMemoir.MemoirPhase.RejectedByDirector
+				&& m.Phase != IccMemoir.MemoirPhase.ApprovedByDirector)
 			.Include(m => m.Memorist).AsNoTracking()
 			.FirstOrDefaultAsync(m => m.Id == id
-				&& m.Phase == Phase.SentToGuide);
+				&& m.Phase == IccMemoir.MemoirPhase.SentToGuide);
 		if (memoir is null) {
 			this.TempData["ErrorMessage"] = "Error al obtener la propuesta";
 			return this.RedirectToAction("List", "Proposal", new { area = "University" });
@@ -840,26 +843,26 @@ public class ProposalController : Controller {
 			this.TempData["ErrorMessage"] = "Tu cuenta está desactivada.";
 			return this.RedirectToAction("Index", "Home", new { area = "" });
 		}
-		var memoir = await this._dbContext.Memoirs!
+		var memoir = await this._dbContext.IccMemoirs!
 			.Include(m => m.Guide)
 			.Where(m => m.Guide!.Id == user.Id
-				&& m.Phase != Phase.SentToCommittee
-				&& m.Phase != Phase.RejectedByCommittee && m.Phase != Phase.ApprovedByCommittee
-				&& m.Phase != Phase.InProgress && m.Phase != Phase.Abandoned
-				&& m.Phase != Phase.Completed && m.Phase != Phase.RejectedByDirector
-				&& m.Phase != Phase.ApprovedByDirector)
+				&& m.Phase != IccMemoir.MemoirPhase.SentToCommittee
+				&& m.Phase != IccMemoir.MemoirPhase.RejectedByCommittee && m.Phase != IccMemoir.MemoirPhase.ApprovedByCommittee
+				&& m.Phase != IccMemoir.MemoirPhase.InProgress && m.Phase != IccMemoir.MemoirPhase.Abandoned
+				&& m.Phase != IccMemoir.MemoirPhase.Completed && m.Phase != IccMemoir.MemoirPhase.RejectedByDirector
+				&& m.Phase != IccMemoir.MemoirPhase.ApprovedByDirector)
 			.Include(m => m.Memorist)
 			.FirstOrDefaultAsync(m => m.Id == input.Id
-				&& m.Phase == Phase.SentToGuide);
+				&& m.Phase == IccMemoir.MemoirPhase.SentToGuide);
 		if (memoir is null) {
 			this.TempData["ErrorMessage"] = "Error al obtener la propuesta";
 			return this.RedirectToAction("List", "Proposal", new { area = "University" });
 		}
-		memoir.Phase = Phase.RejectedByGuide;
+		memoir.Phase = IccMemoir.MemoirPhase.RejectedByGuide;
 		memoir.WhoRejected = user;
 		memoir.Reason = input.Reason;
 		memoir.UpdatedAt = DateTimeOffset.Now;
-		_ = this._dbContext.Memoirs!.Update(memoir);
+		_ = this._dbContext.IccMemoirs!.Update(memoir);
 		_ = await this._dbContext.SaveChangesAsync();
 		this.TempData["SuccessMessage"] = "La propuesta ha sido rechazada correctamente.";
 		return this.RedirectToAction("List", "Proposal", new { area = "University" });
@@ -872,17 +875,17 @@ public class ProposalController : Controller {
 			this.TempData["ErrorMessage"] = "Tu cuenta está desactivada.";
 			return this.RedirectToAction("Index", "Home", new { area = "" });
 		}
-		var memoir = await this._dbContext.Memoirs!
+		var memoir = await this._dbContext.IccMemoirs!
 			.Include(m => m.Guide)
 			.Where(m => m.Guide!.Id == user.Id
-				&& m.Phase != Phase.SentToCommittee
-				&& m.Phase != Phase.RejectedByCommittee && m.Phase != Phase.ApprovedByCommittee
-				&& m.Phase != Phase.InProgress && m.Phase != Phase.Abandoned
-				&& m.Phase != Phase.Completed && m.Phase != Phase.RejectedByDirector
-				&& m.Phase != Phase.ApprovedByDirector)
+				&& m.Phase != IccMemoir.MemoirPhase.SentToCommittee
+				&& m.Phase != IccMemoir.MemoirPhase.RejectedByCommittee && m.Phase != IccMemoir.MemoirPhase.ApprovedByCommittee
+				&& m.Phase != IccMemoir.MemoirPhase.InProgress && m.Phase != IccMemoir.MemoirPhase.Abandoned
+				&& m.Phase != IccMemoir.MemoirPhase.Completed && m.Phase != IccMemoir.MemoirPhase.RejectedByDirector
+				&& m.Phase != IccMemoir.MemoirPhase.ApprovedByDirector)
 			.Include(m => m.Memorist).AsNoTracking()
 			.FirstOrDefaultAsync(m => m.Id == id
-				&& m.Phase == Phase.SentToGuide);
+				&& m.Phase == IccMemoir.MemoirPhase.SentToGuide);
 		if (memoir is null) {
 			this.TempData["ErrorMessage"] = "Error al obtener la propuesta";
 			return this.RedirectToAction("List", "Proposal", new { area = "University" });
@@ -902,24 +905,24 @@ public class ProposalController : Controller {
 			this.TempData["ErrorMessage"] = "Tu cuenta está desactivada.";
 			return this.RedirectToAction("Index", "Home", new { area = "" });
 		}
-		var memoir = await this._dbContext.Memoirs!
+		var memoir = await this._dbContext.IccMemoirs!
 			.Include(m => m.Guide)
 			.Where(m => m.Guide!.Id == user.Id
-				&& m.Phase != Phase.SentToCommittee
-				&& m.Phase != Phase.RejectedByCommittee && m.Phase != Phase.ApprovedByCommittee
-				&& m.Phase != Phase.InProgress && m.Phase != Phase.Abandoned
-				&& m.Phase != Phase.Completed && m.Phase != Phase.RejectedByDirector
-				&& m.Phase != Phase.ApprovedByDirector)
+				&& m.Phase != IccMemoir.MemoirPhase.SentToCommittee
+				&& m.Phase != IccMemoir.MemoirPhase.RejectedByCommittee && m.Phase != IccMemoir.MemoirPhase.ApprovedByCommittee
+				&& m.Phase != IccMemoir.MemoirPhase.InProgress && m.Phase != IccMemoir.MemoirPhase.Abandoned
+				&& m.Phase != IccMemoir.MemoirPhase.Completed && m.Phase != IccMemoir.MemoirPhase.RejectedByDirector
+				&& m.Phase != IccMemoir.MemoirPhase.ApprovedByDirector)
 			.Include(m => m.Memorist)
 			.FirstOrDefaultAsync(m => m.Id == input.Id
-				&& m.Phase == Phase.SentToGuide);
+				&& m.Phase == IccMemoir.MemoirPhase.SentToGuide);
 		if (memoir is null) {
 			this.TempData["ErrorMessage"] = "Error al obtener la propuesta";
 			return this.RedirectToAction("List", "Proposal", new { area = "University" });
 		}
-		memoir.Phase = Phase.ApprovedByGuide;
+		memoir.Phase = IccMemoir.MemoirPhase.ApprovedByGuide;
 		memoir.UpdatedAt = DateTimeOffset.Now;
-		_ = this._dbContext.Memoirs!.Update(memoir);
+		_ = this._dbContext.IccMemoirs!.Update(memoir);
 		_ = await this._dbContext.SaveChangesAsync();
 		this.TempData["SuccessMessage"] = "La propuesta ha sido aprobada correctamente.";
 		return this.RedirectToAction("List", "Proposal", new { area = "University" });
@@ -937,17 +940,17 @@ public class ProposalController : Controller {
 			this.TempData["ErrorMessage"] = "Error al obtener al estudiante";
 			return this.RedirectToAction("Students", "Proposal", new { area = "University" });
 		}
-		var memoir = await this._dbContext.Memoirs!
+		var memoir = await this._dbContext.IccMemoirs!
 			.Where(m => m.Owner == user
-				&& m.Phase != Phase.SentToCommittee
-				&& m.Phase != Phase.RejectedByCommittee && m.Phase != Phase.ApprovedByCommittee
-				&& m.Phase != Phase.InProgress && m.Phase != Phase.Abandoned
-				&& m.Phase != Phase.Completed && m.Phase != Phase.RejectedByDirector
-				&& m.Phase != Phase.ApprovedByDirector)
+				&& m.Phase != IccMemoir.MemoirPhase.SentToCommittee
+				&& m.Phase != IccMemoir.MemoirPhase.RejectedByCommittee && m.Phase != IccMemoir.MemoirPhase.ApprovedByCommittee
+				&& m.Phase != IccMemoir.MemoirPhase.InProgress && m.Phase != IccMemoir.MemoirPhase.Abandoned
+				&& m.Phase != IccMemoir.MemoirPhase.Completed && m.Phase != IccMemoir.MemoirPhase.RejectedByDirector
+				&& m.Phase != IccMemoir.MemoirPhase.ApprovedByDirector)
 			.Include(m => m.Candidates)
 			.Where(m => m.Candidates!.Any(s => s!.Id == memoristId)).AsNoTracking()
 			.FirstOrDefaultAsync(m => m.Id == memoirId
-				&& m.Phase == Phase.PublishedByGuide);
+				&& m.Phase == IccMemoir.MemoirPhase.PublishedByGuide);
 		if (memoir is null) {
 			this.TempData["ErrorMessage"] = "Error al obtener la propuesta.";
 			return this.RedirectToAction("Students", "Proposal", new { area = "University" });
@@ -972,17 +975,17 @@ public class ProposalController : Controller {
 			this.TempData["ErrorMessage"] = "Tu cuenta está desactivada.";
 			return this.RedirectToAction("Index", "Home", new { area = "" });
 		}
-		var memoir = await this._dbContext.Memoirs!
+		var memoir = await this._dbContext.IccMemoirs!
 			.Where(m => m.Owner == user
-				&& m.Phase != Phase.SentToCommittee
-				&& m.Phase != Phase.RejectedByCommittee && m.Phase != Phase.ApprovedByCommittee
-				&& m.Phase != Phase.InProgress && m.Phase != Phase.Abandoned
-				&& m.Phase != Phase.Completed && m.Phase != Phase.RejectedByDirector
-				&& m.Phase != Phase.ApprovedByDirector)
+				&& m.Phase != IccMemoir.MemoirPhase.SentToCommittee
+				&& m.Phase != IccMemoir.MemoirPhase.RejectedByCommittee && m.Phase != IccMemoir.MemoirPhase.ApprovedByCommittee
+				&& m.Phase != IccMemoir.MemoirPhase.InProgress && m.Phase != IccMemoir.MemoirPhase.Abandoned
+				&& m.Phase != IccMemoir.MemoirPhase.Completed && m.Phase != IccMemoir.MemoirPhase.RejectedByDirector
+				&& m.Phase != IccMemoir.MemoirPhase.ApprovedByDirector)
 			.Include(m => m.Candidates)
 			.Where(m => m.Candidates!.Any(s => s!.Id == input.MemoristId))
 			.FirstOrDefaultAsync(m => m.Id == input.Id
-				&& m.Phase == Phase.PublishedByGuide);
+				&& m.Phase == IccMemoir.MemoirPhase.PublishedByGuide);
 		if (memoir is null) {
 			this.TempData["ErrorMessage"] = "Error al obtener la propuesta.";
 			return this.RedirectToAction("Index", "Proposal", new { area = "University" });
@@ -997,10 +1000,10 @@ public class ProposalController : Controller {
 			return this.RedirectToAction("Index", "Proposal", new { area = "University" });
 		}
 		_ = memoir.Candidates!.Remove(student);
-		memoir.Phase = Phase.ReadyByGuide;
+		memoir.Phase = IccMemoir.MemoirPhase.ReadyByGuide;
 		memoir.Memorist = student;
 		memoir.UpdatedAt = DateTimeOffset.Now;
-		_ = this._dbContext.Memoirs!.Update(memoir);
+		_ = this._dbContext.IccMemoirs!.Update(memoir);
 		_ = await this._dbContext.SaveChangesAsync();
 		this.TempData["SuccessMessage"] = "El estudiante ha sido seleccionado a la propuesta correctamente.";
 		return this.RedirectToAction("Index", "Proposal", new { area = "University" });
@@ -1015,27 +1018,27 @@ public class ProposalController : Controller {
 		}
 		IccMemoir? memoir = null!;
 		if (this.User.IsInRole("Student")) {
-			memoir = await this._dbContext.Memoirs!
+			memoir = await this._dbContext.IccMemoirs!
 				.Include(m => m.Memorist)
 				.Where(m => m.Memorist!.Id == user.Id
-					&& m.Phase != Phase.SentToCommittee
-					&& m.Phase != Phase.RejectedByCommittee && m.Phase != Phase.ApprovedByCommittee
-					&& m.Phase != Phase.InProgress && m.Phase != Phase.Abandoned
-					&& m.Phase != Phase.Completed && m.Phase != Phase.RejectedByDirector
-					&& m.Phase != Phase.ApprovedByDirector).AsNoTracking()
+					&& m.Phase != IccMemoir.MemoirPhase.SentToCommittee
+					&& m.Phase != IccMemoir.MemoirPhase.RejectedByCommittee && m.Phase != IccMemoir.MemoirPhase.ApprovedByCommittee
+					&& m.Phase != IccMemoir.MemoirPhase.InProgress && m.Phase != IccMemoir.MemoirPhase.Abandoned
+					&& m.Phase != IccMemoir.MemoirPhase.Completed && m.Phase != IccMemoir.MemoirPhase.RejectedByDirector
+					&& m.Phase != IccMemoir.MemoirPhase.ApprovedByDirector).AsNoTracking()
 				.FirstOrDefaultAsync(m => m.Id == id
-					&& m.Phase == Phase.ApprovedByGuide);
+					&& m.Phase == IccMemoir.MemoirPhase.ApprovedByGuide);
 		} else if (this.User.IsInRole("Teacher")) {
-			memoir = await this._dbContext.Memoirs!
+			memoir = await this._dbContext.IccMemoirs!
 				.Include(m => m.Guide)
 				.Where(m => m.Guide!.Id == user.Id
-					&& m.Phase != Phase.SentToCommittee
-					&& m.Phase != Phase.RejectedByCommittee && m.Phase != Phase.ApprovedByCommittee
-					&& m.Phase != Phase.InProgress && m.Phase != Phase.Abandoned
-					&& m.Phase != Phase.Completed && m.Phase != Phase.RejectedByDirector
-					&& m.Phase != Phase.ApprovedByDirector).AsNoTracking()
+					&& m.Phase != IccMemoir.MemoirPhase.SentToCommittee
+					&& m.Phase != IccMemoir.MemoirPhase.RejectedByCommittee && m.Phase != IccMemoir.MemoirPhase.ApprovedByCommittee
+					&& m.Phase != IccMemoir.MemoirPhase.InProgress && m.Phase != IccMemoir.MemoirPhase.Abandoned
+					&& m.Phase != IccMemoir.MemoirPhase.Completed && m.Phase != IccMemoir.MemoirPhase.RejectedByDirector
+					&& m.Phase != IccMemoir.MemoirPhase.ApprovedByDirector).AsNoTracking()
 				.FirstOrDefaultAsync(m => m.Id == id
-					&& m.Phase == Phase.ReadyByGuide);
+					&& m.Phase == IccMemoir.MemoirPhase.ReadyByGuide);
 		}
 		if (memoir is null) {
 			this.TempData["ErrorMessage"] = "Error al obtener la propuesta";
@@ -1057,35 +1060,35 @@ public class ProposalController : Controller {
 		}
 		IccMemoir? memoir = null!;
 		if (this.User.IsInRole("Student")) {
-			memoir = await this._dbContext.Memoirs!
+			memoir = await this._dbContext.IccMemoirs!
 				.Include(m => m.Memorist)
 				.Where(m => m.Memorist!.Id == user.Id
-					&& m.Phase != Phase.SentToCommittee
-					&& m.Phase != Phase.RejectedByCommittee && m.Phase != Phase.ApprovedByCommittee
-					&& m.Phase != Phase.InProgress && m.Phase != Phase.Abandoned
-					&& m.Phase != Phase.Completed && m.Phase != Phase.RejectedByDirector
-					&& m.Phase != Phase.ApprovedByDirector)
+					&& m.Phase != IccMemoir.MemoirPhase.SentToCommittee
+					&& m.Phase != IccMemoir.MemoirPhase.RejectedByCommittee && m.Phase != IccMemoir.MemoirPhase.ApprovedByCommittee
+					&& m.Phase != IccMemoir.MemoirPhase.InProgress && m.Phase != IccMemoir.MemoirPhase.Abandoned
+					&& m.Phase != IccMemoir.MemoirPhase.Completed && m.Phase != IccMemoir.MemoirPhase.RejectedByDirector
+					&& m.Phase != IccMemoir.MemoirPhase.ApprovedByDirector)
 				.FirstOrDefaultAsync(m => m.Id == input.Id
-					&& m.Phase == Phase.ApprovedByGuide);
+					&& m.Phase == IccMemoir.MemoirPhase.ApprovedByGuide);
 		} else if (this.User.IsInRole("Teacher")) {
-			memoir = await this._dbContext.Memoirs!
+			memoir = await this._dbContext.IccMemoirs!
 				.Include(m => m.Guide)
 				.Where(m => m.Guide!.Id == user.Id
-					&& m.Phase != Phase.SentToCommittee
-					&& m.Phase != Phase.RejectedByCommittee && m.Phase != Phase.ApprovedByCommittee
-					&& m.Phase != Phase.InProgress && m.Phase != Phase.Abandoned
-					&& m.Phase != Phase.Completed && m.Phase != Phase.RejectedByDirector
-					&& m.Phase != Phase.ApprovedByDirector)
+					&& m.Phase != IccMemoir.MemoirPhase.SentToCommittee
+					&& m.Phase != IccMemoir.MemoirPhase.RejectedByCommittee && m.Phase != IccMemoir.MemoirPhase.ApprovedByCommittee
+					&& m.Phase != IccMemoir.MemoirPhase.InProgress && m.Phase != IccMemoir.MemoirPhase.Abandoned
+					&& m.Phase != IccMemoir.MemoirPhase.Completed && m.Phase != IccMemoir.MemoirPhase.RejectedByDirector
+					&& m.Phase != IccMemoir.MemoirPhase.ApprovedByDirector)
 				.FirstOrDefaultAsync(m => m.Id == input.Id
-					&& m.Phase == Phase.ReadyByGuide);
+					&& m.Phase == IccMemoir.MemoirPhase.ReadyByGuide);
 		}
 		if (memoir is null) {
 			this.TempData["ErrorMessage"] = "Error al obtener la propuesta";
 			return this.RedirectToAction("List", "Proposal", new { area = "University" });
 		}
-		memoir.Phase = Phase.SentToCommittee;
+		memoir.Phase = IccMemoir.MemoirPhase.SentToCommittee;
 		memoir.UpdatedAt = DateTimeOffset.Now;
-		_ = this._dbContext.Memoirs!.Update(memoir);
+		_ = this._dbContext.IccMemoirs!.Update(memoir);
 		_ = await this._dbContext.SaveChangesAsync();
 		this.TempData["SuccessMessage"] = "Tu propuesta ha sido enviada correctamente.";
 		return this.RedirectToAction("Index", "Request", new { area = "University" });

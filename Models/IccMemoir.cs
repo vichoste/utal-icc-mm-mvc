@@ -9,10 +9,38 @@ public class IccMemoir {
 	/// Memoir phase.
 	/// </summary>
 	public enum MemoirPhase {
+		/// <summary>
+		/// Draft not visible to targets.
+		/// </summary>
 		Draft,
+		/// <summary>
+		/// Visible or published to targets.
+		/// </summary>
 		Visible,
-		Accepted,
-		Rejected
+		/// <summary>
+		/// Memoir rejected by the guide teacher.
+		/// </summary>
+		RejectedByGuide,
+		/// <summary>
+		/// Memoir approved by the guide teacher.
+		/// </summary>
+		ApprovedByGuide,
+		/// <summary>
+		/// Memoir ready to be sent to commitee.
+		/// </summary>
+		ReadyByGuide,
+		/// <summary>
+		/// Memoir sent to commitee.
+		/// </summary>
+		SentToCommittee,
+		/// <summary>
+		/// Memoir rejected by the commitee.
+		/// </summary>
+		RejectedByCommittee,
+		/// <summary>
+		/// Memoir approved by the commitee.
+		/// </summary>
+		ApprovedByCommittee
 	}
 	/// <summary>
 	/// Memoir (ID).
