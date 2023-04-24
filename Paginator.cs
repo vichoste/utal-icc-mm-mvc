@@ -2,7 +2,7 @@
 
 using Utal.Icc.Mm.Mvc.Models;
 
-namespace Utal.Icc.Sgm;
+namespace Utal.Icc.Mm.Mvc;
 
 public class Paginator<T> : List<T> where T : ViewModel {
 	public int PageIndex { get; protected set; }

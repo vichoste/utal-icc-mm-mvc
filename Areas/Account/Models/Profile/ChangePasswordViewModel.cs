@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Utal.Icc.Mm.Mvc.Areas.Account.ViewModels.Profile;
+namespace Utal.Icc.Mm.Mvc.Areas.Account.Models.Profile;
 
 public class ChangePasswordViewModel {
 	[DataType(DataType.Password), Display(Name = "Contraseña actual"), StringLength(64, ErrorMessage = "La contraseña debe tener un mínimo de 6 carácteres", MinimumLength = 6)]

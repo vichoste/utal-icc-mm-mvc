@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-using Utal.Icc.Mm.Mvc.Areas.Account.ViewModels.Profile;
+using Utal.Icc.Mm.Mvc.Areas.Account.Models.Profile;
 using Utal.Icc.Mm.Mvc.Models;
 
 namespace Utal.Icc.Mm.Mvc.Areas.Account.Controllers;
@@ -64,7 +64,7 @@ public class ProfileController : Controller {
 		var output = new IccStudentViewModel {
 			UniversityId = user.UniversityId,
 			RemainingCourses = user.RemainingCourses,
-			IsDoingThePractice = user.IsDoingThePractice,
+			CurrentPractice = user.IsDoingThePractice,
 			IsWorking = user.IsWorking
 		};
 		return this.View(output);
@@ -77,14 +77,14 @@ public class ProfileController : Controller {
 			return this.RedirectToAction("Index", "Home", new { area = string.Empty });
 		}
 		user.RemainingCourses = input.RemainingCourses;
-		user.IsDoingThePractice = input.IsDoingThePractice;
+		user.IsDoingThePractice = input.CurrentPractice;
 		user.IsWorking = input.IsWorking;
 		user.UpdatedAt = DateTimeOffset.Now;
 		_ = await this._userManager.UpdateAsync(user);
 		var output = new IccStudentViewModel {
 			UniversityId = user.UniversityId,
 			RemainingCourses = user.RemainingCourses,
-			IsDoingThePractice = user.IsDoingThePractice,
+			CurrentPractice = user.IsDoingThePractice,
 			IsWorking = user.IsWorking
 		};
 		this.ViewBag.SuccessMessage = "Has actualizado tu perfil correctamente.";

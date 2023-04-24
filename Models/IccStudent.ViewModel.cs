@@ -28,7 +28,7 @@ public class IccStudentViewModel : IccUserViewModel {
 	/// </summary>
 	/// </summary>
 	[Display(Name = "En práctica")]
-	public int IsDoingThePractice { get; set; }
+	public int CurrentPractice { get; set; }
 	/// <summary>
 	/// Checks if the student is working.
 	/// </summary>

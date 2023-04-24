@@ -5,16 +5,16 @@ using Microsoft.EntityFrameworkCore;
 
 using Utal.Icc.Mm.Mvc.Data;
 using Utal.Icc.Mm.Mvc.Models;
-using Utal.Icc.Mm.Mvc.ViewModels;
+using Utal.Icc.Mm.Mvc.Models;
 
 namespace Utal.Icc.Mm.Mvc.Areas.University.Controllers;
 
 [Area("University"), Authorize]
 public class RequestController : Controller {
-	private readonly ApplicationDbContext _dbContext;
+	private readonly IccDbContext _dbContext;
 	private readonly UserManager<ApplicationUser> _userManager;
 
-	public RequestController(ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager) {
+	public RequestController(IccDbContext dbContext, UserManager<ApplicationUser> userManager) {
 		this._dbContext = dbContext;
 		this._userManager = userManager;
 	}

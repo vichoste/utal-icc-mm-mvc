@@ -1,9 +1,14 @@
-﻿@using Utal.Icc.Mm.Mvc.ViewModels
+﻿@using Utal.Icc.Mm.Mvc.Models
 
-@model ApplicationUserViewModel
+@model IccStudentViewModel
 
 @{
 	this.ViewData["Title"] = "Mi perfil de estudiante";
+	var practiceOptions = new List<SelectListItem> {
+		new SelectListItem { Text = "Actualmente no está realizando práctica", Value = "0" },
+		new SelectListItem { Text = "Realizando la primera práctica", Value = "1" },
+		new SelectListItem { Text = "Realizando la segunda práctica", Value = "2" }
+	};
 }
 
 <div class="container">
@@ -26,10 +31,9 @@
 									@this.Html.TextBoxFor(m => m.RemainingCourses, new { @class = "form-control" })
 								</div>
 								<div class="form-check mb-3">
-									@this.Html.LabelFor(m => m.IsDoingThePractice, new { @class = "form-check-label"
-								})
-									@this.Html.CheckBoxFor(m => m.IsDoingThePractice, new { @class =
-								"form-check-input" })
+									@this.Html.LabelFor(m => m.CurrentPractice, new { @class = "form-label" })
+									@this.Html.TextBoxFor(m => m.CurrentPractice, new { @class = "form-control", @type = "number", @min = "0", @max = "2", @required = "required" })
+									<div class="invalid-feedback">Por favor ingrese un número de cursos válido.</div>
 								</div>
 								<div class="form-check mb-3">
 									@this.Html.LabelFor(m => m.IsWorking, new { @class = "form-check-label" })

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Utal.Icc.Mm.Mvc.Areas.Account.ViewModels.SignIn;
+namespace Utal.Icc.Mm.Mvc.Areas.Account.Models.SignIn;
 
 public class IndexViewModel {
 	[DataType(DataType.EmailAddress), Display(Name = "E-mail"), EmailAddress]

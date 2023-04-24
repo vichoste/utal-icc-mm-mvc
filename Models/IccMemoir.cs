@@ -26,6 +26,8 @@ public class IccMemoir {
 	/// Memoir description.
 	/// </summary>
 	public string Description { get; set; } = string.Empty;
+	/// <inheritdoc cref="MemoirPhase"></inheritdoc>
+	public MemoirPhase Phase { get; set; }
 	/// <summary>
 	/// Memoir creation timestamp.
 	/// </summary>

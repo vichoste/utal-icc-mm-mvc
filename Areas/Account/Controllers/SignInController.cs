@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-using Utal.Icc.Mm.Mvc.Areas.Account.ViewModels.SignIn;
+using Utal.Icc.Mm.Mvc.Areas.Account.Models.SignIn;
 using Utal.Icc.Mm.Mvc.Models;
 
 namespace Utal.Icc.Mm.Mvc.Areas.Account.Controllers;

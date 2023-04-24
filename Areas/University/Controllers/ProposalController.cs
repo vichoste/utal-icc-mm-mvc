@@ -6,21 +6,20 @@ using Microsoft.EntityFrameworkCore;
 
 using Utal.Icc.Mm.Mvc.Data;
 using Utal.Icc.Mm.Mvc.Models;
-using Utal.Icc.Mm.Mvc.ViewModels;
 
 namespace Utal.Icc.Mm.Mvc.Areas.University.Controllers;
 
 [Area("University"), Authorize]
 public class ProposalController : Controller {
-	private readonly ApplicationDbContext _dbContext;
-	private readonly UserManager<ApplicationUser> _userManager;
+	private readonly IccDbContext _dbContext;
+	private readonly UserManager<IccUser> _userManager;
 
-	public ProposalController(ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager) {
+	public ProposalController(IccDbContext dbContext, UserManager<IccUser> userManager) {
 		this._dbContext = dbContext;
 		this._userManager = userManager;
 	}
 
-	private async Task PopulateAssistants(ApplicationUser guide) {
+	private async Task PopulateAssistants(IccUser guide) {
 		var assistants = (
 			await this._userManager.GetUsersInRoleAsync("Assistant"))
 				.Where(u => u != guide && !u.IsDeactivated)
@@ -52,21 +51,24 @@ public class ProposalController : Controller {
 		this.ViewData["CurrentFilter"] = searchString;
 		var users = (await this._userManager.GetUsersInRoleAsync("Guide"))
 			.Where(u => !u.IsDeactivated)
-				.Select(u => new ApplicationUserViewModel {
-					Id = u.Id,
-					FirstName = u.FirstName,
-					LastName = u.LastName,
-					Rut = u.Rut,
-					Email = u.Email,
-					Specialization = u.Specialization,
+				.Select(u => {
+					var teacher = u as IccTeacher;
+					return new IccTeacherViewModel {
+						Id = teacher!.Id,
+						FirstName = teacher.FirstName,
+						LastName = teacher.LastName,
+						Rut = teacher.Rut,
+						Email = teacher.Email,
+						Specialization = teacher.Specialization,
+					};
 				}
 		).AsQueryable();
-		var paginator = Paginator<ApplicationUserViewModel>.Create(users, pageNumber ?? 1, 6);
+		var paginator = Paginator<IccUserViewModel>.Create(users, pageNumber ?? 1, 6);
 		if (!string.IsNullOrEmpty(sortOrder)) {
-			paginator = Paginator<ApplicationUserViewModel>.Sort(paginator.AsQueryable(), sortOrder, pageNumber ?? 1, 6, parameters);
+			paginator = Paginator<IccUserViewModel>.Sort(paginator.AsQueryable(), sortOrder, pageNumber ?? 1, 6, parameters);
 		}
 		if (!string.IsNullOrEmpty(searchString)) {
-			paginator = Paginator<ApplicationUserViewModel>.Filter(paginator.AsQueryable(), searchString, pageNumber ?? 1, 6, parameters);
+			paginator = Paginator<IccUserViewModel>.Filter(paginator.AsQueryable(), searchString, pageNumber ?? 1, 6, parameters);
 		}
 		return this.View(paginator);
 	}
@@ -78,12 +80,12 @@ public class ProposalController : Controller {
 			this.TempData["ErrorMessage"] = "Tu cuenta está desactivada.";
 			return this.RedirectToAction("Index", "Home", new { area = "" });
 		}
-		var memoir = this._dbContext.Memoirs!
-			.Include(m => m.Owner)
-			.Include(m => m.Candidates).AsNoTracking()
+		var memoir = this._dbContext.IccTeacherMemoirs!
+			.Include(m => m.GuideTeacher)
+			.Include(m => m.Candidates)
 			.FirstOrDefault(m => m.Id == id
-				&& m.Owner!.Id == user.Id
-				&& m.Phase == Phase.PublishedByGuide);
+				&& m.GuideTeacher!.Id == user.Id
+				&& m.Phase == IccMemoir.MemoirPhase.Visible);
 		this.ViewData["Memoir"] = memoir;
 		var parameters = new[] { "FirstName", "LastName", "Email" };
 		foreach (var parameter in parameters) {
@@ -96,18 +98,18 @@ public class ProposalController : Controller {
 			searchString = currentFilter;
 		}
 		this.ViewData["CurrentFilter"] = searchString;
-		var candidates = memoir!.Candidates!.Where(u => !u!.IsDeactivated).Select(u => new ApplicationUserViewModel {
+		var candidates = memoir!.Candidates!.Where(u => !u!.IsDeactivated).Select(u => new IccUserViewModel {
 			Id = u!.Id,
 			FirstName = u.FirstName,
 			LastName = u.LastName,
 			Email = u.Email,
 		}).AsQueryable();
-		var paginator = Paginator<ApplicationUserViewModel>.Create(candidates, pageNumber ?? 1, 10);
+		var paginator = Paginator<IccUserViewModel>.Create(candidates, pageNumber ?? 1, 10);
 		if (!string.IsNullOrEmpty(sortOrder)) {
-			paginator = Paginator<ApplicationUserViewModel>.Sort(paginator.AsQueryable(), sortOrder, pageNumber ?? 1, 6, parameters);
+			paginator = Paginator<IccUserViewModel>.Sort(paginator.AsQueryable(), sortOrder, pageNumber ?? 1, 6, parameters);
 		}
 		if (!string.IsNullOrEmpty(searchString)) {
-			paginator = Paginator<ApplicationUserViewModel>.Filter(paginator.AsQueryable(), searchString, pageNumber ?? 1, 6, parameters);
+			paginator = Paginator<IccUserViewModel>.Filter(paginator.AsQueryable(), searchString, pageNumber ?? 1, 6, parameters);
 		}
 		return this.View(paginator);
 	}
@@ -135,7 +137,7 @@ public class ProposalController : Controller {
 			searchString = currentFilter;
 		}
 		this.ViewData["CurrentFilter"] = searchString;
-		IQueryable<MemoirViewModel> memoirs = null!;
+		IQueryable<IccMemoirViewModel> memoirs = null!;
 		if (this.User.IsInRole("Student")) {
 			memoirs = this._dbContext.Memoirs!
 				.Include(m => m.Owner)
@@ -145,7 +147,7 @@ public class ProposalController : Controller {
 					&& m.Phase != Phase.Abandoned && m.Phase != Phase.Completed
 					&& m.Phase != Phase.RejectedByDirector && m.Phase != Phase.ApprovedByDirector)
 				.Include(m => m.Guide).AsNoTracking()
-				.Select(m => new MemoirViewModel {
+				.Select(m => new IccMemoirViewModel {
 					Id = m.Id,
 					Title = m.Title,
 					Phase = m.Phase.ToString(),
@@ -162,7 +164,7 @@ public class ProposalController : Controller {
 					&& m.Phase != Phase.RejectedByDirector && m.Phase != Phase.ApprovedByDirector)
 				.Include(m => m.Guide)
 				.Include(m => m.Memorist).AsNoTracking()
-				.Select(m => new MemoirViewModel {
+				.Select(m => new IccMemoirViewModel {
 					Id = m.Id,
 					Title = m.Title,
 					Phase = m.Phase.ToString(),
@@ -170,12 +172,12 @@ public class ProposalController : Controller {
 					UpdatedAt = m.UpdatedAt
 				});
 		}
-		var paginator = Paginator<MemoirViewModel>.Create(memoirs, pageNumber ?? 1, 6);
+		var paginator = Paginator<IccMemoirViewModel>.Create(memoirs, pageNumber ?? 1, 6);
 		if (!string.IsNullOrEmpty(sortOrder)) {
-			paginator = Paginator<MemoirViewModel>.Sort(paginator.AsQueryable(), sortOrder, pageNumber ?? 1, 6, parameters);
+			paginator = Paginator<IccMemoirViewModel>.Sort(paginator.AsQueryable(), sortOrder, pageNumber ?? 1, 6, parameters);
 		}
 		if (!string.IsNullOrEmpty(searchString)) {
-			paginator = Paginator<MemoirViewModel>.Filter(paginator.AsQueryable(), searchString, pageNumber ?? 1, 6, parameters);
+			paginator = Paginator<IccMemoirViewModel>.Filter(paginator.AsQueryable(), searchString, pageNumber ?? 1, 6, parameters);
 		}
 		return this.View(paginator);
 	}
@@ -203,12 +205,12 @@ public class ProposalController : Controller {
 			searchString = currentFilter;
 		}
 		this.ViewData["CurrentFilter"] = searchString;
-		IQueryable<MemoirViewModel> memoirs = null!;
+		IQueryable<IccMemoirViewModel> memoirs = null!;
 		if (this.User.IsInRole("Student")) {
 			memoirs = this._dbContext.Memoirs!
 				.Where(m => m.Phase == Phase.PublishedByGuide)
 				.Include(m => m.Guide).AsNoTracking()
-				.Select(m => new MemoirViewModel {
+				.Select(m => new IccMemoirViewModel {
 					Id = m.Id,
 					Title = m.Title,
 					Phase = m.Phase.ToString(),
@@ -221,7 +223,7 @@ public class ProposalController : Controller {
 				.Where(m => m.Guide!.Id == user.Id
 					&& (m.Phase == Phase.SentToGuide || m.Phase == Phase.ApprovedByGuide))
 				.Include(m => m.Memorist).AsNoTracking()
-				.Select(m => new MemoirViewModel {
+				.Select(m => new IccMemoirViewModel {
 					Id = m.Id,
 					Title = m.Title,
 					Phase = m.Phase.ToString(),
@@ -229,12 +231,12 @@ public class ProposalController : Controller {
 					UpdatedAt = m.UpdatedAt
 				});
 		}
-		var paginator = Paginator<MemoirViewModel>.Create(memoirs, pageNumber ?? 1, 6);
+		var paginator = Paginator<IccMemoirViewModel>.Create(memoirs, pageNumber ?? 1, 6);
 		if (!string.IsNullOrEmpty(sortOrder)) {
-			paginator = Paginator<MemoirViewModel>.Sort(paginator.AsQueryable(), sortOrder, pageNumber ?? 1, 6, parameters);
+			paginator = Paginator<IccMemoirViewModel>.Sort(paginator.AsQueryable(), sortOrder, pageNumber ?? 1, 6, parameters);
 		}
 		if (!string.IsNullOrEmpty(searchString)) {
-			paginator = Paginator<MemoirViewModel>.Filter(paginator.AsQueryable(), searchString, pageNumber ?? 1, 6, parameters);
+			paginator = Paginator<IccMemoirViewModel>.Filter(paginator.AsQueryable(), searchString, pageNumber ?? 1, 6, parameters);
 		}
 		return this.View(paginator);
 	}
@@ -266,7 +268,7 @@ public class ProposalController : Controller {
 				&& m.Phase != Phase.Abandoned && m.Phase != Phase.Completed
 				&& m.Phase != Phase.RejectedByDirector && m.Phase != Phase.ApprovedByDirector)
 			.Include(m => m.Guide).AsNoTracking()
-			.Select(m => new MemoirViewModel {
+			.Select(m => new IccMemoirViewModel {
 				Id = m.Id,
 				Title = m.Title,
 				Phase = m.Phase.ToString(),
@@ -274,12 +276,12 @@ public class ProposalController : Controller {
 				UpdatedAt = m.UpdatedAt
 			}
 		);
-		var paginator = Paginator<MemoirViewModel>.Create(memoirs, pageNumber ?? 1, 6);
+		var paginator = Paginator<IccMemoirViewModel>.Create(memoirs, pageNumber ?? 1, 6);
 		if (!string.IsNullOrEmpty(sortOrder)) {
-			paginator = Paginator<MemoirViewModel>.Sort(paginator.AsQueryable(), sortOrder, pageNumber ?? 1, 6, parameters);
+			paginator = Paginator<IccMemoirViewModel>.Sort(paginator.AsQueryable(), sortOrder, pageNumber ?? 1, 6, parameters);
 		}
 		if (!string.IsNullOrEmpty(searchString)) {
-			paginator = Paginator<MemoirViewModel>.Filter(paginator.AsQueryable(), searchString, pageNumber ?? 1, 6, parameters);
+			paginator = Paginator<IccMemoirViewModel>.Filter(paginator.AsQueryable(), searchString, pageNumber ?? 1, 6, parameters);
 		}
 		return this.View(paginator);
 	}
@@ -292,7 +294,7 @@ public class ProposalController : Controller {
 			return this.RedirectToAction("Index", "Home", new { area = "" });
 		}
 		await this.PopulateAssistants(user!);
-		return this.View(new MemoirViewModel());
+		return this.View(new IccMemoirViewModel());
 	}
 
 	[Authorize(Roles = "Student")]
@@ -312,7 +314,7 @@ public class ProposalController : Controller {
 			return this.RedirectToAction("Guide", "Proposal", new { area = "University" });
 		}
 		await this.PopulateAssistants(guide);
-		var output = new MemoirViewModel {
+		var output = new IccMemoirViewModel {
 			GuideId = guide.Id,
 			GuideName = $"{guide.FirstName} {guide.LastName}",
 			GuideEmail = guide.Email,
@@ -324,13 +326,13 @@ public class ProposalController : Controller {
 	}
 
 	[Authorize(Roles = "Student,Guide"), HttpPost, ValidateAntiForgeryToken]
-	public async Task<IActionResult> Create([FromForm] MemoirViewModel input) {
+	public async Task<IActionResult> Create([FromForm] IccMemoirViewModel input) {
 		var user = await this._userManager.GetUserAsync(this.User);
 		if (user!.IsDeactivated) {
 			this.TempData["ErrorMessage"] = "Tu cuenta está desactivada.";
 			return this.RedirectToAction("Index", "Home", new { area = "" });
 		}
-		ApplicationUser? guide = null!;
+		IccUser? guide = null!;
 		if (this.User.IsInRole("Student")) {
 			guide = (await this._userManager.FindByIdAsync(input.GuideId!))!;
 			if (guide is null) {
@@ -375,7 +377,7 @@ public class ProposalController : Controller {
 			this.TempData["ErrorMessage"] = "Tu cuenta está desactivada.";
 			return this.RedirectToAction("Index", "Home", new { area = "" });
 		}
-		Memoir? memoir = null!;
+		IccMemoir? memoir = null!;
 		if (this.User.IsInRole("Student")) {
 			memoir = await this._dbContext.Memoirs!
 				.Include(m => m.Owner)
@@ -408,7 +410,7 @@ public class ProposalController : Controller {
 			return this.RedirectToAction("Index", "Proposal", new { area = "University" });
 		}
 		await this.PopulateAssistants(memoir.Guide!);
-		var output = new MemoirViewModel {
+		var output = new IccMemoirViewModel {
 			Id = memoir.Id,
 			Title = memoir.Title,
 			Description = memoir.Description,
@@ -430,13 +432,13 @@ public class ProposalController : Controller {
 	}
 
 	[Authorize(Roles = "Student,Guide"), HttpPost, ValidateAntiForgeryToken]
-	public async Task<IActionResult> Edit([FromForm] MemoirViewModel input) {
+	public async Task<IActionResult> Edit([FromForm] IccMemoirViewModel input) {
 		var user = await this._userManager.GetUserAsync(this.User);
 		if (user!.IsDeactivated) {
 			this.TempData["ErrorMessage"] = "Tu cuenta está desactivada.";
 			return this.RedirectToAction("Index", "Home", new { area = "" });
 		}
-		Memoir? memoir = null!;
+		IccMemoir? memoir = null!;
 		if (this.User.IsInRole("Student")) {
 			memoir = await this._dbContext.Memoirs!
 				.Include(m => m.Owner)
@@ -491,7 +493,7 @@ public class ProposalController : Controller {
 			_ = await this._dbContext.SaveChangesAsync();
 		}
 		await this.PopulateAssistants(memoir.Guide!);
-		var output = new MemoirViewModel {
+		var output = new IccMemoirViewModel {
 			Id = memoir.Id,
 			Title = memoir.Title,
 			Description = memoir.Description,
@@ -520,7 +522,7 @@ public class ProposalController : Controller {
 			this.TempData["ErrorMessage"] = "Tu cuenta está desactivada.";
 			return this.RedirectToAction("Index", "Home", new { area = "" });
 		}
-		Memoir? memoir = null!;
+		IccMemoir? memoir = null!;
 		if (this.User.IsInRole("Student")) {
 			memoir = await this._dbContext.Memoirs!
 				.Include(m => m.Owner).AsNoTracking()
@@ -538,7 +540,7 @@ public class ProposalController : Controller {
 			this.TempData["ErrorMessage"] = "Error al obtener la propuesta";
 			return this.RedirectToAction("Index", "Proposal", new { area = "University" });
 		}
-		var output = new MemoirViewModel {
+		var output = new IccMemoirViewModel {
 			Id = id,
 			Title = memoir.Title,
 		};
@@ -546,13 +548,13 @@ public class ProposalController : Controller {
 	}
 
 	[Authorize(Roles = "Student,Guide"), HttpPost, ValidateAntiForgeryToken]
-	public async Task<IActionResult> Delete([FromForm] MemoirViewModel input) {
+	public async Task<IActionResult> Delete([FromForm] IccMemoirViewModel input) {
 		var user = await this._userManager.GetUserAsync(this.User);
 		if (user!.IsDeactivated) {
 			this.TempData["ErrorMessage"] = "Tu cuenta está desactivada.";
 			return this.RedirectToAction("Index", "Home", new { area = "" });
 		}
-		Memoir? memoir = null!;
+		IccMemoir? memoir = null!;
 		if (this.User.IsInRole("Student")) {
 			memoir = await this._dbContext.Memoirs!
 				.Include(m => m.Owner)
@@ -583,7 +585,7 @@ public class ProposalController : Controller {
 			this.TempData["ErrorMessage"] = "Tu cuenta está desactivada.";
 			return this.RedirectToAction("Index", "Home", new { area = "" });
 		}
-		Memoir? memoir = null!;
+		IccMemoir? memoir = null!;
 		if (this.User.IsInRole("Student")) {
 			memoir = await this._dbContext.Memoirs!
 				.Include(m => m.Owner)
@@ -613,7 +615,7 @@ public class ProposalController : Controller {
 			this.TempData["ErrorMessage"] = "El profesor guía está desactivado.";
 			return this.RedirectToAction("Index", "Proposal", new { area = "University" });
 		}
-		var output = new MemoirViewModel {
+		var output = new IccMemoirViewModel {
 			Id = id,
 			Title = memoir.Title,
 		};
@@ -624,13 +626,13 @@ public class ProposalController : Controller {
 	}
 
 	[Authorize(Roles = "Student,Guide"), HttpPost, ValidateAntiForgeryToken]
-	public async Task<IActionResult> Send([FromForm] MemoirViewModel input) {
+	public async Task<IActionResult> Send([FromForm] IccMemoirViewModel input) {
 		var user = await this._userManager.GetUserAsync(this.User);
 		if (user!.IsDeactivated) {
 			this.TempData["ErrorMessage"] = "Tu cuenta está desactivada.";
 			return this.RedirectToAction("Index", "Home", new { area = "" });
 		}
-		Memoir? memoir = null!;
+		IccMemoir? memoir = null!;
 		if (this.User.IsInRole("Student")) {
 			memoir = await this._dbContext.Memoirs!
 				.Include(m => m.Owner)
@@ -685,7 +687,7 @@ public class ProposalController : Controller {
 			this.TempData["ErrorMessage"] = "Tu cuenta está desactivada.";
 			return this.RedirectToAction("Index", "Home", new { area = "" });
 		}
-		Memoir? memoir = null!;
+		IccMemoir? memoir = null!;
 		if (this.User.IsInRole("Student")) {
 			memoir = await this._dbContext.Memoirs!
 				.Where(m => m.Phase != Phase.SentToCommittee
@@ -714,7 +716,7 @@ public class ProposalController : Controller {
 			this.TempData["ErrorMessage"] = "Error al obtener la propuesta";
 			return this.RedirectToAction("Index", "Proposal", new { area = "University" });
 		}
-		var output = new MemoirViewModel {
+		var output = new IccMemoirViewModel {
 			Id = id,
 			Title = memoir.Title,
 			Description = memoir.Description,
@@ -765,7 +767,7 @@ public class ProposalController : Controller {
 			this.TempData["ErrorMessage"] = "Error al obtener la propuesta";
 			return this.RedirectToAction("Applications", "Proposal", new { area = "University" });
 		}
-		var output = new MemoirViewModel {
+		var output = new IccMemoirViewModel {
 			Id = id,
 			Title = memoir.Title,
 			GuideName = $"{memoir.Guide!.FirstName} {memoir.Guide.LastName}"
@@ -774,7 +776,7 @@ public class ProposalController : Controller {
 	}
 
 	[Authorize(Roles = "Student"), HttpPost, ValidateAntiForgeryToken]
-	public async Task<IActionResult> Apply([FromForm] MemoirViewModel input) {
+	public async Task<IActionResult> Apply([FromForm] IccMemoirViewModel input) {
 		var user = await this._userManager.GetUserAsync(this.User);
 		if (user!.IsDeactivated) {
 			this.TempData["ErrorMessage"] = "Tu cuenta está desactivada.";
@@ -823,7 +825,7 @@ public class ProposalController : Controller {
 			this.TempData["ErrorMessage"] = "Error al obtener la propuesta";
 			return this.RedirectToAction("List", "Proposal", new { area = "University" });
 		}
-		var output = new MemoirViewModel {
+		var output = new IccMemoirViewModel {
 			Id = id,
 			Title = memoir.Title,
 			MemoristName = $"{memoir.Memorist!.FirstName} {memoir.Memorist.LastName}"
@@ -832,7 +834,7 @@ public class ProposalController : Controller {
 	}
 
 	[Authorize(Roles = "Guide"), HttpPost, ValidateAntiForgeryToken]
-	public async Task<IActionResult> Reject([FromForm] MemoirViewModel input) {
+	public async Task<IActionResult> Reject([FromForm] IccMemoirViewModel input) {
 		var user = await this._userManager.GetUserAsync(this.User);
 		if (user!.IsDeactivated) {
 			this.TempData["ErrorMessage"] = "Tu cuenta está desactivada.";
@@ -885,7 +887,7 @@ public class ProposalController : Controller {
 			this.TempData["ErrorMessage"] = "Error al obtener la propuesta";
 			return this.RedirectToAction("List", "Proposal", new { area = "University" });
 		}
-		var output = new MemoirViewModel {
+		var output = new IccMemoirViewModel {
 			Id = id,
 			Title = memoir.Title,
 			MemoristName = $"{memoir.Memorist!.FirstName} {memoir.Memorist.LastName}"
@@ -894,7 +896,7 @@ public class ProposalController : Controller {
 	}
 
 	[Authorize(Roles = "Guide"), HttpPost, ValidateAntiForgeryToken]
-	public async Task<IActionResult> Approve([FromForm] MemoirViewModel input) {
+	public async Task<IActionResult> Approve([FromForm] IccMemoirViewModel input) {
 		var user = await this._userManager.GetUserAsync(this.User);
 		if (user!.IsDeactivated) {
 			this.TempData["ErrorMessage"] = "Tu cuenta está desactivada.";
@@ -950,7 +952,7 @@ public class ProposalController : Controller {
 			this.TempData["ErrorMessage"] = "Error al obtener la propuesta.";
 			return this.RedirectToAction("Students", "Proposal", new { area = "University" });
 		}
-		var output = new MemoirViewModel {
+		var output = new IccMemoirViewModel {
 			Id = memoirId,
 			MemoristId = memoristId,
 			MemoristName = $"{student!.FirstName} {student.LastName}",
@@ -964,7 +966,7 @@ public class ProposalController : Controller {
 	}
 
 	[Authorize(Roles = "Guide"), HttpPost, ValidateAntiForgeryToken]
-	public async Task<IActionResult> Select([FromForm] MemoirViewModel input) {
+	public async Task<IActionResult> Select([FromForm] IccMemoirViewModel input) {
 		var user = await this._userManager.GetUserAsync(this.User);
 		if (user!.IsDeactivated) {
 			this.TempData["ErrorMessage"] = "Tu cuenta está desactivada.";
@@ -1011,7 +1013,7 @@ public class ProposalController : Controller {
 			this.TempData["ErrorMessage"] = "Tu cuenta está desactivada.";
 			return this.RedirectToAction("Index", "Home", new { area = "" });
 		}
-		Memoir? memoir = null!;
+		IccMemoir? memoir = null!;
 		if (this.User.IsInRole("Student")) {
 			memoir = await this._dbContext.Memoirs!
 				.Include(m => m.Memorist)
@@ -1039,7 +1041,7 @@ public class ProposalController : Controller {
 			this.TempData["ErrorMessage"] = "Error al obtener la propuesta";
 			return this.RedirectToAction("List", "Proposal", new { area = "University" });
 		}
-		var output = new MemoirViewModel {
+		var output = new IccMemoirViewModel {
 			Id = id,
 			Title = memoir.Title
 		};
@@ -1047,13 +1049,13 @@ public class ProposalController : Controller {
 	}
 
 	[Authorize(Roles = "Student,Guide"), HttpPost, ValidateAntiForgeryToken]
-	public async Task<IActionResult> Convert([FromForm] MemoirViewModel input) {
+	public async Task<IActionResult> Convert([FromForm] IccMemoirViewModel input) {
 		var user = await this._userManager.GetUserAsync(this.User);
 		if (user!.IsDeactivated) {
 			this.TempData["ErrorMessage"] = "Tu cuenta está desactivada.";
 			return this.RedirectToAction("Index", "Home", new { area = "" });
 		}
-		Memoir? memoir = null!;
+		IccMemoir? memoir = null!;
 		if (this.User.IsInRole("Student")) {
 			memoir = await this._dbContext.Memoirs!
 				.Include(m => m.Memorist)

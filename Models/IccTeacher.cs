@@ -14,23 +14,23 @@ public class IccTeacher : IccUser {
 		/// <summary>
 		/// Director of the Computer Engineering carrer.
 		/// </summary>
-		CareerDirector,
+		Director,
 		/// <summary>
 		/// Member of the Computer Engineering's memoir commitee.
 		/// </summary>
-		CommiteeMember,
+		Commitee,
 		/// <summary>
 		/// Mentor of the Computer Engineering's memoir courses.
 		/// </summary>
-		CourseTeacher,
+		Course,
 		/// <summary>
 		/// They are able to be mentor of a group of <see cref="IccStudent">memorists</see> ("Profesor guía").
 		/// </summary>
-		GuideTeacher,
+		Guide,
 		/// <summary>
 		/// They are able to be co-mentor of a group of <see cref="IccStudent">memorists</see> ("Profesor co-guía").
 		/// </summary>
-		AssistantTeacher
+		Assistant
 	}
 	/// <summary>
 	/// Indicates if this teacher is not necessarily a teacher from the Computer Engineering carrer.

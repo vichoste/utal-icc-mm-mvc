@@ -4,12 +4,12 @@
 @using Utal.Icc.Mm.Mvc
 @using Utal.Icc.Mm.Mvc.Data
 @using Utal.Icc.Mm.Mvc.Models
-@using Utal.Icc.Mm.Mvc.ViewModels
-@using Utal.Icc.Mm.Mvc.ViewModels.Shared
+@using Utal.Icc.Mm.Mvc.Models
+@using Utal.Icc.Mm.Mvc.Models.Shared
 
 @model Paginator<MemoirViewModel>
 
-@inject ApplicationDbContext _dbContext
+@inject IccDbContext _dbContext
 @inject UserManager<ApplicationUser> _userManager
 
 @{

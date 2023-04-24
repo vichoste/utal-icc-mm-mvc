@@ -3,11 +3,11 @@
 
 @using Utal.Icc.Mm.Mvc.Data
 @using Utal.Icc.Mm.Mvc.Models
-@using Utal.Icc.Mm.Mvc.ViewModels
+@using Utal.Icc.Mm.Mvc.Models
 
 @model MemoirViewModel
 
-@inject ApplicationDbContext _dbContext
+@inject IccDbContext _dbContext
 @inject UserManager<ApplicationUser> _userManager
 
 @{
