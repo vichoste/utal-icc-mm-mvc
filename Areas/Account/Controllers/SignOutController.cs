@@ -7,9 +7,9 @@ namespace Utal.Icc.Mm.Mvc.Areas.Account.Controllers;
 
 [Area("Account")]
 public class SignOutController : Controller {
-	private readonly SignInManager<ApplicationUser> _signInManager;
+	private readonly SignInManager<IccUser> _signInManager;
 
-	public SignOutController(SignInManager<ApplicationUser> signInManager) => this._signInManager = signInManager;
+	public SignOutController(SignInManager<IccUser> signInManager) => this._signInManager = signInManager;
 
 	public async Task<IActionResult> Index() {
 		if (this.User.Identity!.IsAuthenticated) {

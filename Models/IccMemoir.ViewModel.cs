@@ -5,13 +5,7 @@ namespace Utal.Icc.Mm.Mvc.Models;
 /// <summary>
 /// Represents a memoir.
 /// </summary>
-public class IccMemoirViewModel {
-	/// <summary>
-	/// Memoir (ID).
-	/// </summary>
-	/// </summary>
-	[Display(Name = "ID")]
-	public string? Id { get; set; }
+public class IccMemoirViewModel : ViewModel {
 	/// <summary>
 	/// Memoir title.
 	/// </summary>
@@ -24,18 +18,6 @@ public class IccMemoirViewModel {
 	/// </summary>
 	[Display(Name = "Descripción")]
 	public string Description { get; set; } = string.Empty;
-	/// <summary>
-	/// Memoir creation timestamp.
-	/// </summary>
-	/// </summary>
-	[Display(Name = "Creada")]
-	public DateTimeOffset CreatedAt { get; set; }
-	/// <summary>
-	/// Memoir updated timestamp.
-	/// </summary>
-	/// </summary>
-	[Display(Name = "Actualizada")]
-	public DateTimeOffset UpdatedAt { get; set; }
 	/// <summary>
 	/// <see cref="IccStudent">Student</see> of the <see cref="IccTeacher">teacher</see>'s <see cref="IccMemoir">memoir</see>. It may be selected by the teacher previously or with <see cref="IccTeacherMemoir.Candidates">a list of candidates</see>.
 	/// </summary>

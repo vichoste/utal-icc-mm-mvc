@@ -8,9 +8,9 @@ namespace Utal.Icc.Mm.Mvc.Areas.Account.Controllers;
 
 [Area("Account")]
 public class SignInController : Controller {
-	private readonly SignInManager<ApplicationUser> _signInManager;
+	private readonly SignInManager<IccUser> _signInManager;
 
-	public SignInController(SignInManager<ApplicationUser> signInManager) => this._signInManager = signInManager;
+	public SignInController(SignInManager<IccUser> signInManager) => this._signInManager = signInManager;
 
 	public IActionResult Index() => this.User.Identity!.IsAuthenticated ? this.RedirectToAction("Index", "Home", new { area = string.Empty }) : this.View();
 

@@ -31,4 +31,12 @@ public class IccVote {
 	/// <see cref="IccMemoir">Memoir</see> that was voted.
 	/// </summary>
 	public virtual IccMemoir? Memoir { get; set; }
+	/// <summary>
+	/// User creation timestamp.
+	/// </summary>
+	public DateTimeOffset CreatedAt { get; set; }
+	/// <summary>
+	/// User updated timestamp.
+	/// </summary>
+	public DateTimeOffset UpdatedAt { get; set; }
 }
