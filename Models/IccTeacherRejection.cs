@@ -8,4 +8,8 @@ public class IccTeacherRejection : IccRejection {
 	/// <see cref="IccTeacher">Teacher</see> who made the <see cref="IccRejection">rejection</see>.
 	/// </summary>
 	public virtual IccTeacher? Teacher { get; set; }
+	/// <summary>
+	/// <see cref="IccTeacher">Teacher</see> who made the <see cref="IccRejection">rejection</see> (ID).
+	/// </summary>
+	public virtual string? TeacherId { get; set; }
 }

@@ -14,9 +14,9 @@ public class IccMemoir {
 		Rejected
 	}
 	/// <summary>
-	/// Memoir ID.
+	/// Memoir (ID).
 	/// </summary>
-	public Guid Id { get; set; } = Guid.NewGuid();
+	public string? Id { get; set; }
 	/// <summary>
 	/// Memoir title.
 	/// </summary>
@@ -34,9 +34,21 @@ public class IccMemoir {
 	/// </summary>
 	public DateTimeOffset UpdatedAt { get; set; }
 	/// <summary>
+	/// <see cref="IccStudent">Student</see> of the <see cref="IccTeacher">teacher</see>'s <see cref="IccMemoir">memoir</see>. It may be selected by the teacher previously or with <see cref="IccTeacherMemoir.Candidates">a list of candidates</see>.
+	/// </summary>
+	public virtual IccStudent? Student { get; set; }
+	/// <summary>
+	/// <see cref="IccStudent">Student</see> of the <see cref="IccTeacher">teacher</see>'s <see cref="IccMemoir">memoir</see>. It may be selected by the teacher previously or with <see cref="IccTeacherMemoir.Candidates">a list of candidates</see> ID.
+	/// </summary>
+	public virtual string? StudentId { get; set; }
+	/// <summary>
 	/// <see cref="IccTeacher">Guide teacher</see> of the memoir.
 	/// </summary>
 	public virtual IccTeacher? GuideTeacher { get; set; }
+	/// <summary>
+	/// <see cref="IccTeacher">Guide teacher</see> of the memoir ID.
+	/// </summary>
+	public virtual string? GuideTeacherId { get; set; }
 	/// <summary>
 	/// <see cref="IccTeacher">Assistant teachers</see> of the memoir.
 	/// </summary>

@@ -5,9 +5,9 @@
 /// </summary>
 public class IccRejection {
 	/// <summary>
-	/// Rejection ID.
+	/// Rejection (ID).
 	/// </summary>
-	public Guid Id { get; set; } = Guid.NewGuid();
+	public string? Id { get; set; }
 	/// <summary>
 	/// Rejection reason.
 	/// </summary>
@@ -16,6 +16,10 @@ public class IccRejection {
 	/// Rejected <see cref="IccMemoir">memoir</see>.
 	/// </summary>
 	public IccMemoir? Memoir { get; set; }
+	/// <summary>
+	/// Rejected <see cref="IccMemoir">memoir</see> (ID).
+	/// </summary>
+	public string? MemoirId { get; set; }
 	/// <summary>
 	/// Rejection creation timestamp.
 	/// </summary>

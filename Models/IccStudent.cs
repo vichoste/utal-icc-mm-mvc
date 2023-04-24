@@ -1,4 +1,6 @@
-﻿namespace Utal.Icc.Mm.Mvc.Models;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Utal.Icc.Mm.Mvc.Models;
 
 /// <summary>
 /// Represents a student from the Computer Engineering carrer at University of Talca.
@@ -45,16 +47,14 @@ public class IccStudent : IccUser {
 	#endregion
 	#region Memoirs
 	/// <summary>
-	/// <see cref="IccStudentMemoir">Student memoirs</see> which they own.
+	/// <see cref="IccMemoir">Student memoirs</see> which they own.
 	/// </summary>
-	public virtual ICollection<IccStudentMemoir> MemoirsWhichIOwn { get; set; } = new HashSet<IccStudentMemoir>();
+	[InverseProperty("Student")]
+	public virtual ICollection<IccMemoir> MemoirsWhichIOwn { get; set; } = new HashSet<IccMemoir>();
 	/// <summary>
 	/// <see cref="IccTeacherMemoir">Teacher memoirs</see> which they are candidates of.
 	/// </summary>
+	[InverseProperty("Candidates")]
 	public virtual ICollection<IccTeacherMemoir> MemoirsWhichImCandidate { get; set; } = new HashSet<IccTeacherMemoir>();
-	/// <summary>
-	/// <see cref="IccTeacherMemoir">Teacher memoirs</see> which they are part of.
-	/// </summary>
-	public virtual ICollection<IccStudentMemoir> MemoirsWhichImPartOf { get; set; } = new HashSet<IccStudentMemoir>();
 	#endregion
 }

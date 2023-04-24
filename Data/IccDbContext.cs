@@ -43,14 +43,14 @@ public class IccDbContext : IdentityDbContext<IccUser> {
 	/// <summary>
 	/// Overrides the database context's creation behavior.
 	/// </summary>
-	/// <param name="builder">Builder.</param>
-	protected override void OnModelCreating(ModelBuilder builder) {
-		base.OnModelCreating(builder);
-		_ = builder.Entity<IccStudent>().HasBaseType<IccUser>();
-		_ = builder.Entity<IccTeacher>().HasBaseType<IccUser>();
-		_ = builder.Entity<IccStudentMemoir>().HasBaseType<IccMemoir>();
-		_ = builder.Entity<IccTeacherMemoir>().HasBaseType<IccMemoir>();
-		_ = builder.Entity<IccCommiteeRejection>().HasBaseType<IccRejection>();
-		_ = builder.Entity<IccTeacherRejection>().HasBaseType<IccRejection>();
+	/// <param name="modelBuilder">Builder.</param>
+	protected override void OnModelCreating(ModelBuilder modelBuilder) {
+		base.OnModelCreating(modelBuilder);
+		_ = modelBuilder.Entity<IccStudent>().HasBaseType<IccUser>();
+		_ = modelBuilder.Entity<IccTeacher>().HasBaseType<IccUser>();
+		_ = modelBuilder.Entity<IccStudentMemoir>().HasBaseType<IccMemoir>();
+		_ = modelBuilder.Entity<IccTeacherMemoir>().HasBaseType<IccMemoir>();
+		_ = modelBuilder.Entity<IccCommiteeRejection>().HasBaseType<IccRejection>();
+		_ = modelBuilder.Entity<IccTeacherRejection>().HasBaseType<IccRejection>();
 	}
 }

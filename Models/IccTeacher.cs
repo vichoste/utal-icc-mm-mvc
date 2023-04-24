@@ -1,4 +1,6 @@
-﻿namespace Utal.Icc.Mm.Mvc.Models;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Utal.Icc.Mm.Mvc.Models;
 
 /// <summary>
 /// Represents a teacher from the Computer Engineering carrer at University of Talca.
@@ -51,24 +53,29 @@ public class IccTeacher : IccUser {
 	/// <summary>
 	/// <see cref="IccStudentMemoir">Student memoirs</see> which they guide.
 	/// </summary>
+	[InverseProperty("GuideTeacher")]
 	public virtual ICollection<IccStudentMemoir> MemoirsWhichIGuide { get; set; } = new HashSet<IccStudentMemoir>();
 	/// <summary>
 	/// <see cref="IccStudentMemoir">Student memoirs</see> which they assist.
 	/// </summary>
+	[InverseProperty("AssistantTeachers")]
 	public virtual ICollection<IccStudentMemoir> MemoirsWhichIAssist { get; set; } = new HashSet<IccStudentMemoir>();
 	#endregion
 	#region Rejections
 	/// <summary>
 	/// Teacher rejections for memoir proposals.
 	/// </summary>
-	public virtual ICollection<IccTeacherRejection> TeacherRejections { get; set; } = new HashSet<IccTeacherRejection>();
+	[InverseProperty("Teacher")]
+	public virtual ICollection<IccTeacherRejection> MemoirsWhichIRejected { get; set; } = new HashSet<IccTeacherRejection>();
 	/// <summary>
 	/// <see cref="IccCommiteeRejection">Rejectons as the commitee</see> that this teacher didn't support.
 	/// </summary>
+	[InverseProperty("WhoDidntReject")]
 	public virtual ICollection<IccCommiteeRejection> CommiteeRejectionsWhichIDidNotSupport { get; set; } = new HashSet<IccCommiteeRejection>();
 	/// <summary>
 	/// <see cref="IccCommiteeRejection">Rejectons as the commitee</see> that this teacher supported.
 	/// </summary>
+	[InverseProperty("WhoRejected")]
 	public virtual ICollection<IccCommiteeRejection> CommiteeRejectionsWhichIDidSupport { get; set; } = new HashSet<IccCommiteeRejection>();
 	#endregion
 }
