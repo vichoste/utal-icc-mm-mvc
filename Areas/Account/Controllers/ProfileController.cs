@@ -57,11 +57,11 @@ public class ProfileController : Controller {
 
 	[Authorize(Roles = "Student")]
 	public async Task<IActionResult> Student() {
-		var user = await this._userManager.GetUserAsync(this.User);
+		var user = await this._userManager.GetUserAsync(this.User) as IccStudent;
 		if (user!.IsDeactivated) {
 			return this.RedirectToAction("Index", "Home", new { area = string.Empty });
 		}
-		var output = new IccUserViewModel {
+		var output = new IccStudentViewModel {
 			UniversityId = user.UniversityId,
 			RemainingCourses = user.RemainingCourses,
 			IsDoingThePractice = user.IsDoingThePractice,
@@ -71,8 +71,8 @@ public class ProfileController : Controller {
 	}
 
 	[Authorize(Roles = "Student"), HttpPost, ValidateAntiForgeryToken]
-	public async Task<IActionResult> Student([FromForm] IccUserViewModel input) {
-		var user = await this._userManager.GetUserAsync(this.User);
+	public async Task<IActionResult> Student([FromForm] IccStudentViewModel input) {
+		var user = await this._userManager.GetUserAsync(this.User) as IccStudent;
 		if (user!.IsDeactivated) {
 			return this.RedirectToAction("Index", "Home", new { area = string.Empty });
 		}
@@ -81,7 +81,7 @@ public class ProfileController : Controller {
 		user.IsWorking = input.IsWorking;
 		user.UpdatedAt = DateTimeOffset.Now;
 		_ = await this._userManager.UpdateAsync(user);
-		var output = new IccUserViewModel {
+		var output = new IccStudentViewModel {
 			UniversityId = user.UniversityId,
 			RemainingCourses = user.RemainingCourses,
 			IsDoingThePractice = user.IsDoingThePractice,
@@ -93,11 +93,11 @@ public class ProfileController : Controller {
 
 	[Authorize(Roles = "Teacher")]
 	public async Task<IActionResult> Teacher() {
-		var user = await this._userManager.GetUserAsync(this.User);
+		var user = await this._userManager.GetUserAsync(this.User) as IccTeacher;
 		if (user!.IsDeactivated) {
 			return this.RedirectToAction("Index", "Home", new { area = string.Empty });
 		}
-		var output = new IccUserViewModel {
+		var output = new IccTeacherViewModel {
 			Office = user.Office,
 			Schedule = user.Schedule,
 			Specialization = user.Specialization
@@ -106,8 +106,8 @@ public class ProfileController : Controller {
 	}
 
 	[Authorize(Roles = "Teacher"), HttpPost, ValidateAntiForgeryToken]
-	public async Task<IActionResult> Teacher([FromForm] IccUserViewModel input) {
-		var user = await this._userManager.GetUserAsync(this.User);
+	public async Task<IActionResult> Teacher([FromForm] IccTeacherViewModel input) {
+		var user = await this._userManager.GetUserAsync(this.User) as IccTeacher;
 		if (user!.IsDeactivated) {
 			return this.RedirectToAction("Index", "Home", new { area = string.Empty });
 		}
@@ -116,7 +116,7 @@ public class ProfileController : Controller {
 		user.Specialization = input.Specialization;
 		user.UpdatedAt = DateTimeOffset.Now;
 		_ = await this._userManager.UpdateAsync(user);
-		var output = new IccUserViewModel {
+		var output = new IccTeacherViewModel {
 			Office = input.Office,
 			Schedule = input.Schedule,
 			Specialization = input.Specialization
