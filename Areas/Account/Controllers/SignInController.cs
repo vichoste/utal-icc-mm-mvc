@@ -41,7 +41,7 @@ public class SignInController : Controller {
 		}
 		var result = await this._signInManager.PasswordSignInAsync(model.Email!, model.Password!, model.RememberMe, false);
 		if (!result.Succeeded) {
-			this.ViewBag.ErrorMessage = "Credenciales incorrectas.";
+			this.ViewBag.DangerMessage = "Credenciales incorrectas.";
 			return this.View(new IndexViewModel());
 		}
 		return this.RedirectToAction("Index", "Home", new { area = string.Empty });

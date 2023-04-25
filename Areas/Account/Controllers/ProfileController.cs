@@ -68,8 +68,8 @@ public class ProfileController : Controller {
 		}
 		var result = await this._userManager.ChangePasswordAsync(user!, model.CurrentPassword!, model.NewPassword!);
 		if (!result.Succeeded) {
-			this.ViewBag.ErrorMessage = "Contraseña incorrecta.";
-			this.ViewBag.ErrorMessages = result.Errors.Select(e => e.Description).ToList();
+			this.ViewBag.DangerMessage = "Contraseña incorrecta.";
+			this.ViewBag.DangerMessages = result.Errors.Select(e => e.Description).ToList();
 			return this.View(model);
 		}
 		user.UpdatedAt = DateTimeOffset.Now;
@@ -81,7 +81,7 @@ public class ProfileController : Controller {
 	/// <summary>
 	/// Displays the student's profile.
 	/// </summary>
-	[Authorize(Roles = "Student")]
+	[Authorize]
 	public async Task<IActionResult> Student() {
 		var user = await this._userManager.GetUserAsync(this.User) as IccStudent;
 		if (user!.IsDeactivated) {
@@ -101,7 +101,7 @@ public class ProfileController : Controller {
 	/// </summary>
 	/// <param name="model">Updated information of the student.</param>
 	/// <returns>Same view with success message.</returns>
-	[Authorize(Roles = "Student"), HttpPost, ValidateAntiForgeryToken]
+	[Authorize, HttpPost, ValidateAntiForgeryToken]
 	public async Task<IActionResult> Student([FromForm] IccStudentViewModel model) {
 		if (!this.ModelState.IsValid) {
 			this.ViewBag.WarningMessage = "Revisa que los campos estén correctos.";
@@ -129,7 +129,7 @@ public class ProfileController : Controller {
 	/// <summary>
 	/// Displays the teacher's profile.
 	/// </summary>
-	[Authorize(Roles = "Teacher")]
+	[Authorize]
 	public async Task<IActionResult> Teacher() {
 		var user = await this._userManager.GetUserAsync(this.User) as IccTeacher;
 		if (user!.IsDeactivated) {
@@ -148,7 +148,7 @@ public class ProfileController : Controller {
 	/// </summary>
 	/// <param name="model">Updated information of the teacher.</param>
 	/// <returns>Same view with success message.</returns>
-	[Authorize(Roles = "Teacher"), HttpPost, ValidateAntiForgeryToken]
+	[Authorize, HttpPost, ValidateAntiForgeryToken]
 	public async Task<IActionResult> Teacher([FromForm] IccTeacherViewModel model) {
 		if (!this.ModelState.IsValid) {
 			this.ViewBag.WarningMessage = "Revisa que los campos estén correctos.";

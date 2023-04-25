@@ -18,7 +18,7 @@ public static class IccCareerDirectorSeeder {
 	public static async Task SeedAsync(IServiceProvider services, IConfiguration configuration, IWebHostEnvironment env) {
 		var userManager = services.GetRequiredService<UserManager<IccUser>>();
 		var userStore = services.GetRequiredService<IUserStore<IccUser>>();
-		var emailStore = services.GetRequiredService<IUserEmailStore<IccUser>>();
+		var emailStore = (IUserEmailStore<IccUser>)userStore;
 		string email, password, firstName, lastName, rut;
 		if (env.IsDevelopment()) {
 			email = configuration["IccCareerDirectorEmail"] ?? throw new InvalidOperationException("Career director's email is not set");
@@ -35,7 +35,7 @@ public static class IccCareerDirectorSeeder {
 		}
 		var iccCareerDirector = await userManager.FindByEmailAsync(email);
 		if (iccCareerDirector == null) {
-			iccCareerDirector = new IccUser {
+			iccCareerDirector = new IccTeacher {
 				UserName = email,
 				Email = email,
 				FirstName = firstName,

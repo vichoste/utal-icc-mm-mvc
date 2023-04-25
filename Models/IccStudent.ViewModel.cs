@@ -10,12 +10,10 @@ public class IccStudentViewModel : IccUserViewModel {
 	/// <summary>
 	/// Student's university ID (known as "Número de matrícula").
 	/// </summary>
-	/// </summary>
 	[Display(Name = "Número de matrícula")]
 	public string UniversityId { get; set; } = string.Empty;
 	/// <summary>
 	/// Student's remaining courses.
-	/// </summary>
 	/// </summary>
 	[Display(Name = "Cursos restantes")]
 	public string RemainingCourses { get; set; } = string.Empty;
@@ -26,12 +24,10 @@ public class IccStudentViewModel : IccUserViewModel {
 	/// 1: Student is doing the first professional practice.
 	/// 2: Student is doing the second professional practice.
 	/// </summary>
-	/// </summary>
 	[Display(Name = "En práctica")]
 	public int CurrentPractice { get; set; }
 	/// <summary>
 	/// Checks if the student is working.
-	/// </summary>
 	/// </summary>
 	[Display(Name = "Trabajando")]
 	public bool IsWorking { get; set; }
