@@ -46,12 +46,8 @@ public static class IccCareerDirectorSeeder {
 			};
 			await userStore.SetUserNameAsync(iccCareerDirector, email, CancellationToken.None);
 			await emailStore.SetEmailAsync(iccCareerDirector, email, CancellationToken.None);
-			var result = await userManager.CreateAsync(iccCareerDirector, password);
-			if (!result.Succeeded) {
-				var errors = result.Errors.Select(e => e.Description);
-				var errorsString = string.Join(", ", errors);
-				throw new Exception($"Error while creating the Career Director \"{email}\": {errorsString}");
-			}
+			_ = await userManager.CreateAsync(iccCareerDirector, password);
+			_ = await userManager.AddToRoleAsync(iccCareerDirector, "Director");
 		}
 	}
 }

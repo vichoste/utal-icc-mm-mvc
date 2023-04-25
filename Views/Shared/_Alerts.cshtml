@@ -1,56 +1,120 @@
-﻿@if (this.TempData["SuccessMessage"] is not null || this.TempData["SuccessMessages"] is not null) {
+﻿@if (this.TempData["SuccessMessage"] is not null) {
 	<div class="row justify-content-center">
 		<div class="alert alert-success" role="alert">
 			<ul>
-				@if (this.TempData["SuccessMessage"] is not null) {
-					<li>@this.TempData["SuccessMessage"]</li>
+				<li>@this.TempData["SuccessMessage"]</li>
+			</ul>
+		</div>
+	</div>
+}
+@if (this.TempData["SuccessMessages"] is not null) {
+	<div class="row justify-content-center">
+		<div class="alert alert-success" role="alert">
+			<ul>
+				@foreach (var success in (IEnumerable<string>)this.TempData["SuccessMessages"]!) {
+					<li>@success</li>
 				}
-				@if (this.TempData["SuccessMessages"] is not null) {
-					@foreach (var success in (IEnumerable<string>)this.TempData["SuccessMessages"]!) {
-						<li>@success</li>
-					}
-				}
-				@if (this.ViewBag.SuccessMessage is not null) {
-					<li>@this.ViewBag.SuccessMessage</li>
+			</ul>
+		</div>
+	</div>
+}
+@if (this.ViewBag.SuccessMessage is not null) {
+	<div class="row justify-content-center">
+		<div class="alert alert-success" role="alert">
+			<ul>
+				<li>@this.ViewBag.SuccessMessage</li>
+			</ul>
+		</div>
+	</div>
+}
+@if (this.ViewBag.SuccessMessages is not null) {
+	<div class="row justify-content-center">
+		<div class="alert alert-success" role="alert">
+			<ul>
+				@foreach (var success in (IEnumerable<string>)this.ViewBag.SuccessMessages!) {
+					<li>@success</li>
 				}
 			</ul>
 		</div>
 	</div>
 }
 
-@if (this.TempData["WarningMessage"] is not null || this.TempData["WarningMessages"] is not null) {
+@if (this.TempData["WarningMessage"] is not null) {
 	<div class="row justify-content-center">
 		<div class="alert alert-warning" role="alert">
 			<ul>
-				@if (this.TempData["WarningMessage"] is not null) {
-					<li>@this.TempData["WarningMessage"]</li>
-				}
-				@if (this.TempData["WarningMessages"] is not null) {
-					@foreach (var warning in (IEnumerable<string>)this.TempData["WarningMessages"]!) {
-						<li>@warning</li>
-					}
-				}
-				@if (this.ViewBag.WarningMessage is not null) {
-					<li>@this.ViewBag.WarningMessage</li>
+				<li>@this.TempData["WarningMessage"]</li>
+			</ul>
+		</div>
+	</div>
+}
+@if (this.TempData["WarningMessages"] is not null) {
+	<div class="row justify-content-center">
+		<div class="alert alert-warning" role="alert">
+			<ul>
+				@foreach (var warning in (IEnumerable<string>)this.TempData["WarningMessages"]!) {
+					<li>@warning</li>
 				}
 			</ul>
 		</div>
 	</div>
 }
-@if (this.TempData["DangerMessage"] is not null || this.TempData["DangerMessages"] is not null) {
+@if (this.ViewBag.WarningMessage is not null) {
+	<div class="row justify-content-center">
+		<div class="alert alert-warning" role="alert">
+			<ul>
+				<li>@this.ViewBag.WarningMessage</li>
+			</ul>
+		</div>
+	</div>
+}
+@if (this.ViewBag.WarningMessages is not null) {
+	<div class="row justify-content-center">
+		<div class="alert alert-warning" role="alert">
+			<ul>
+				@foreach (var warning in (IEnumerable<string>)this.ViewBag.WarningMessages!) {
+					<li>@warning</li>
+				}
+			</ul>
+		</div>
+	</div>
+}
+
+@if (this.TempData["DangerMessage"] is not null) {
 	<div class="row justify-content-center">
 		<div class="alert alert-danger" role="alert">
 			<ul>
-				@if (this.TempData["DangerMessage"] is not null) {
-					<li>@this.TempData["DangerMessage"]</li>
+				<li>@this.TempData["DangerMessage"]</li>
+			</ul>
+		</div>
+	</div>
+}
+@if (this.TempData["DangerMessages"] is not null) {
+	<div class="row justify-content-center">
+		<div class="alert alert-danger" role="alert">
+			<ul>
+				@foreach (var danger in (IEnumerable<string>)this.TempData["DangerMessages"]!) {
+					<li>@danger</li>
 				}
-				@if (this.TempData["DangerMessages"] is not null) {
-					@foreach (var danger in (IEnumerable<string>)this.TempData["DangerMessages"]!) {
-						<li>@danger</li>
-					}
-				}
-				@if (this.ViewBag.DangerMessage is not null) {
-					<li>@this.ViewBag.DangerMessage</li>
+			</ul>
+		</div>
+	</div>
+}
+@if (this.ViewBag.DangerMessage is not null) {
+	<div class="row justify-content-center">
+		<div class="alert alert-danger" role="alert">
+			<ul>
+				<li>@this.ViewBag.DangerMessage</li>
+			</ul>
+		</div>
+	</div>
+}
+@if (this.ViewBag.DangerMessages is not null) {
+	<div class="row justify-content-center">
+		<div class="alert alert-danger" role="alert">
+			<ul>
+				@foreach (var danger in (IEnumerable<string>)this.ViewBag.DangerMessages!) {
+					<li>@danger</li>
 				}
 			</ul>
 		</div>

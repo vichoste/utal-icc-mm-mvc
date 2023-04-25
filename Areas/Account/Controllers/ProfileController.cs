@@ -58,10 +58,6 @@ public class ProfileController : Controller {
 	/// <returns>Returns to <see cref="Index"/> if successful. Otherwise, return <see cref="ChangePassword()"/> with the warning or error messages.</returns>
 	[Authorize, HttpPost, ValidateAntiForgeryToken]
 	public async Task<IActionResult> ChangePassword([FromForm] ChangePasswordViewModel model) {
-		if (!this.ModelState.IsValid) {
-			this.ViewBag.WarningMessage = "Revisa que los campos estén correctos.";
-			return this.View(model);
-		}
 		var user = await this._userManager.GetUserAsync(this.User);
 		if (user!.IsDeactivated) {
 			return this.RedirectToAction("Index", "Home", new { area = string.Empty });
@@ -103,10 +99,6 @@ public class ProfileController : Controller {
 	/// <returns>Same view with success message.</returns>
 	[Authorize, HttpPost, ValidateAntiForgeryToken]
 	public async Task<IActionResult> Student([FromForm] IccStudentViewModel model) {
-		if (!this.ModelState.IsValid) {
-			this.ViewBag.WarningMessage = "Revisa que los campos estén correctos.";
-			return this.View(model);
-		}
 		var user = await this._userManager.GetUserAsync(this.User) as IccStudent;
 		if (user!.IsDeactivated) {
 			return this.RedirectToAction("Index", "Home", new { area = string.Empty });
@@ -150,10 +142,6 @@ public class ProfileController : Controller {
 	/// <returns>Same view with success message.</returns>
 	[Authorize, HttpPost, ValidateAntiForgeryToken]
 	public async Task<IActionResult> Teacher([FromForm] IccTeacherViewModel model) {
-		if (!this.ModelState.IsValid) {
-			this.ViewBag.WarningMessage = "Revisa que los campos estén correctos.";
-			return this.View(model);
-		}
 		var user = await this._userManager.GetUserAsync(this.User) as IccTeacher;
 		if (user!.IsDeactivated) {
 			return this.RedirectToAction("Index", "Home", new { area = string.Empty });

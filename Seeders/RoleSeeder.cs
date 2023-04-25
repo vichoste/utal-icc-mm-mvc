@@ -22,12 +22,7 @@ public static class RoleSeeder {
 				var role = new IdentityRole {
 					Name = roleName
 				};
-				var result = await roleManager.CreateAsync(role);
-				if (!result.Succeeded) {
-					var errors = result.Errors.Select(e => e.Description);
-					var errorsString = string.Join(", ", errors);
-					throw new Exception($"Error creating role {roleName}: {errorsString}");
-				}
+				_ = await roleManager.CreateAsync(role);
 			}
 		}
 	}

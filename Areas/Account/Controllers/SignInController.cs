@@ -32,10 +32,6 @@ public class SignInController : Controller {
 	/// <returns>Home page with session if logged in. Otherwise return same view with warning or error messages.</returns>
 	[HttpPost, ValidateAntiForgeryToken]
 	public async Task<IActionResult> Index([FromForm] IndexViewModel model) {
-		if (!this.ModelState.IsValid) {
-			this.ViewBag.WarningMessage = "Revisa que los campos estén correctos.";
-			return this.View(model);
-		}
 		if (this.User.Identity!.IsAuthenticated) {
 			return this.RedirectToAction("Index", "Home", new { area = string.Empty });
 		}
