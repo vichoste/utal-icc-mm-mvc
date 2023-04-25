@@ -6,7 +6,7 @@ namespace Utal.Icc.Mm.Mvc.Models;
 /// <summary>
 /// Represents a memoir.
 /// </summary>
-public class IccMemoirViewModel : ViewModel {
+public class IccMemoirViewModel : IccViewModel {
 	/// <summary>
 	/// Memoir title.
 	/// </summary>

@@ -5,7 +5,7 @@ namespace Utal.Icc.Mm.Mvc.Models;
 /// <summary>
 /// Represents a vote from a <see cref="IccTeacher">teacher</see> against a <see cref="IccMemoir"/>
 /// </summary>
-public class IccVoteViewModel : ViewModel {
+public class IccVoteViewModel : IccViewModel {
 	/// <summary>
 	/// Vote type.
 	/// </summary>

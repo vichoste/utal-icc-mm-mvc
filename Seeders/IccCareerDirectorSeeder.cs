@@ -7,9 +7,9 @@ namespace Utal.Icc.Mm.Mvc.Seeders;
 /// <summary>
 /// Creates a default career director..
 /// </summary>
-public static class CareerDirectorSeeder {
+public static class IccCareerDirectorSeeder {
 	/// <summary>
-	/// Seeds the database with a default career director..
+	/// Seeds the database with a default career director.
 	/// </summary>
 	/// <param name="services">Inject the application's services.</param>
 	/// <param name="configuration">Inject the application's configuration.</param>
@@ -33,9 +33,9 @@ public static class CareerDirectorSeeder {
 			lastName = Environment.GetEnvironmentVariable("ICC_CAREER_DIRECTOR_LAST_NAME") ?? throw new InvalidOperationException("Career director's last name is not set");
 			rut = Environment.GetEnvironmentVariable("ICC_CAREER_DIRECTOR_RUT") ?? throw new InvalidOperationException("Career director's RUT is not set");
 		}
-		var careerDirector = await userManager.FindByEmailAsync(email);
-		if (careerDirector == null) {
-			careerDirector = new IccUser {
+		var iccCareerDirector = await userManager.FindByEmailAsync(email);
+		if (iccCareerDirector == null) {
+			iccCareerDirector = new IccUser {
 				UserName = email,
 				Email = email,
 				FirstName = firstName,
@@ -44,9 +44,9 @@ public static class CareerDirectorSeeder {
 				CreatedAt = DateTimeOffset.UtcNow,
 				UpdatedAt = DateTimeOffset.UtcNow
 			};
-			await userStore.SetUserNameAsync(careerDirector, email, CancellationToken.None);
-			await emailStore.SetEmailAsync(careerDirector, email, CancellationToken.None);
-			var result = await userManager.CreateAsync(careerDirector, password);
+			await userStore.SetUserNameAsync(iccCareerDirector, email, CancellationToken.None);
+			await emailStore.SetEmailAsync(iccCareerDirector, email, CancellationToken.None);
+			var result = await userManager.CreateAsync(iccCareerDirector, password);
 			if (!result.Succeeded) {
 				var errors = result.Errors.Select(e => e.Description);
 				var errorsString = string.Join(", ", errors);

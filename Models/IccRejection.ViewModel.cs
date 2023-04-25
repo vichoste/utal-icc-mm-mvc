@@ -5,7 +5,7 @@ namespace Utal.Icc.Mm.Mvc.Models;
 /// <summary>
 /// Rejection reason for a <see cref="IccMemoir">memoir</see>.
 /// </summary>
-public class IccRejectionViewModel : ViewModel {
+public class IccRejectionViewModel : IccViewModel {
 	/// <summary>
 	/// Rejection reason.
 	/// </summary>

@@ -25,7 +25,7 @@ public class UserController : Controller {
 	}
 
 	[Authorize(Roles = "Director")]
-	public async Task<IActionResult> Students(string sortOrder, string currentFilter, string searchString, int? pageNumber) {
+	public IActionResult Students(string sortOrder, string currentFilter, string searchString, int? pageNumber) {
 		var parameters = new[] { "FirstName", "LastName", "UniversityId", "Rut", "Email" };
 		foreach (var parameter in parameters) {
 			this.ViewData[$"{parameter}SortParam"] = sortOrder == parameter ? $"{parameter}Desc" : parameter;
@@ -37,30 +37,30 @@ public class UserController : Controller {
 			searchString = currentFilter;
 		}
 		this.ViewData["CurrentFilter"] = searchString;
-		var users = (await this._userManager.GetUsersInRoleAsync("Student")).Select(u => {
-			var student = u as IccStudent;
-			return new IccStudentViewModel {
-				Id = student!.Id,
-				FirstName = student.FirstName,
-				LastName = student.LastName,
-				UniversityId = student.UniversityId,
-				Rut = student.Rut,
-				Email = student.Email,
-				IsDeactivated = student.IsDeactivated
-			};
-		}).AsQueryable();
-		var paginator = Paginator<IccUserViewModel>.Create(users, pageNumber ?? 1, 10);
+		var users = this._userManager.Users
+			.Where(u => u is IccStudent)
+			.Cast<IccStudent>()
+			.Select(u => new IccStudentViewModel {
+				Id = u.Id,
+				FirstName = u.FirstName,
+				LastName = u.LastName,
+				UniversityId = u.UniversityId,
+				Rut = u.Rut,
+				Email = u.Email,
+				IsDeactivated = u.IsDeactivated
+			}).AsQueryable();
+		var paginator = Paginator<IccStudentViewModel>.Create(users, pageNumber ?? 1, 10);
 		if (!string.IsNullOrEmpty(sortOrder)) {
-			paginator = Paginator<IccUserViewModel>.Sort(paginator.AsQueryable(), sortOrder, pageNumber ?? 1, 6, parameters);
+			paginator = Paginator<IccStudentViewModel>.Sort(paginator.AsQueryable(), sortOrder, pageNumber ?? 1, 6, parameters);
 		}
 		if (!string.IsNullOrEmpty(searchString)) {
-			paginator = Paginator<IccUserViewModel>.Filter(paginator.AsQueryable(), searchString, pageNumber ?? 1, 6, parameters);
+			paginator = Paginator<IccStudentViewModel>.Filter(paginator.AsQueryable(), searchString, pageNumber ?? 1, 6, parameters);
 		}
 		return this.View(paginator);
 	}
 
 	[Authorize(Roles = "Director")]
-	public async Task<IActionResult> Teachers(string sortOrder, string currentFilter, string searchString, int? pageNumber) {
+	public IActionResult Teachers(string sortOrder, string currentFilter, string searchString, int? pageNumber) {
 		var parameters = new[] { "FirstName", "LastName", "Rut", "Email" };
 		foreach (var parameter in parameters) {
 			this.ViewData[$"{parameter}SortParam"] = sortOrder == parameter ? $"{parameter}Desc" : parameter;
@@ -72,23 +72,23 @@ public class UserController : Controller {
 			searchString = currentFilter;
 		}
 		this.ViewData["CurrentFilter"] = searchString;
-		var users = (await this._userManager.GetUsersInRoleAsync("Teacher")).Select(u => {
-			var teacher = u as IccTeacher;
-			return new IccTeacherViewModel {
-				Id = teacher!.Id,
-				FirstName = teacher.FirstName,
-				LastName = teacher.LastName,
-				Rut = teacher.Rut,
-				Email = teacher.Email,
-				IsDeactivated = teacher.IsDeactivated,
-			};
-		}).AsQueryable();
-		var paginator = Paginator<IccUserViewModel>.Create(users, pageNumber ?? 1, 10);
+		var users = this._userManager.Users
+			.Where(u => u is IccTeacher)
+			.Cast<IccStudent>()
+			.Select(u => new IccTeacherViewModel {
+				Id = u.Id,
+				FirstName = u.FirstName,
+				LastName = u.LastName,
+				Rut = u.Rut,
+				Email = u.Email,
+				IsDeactivated = u.IsDeactivated
+			}).AsQueryable();
+		var paginator = Paginator<IccTeacherViewModel>.Create(users, pageNumber ?? 1, 10);
 		if (!string.IsNullOrEmpty(sortOrder)) {
-			paginator = Paginator<IccUserViewModel>.Sort(paginator.AsQueryable(), sortOrder, pageNumber ?? 1, 6, parameters);
+			paginator = Paginator<IccTeacherViewModel>.Sort(paginator.AsQueryable(), sortOrder, pageNumber ?? 1, 6, parameters);
 		}
 		if (!string.IsNullOrEmpty(searchString)) {
-			paginator = Paginator<IccUserViewModel>.Filter(paginator.AsQueryable(), searchString, pageNumber ?? 1, 6, parameters);
+			paginator = Paginator<IccTeacherViewModel>.Filter(paginator.AsQueryable(), searchString, pageNumber ?? 1, 6, parameters);
 		}
 		return this.View(paginator);
 	}
@@ -151,7 +151,7 @@ public class UserController : Controller {
 		if (input.IsCommittee) {
 			roles.Add("Committee");
 		}
-		var user = new IccUser {
+		var user = new IccTeacher {
 			FirstName = input.FirstName,
 			LastName = input.LastName,
 			Rut = input.Rut,
@@ -161,7 +161,6 @@ public class UserController : Controller {
 		await this._userStore.SetUserNameAsync(user, input.Email, CancellationToken.None);
 		await this._emailStore.SetEmailAsync(user, input.Email, CancellationToken.None);
 		_ = await this._userManager.CreateAsync(user, input.Password!);
-		_ = await this._userManager.AddToRoleAsync(user, "Teacher");
 		_ = await this._userManager.AddToRolesAsync(user, roles);
 		this.TempData["SuccessMessage"] = "Profesor creado exitosamente.";
 		return this.RedirectToAction("Teachers", "User", new { area = "University" });
@@ -169,6 +168,43 @@ public class UserController : Controller {
 
 	[Authorize(Roles = "Director")]
 	public async Task<IActionResult> Edit(string id) {
+		var user = await this._userManager.FindByIdAsync(id);
+		if (user is null) {
+			this.TempData["ErrorMessage"] = "Error al obtener al usuario.";
+			return this.RedirectToAction("Students", "User", new { area = "University" });
+		}
+		if (user is IccStudent student) {
+			var output = new IccStudentViewModel {
+				Id = student.Id,
+				FirstName = student.FirstName,
+				LastName = student.LastName,
+				Rut = student.Rut,
+				Email = student.Email,
+				CreatedAt = student.CreatedAt,
+				UpdatedAt = student.UpdatedAt,
+				UniversityId = student.UniversityId
+			};
+			return this.View(output);
+		} else if (user is IccTeacher teacher) {
+			var output = new IccTeacherViewModel {
+				Id = teacher.Id,
+				FirstName = teacher.FirstName,
+				LastName = teacher.LastName,
+				Rut = teacher.Rut,
+				Email = teacher.Email,
+				CreatedAt = teacher.CreatedAt,
+				UpdatedAt = teacher.UpdatedAt,
+				IsAssistant = await this._userManager.IsInRoleAsync(user, "Assistant"),
+				IsCommittee = await this._userManager.IsInRoleAsync(user, "Committee"),
+				IsGuide = await this._userManager.IsInRoleAsync(user, "Guide")
+			};
+			return this.View(output);
+		}
+		return this.View();
+	}
+
+	[Authorize(Roles = "Director")]
+	public async Task<IActionResult> EditTeacher(string id) {
 		var user = await this._userManager.FindByIdAsync(id);
 		if (user is null) {
 			this.TempData["ErrorMessage"] = "Error al obtener al usuario.";

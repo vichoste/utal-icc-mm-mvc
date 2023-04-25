@@ -2,11 +2,23 @@
 
 namespace Utal.Icc.Mm.Mvc.Areas.Account.Models.Profile;
 
+/// <summary>
+/// Change password viewmodel.
+/// </summary>
 public class ChangePasswordViewModel {
-	[DataType(DataType.Password), Display(Name = "Contraseña actual"), StringLength(64, ErrorMessage = "La contraseña debe tener un mínimo de 6 carácteres", MinimumLength = 6)]
+	/// <summary>
+	/// User's current password.
+	/// </summary>
+	[Required(ErrorMessage = "Debe ingresar su contraseña actual."), DataType(DataType.Password), StringLength(64, ErrorMessage = "La contraseña debe tener un mínimo de 6 caracteres.", MinimumLength = 6), Display(Name = "Contraseña actual")]
 	public string? CurrentPassword { get; set; }
-	[DataType(DataType.Password), Display(Name = "Nueva contraseña"), StringLength(64, ErrorMessage = "La contraseña debe tener un mínimo de 6 carácteres", MinimumLength = 6)]
+	/// <summary>
+	/// User's new password.
+	/// </summary>
+	[Required(ErrorMessage = "Debe ingresar su nueva contraseña."), DataType(DataType.Password), StringLength(64, ErrorMessage = "La contraseña debe tener un mínimo de 6 caracteres.", MinimumLength = 6), Display(Name = "Nueva contraseña")]
 	public string? NewPassword { get; set; }
-	[Compare("NewPassword", ErrorMessage = "Las contraseñas no coinciden"), DataType(DataType.Password), Display(Name = "Confirmar nueva contraseña")]
+	/// <summary>
+	/// User's confirmation of the new password.
+	/// </summary>
+	[DataType(DataType.Password), Compare("NewPassword", ErrorMessage = "Las contraseñas no coinciden."), Display(Name = "Confirmar nueva contraseña")]
 	public string? ConfirmNewPassword { get; set; }
 }

@@ -5,7 +5,7 @@ namespace Utal.Icc.Mm.Mvc.Models;
 /// <summary>
 /// Represents a user from the Computer Engineering carrer at University of Talca.
 /// </summary>
-public class IccUserViewModel : ViewModel {
+public class IccUserViewModel : IccViewModel {
 	/// <summary>
 	/// User's first name.
 	/// </summary>

@@ -1,13 +1,12 @@
-@using Microsoft.AspNetCore.Identity
+﻿@using Microsoft.AspNetCore.Identity
 
 @using Utal.Icc.Mm.Mvc
 @using Utal.Icc.Mm.Mvc.Models
-@using Utal.Icc.Mm.Mvc.Models
-@using Utal.Icc.Mm.Mvc.Models.Shared
+@using Utal.Icc.Mm.Mvc.Views.Shared
 
-@model Paginator<IccUserViewModel>
+@model Paginator<IccTeacherViewModel>
 
-@inject UserManager<ApplicationUser> _userManager
+@inject UserManager<IccTeacher> _userManager
 
 @{
 	this.ViewData["Title"] = "Profesores";

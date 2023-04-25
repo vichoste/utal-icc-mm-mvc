@@ -4,7 +4,7 @@ using Utal.Icc.Mm.Mvc.Models;
 
 namespace Utal.Icc.Mm.Mvc;
 
-public class Paginator<T> : List<T> where T : ViewModel {
+public class Paginator<T> : List<T> where T : IccViewModel {
 	public int PageIndex { get; protected set; }
 	public int TotalPages { get; protected set; }
 	public bool HasPreviousPage => this.PageIndex > 1;

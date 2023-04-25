@@ -37,7 +37,7 @@ public class IccDbContext : IdentityDbContext<IccUser> {
 	/// <summary>
 	/// Creates the database context.
 	/// </summary>
-	/// <param name="options">Database options.</param>
+	/// <param name="options">Database options injection.</param>
 	public IccDbContext(DbContextOptions<IccDbContext> options) : base(options) { }
 
 	/// <summary>

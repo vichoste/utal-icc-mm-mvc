@@ -5,7 +5,7 @@ namespace Utal.Icc.Mm.Mvc.Models;
 /// <summary>
 /// Abstraction of a view model.
 /// </summary>
-public abstract class ViewModel {
+public abstract class IccViewModel {
 	/// <summary>
 	/// User (ID).
 	/// </summary>
