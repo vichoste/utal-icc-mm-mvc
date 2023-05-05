@@ -21,6 +21,9 @@ public class IccUserViewModel : IccViewModel {
 	/// </summary>
 	[DataType(DataType.EmailAddress), Display(Name = "E-mail"), EmailAddress]
 	public string? Email { get; set; }
+	/// <summary>
+	/// User's password.
+	/// </summary>
 	[DataType(DataType.Password), Display(Name = "Contraseña")]
 	public string? Password { get; set; }
 	/// <summary>
