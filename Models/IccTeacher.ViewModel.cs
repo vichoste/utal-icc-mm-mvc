@@ -4,11 +4,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Utal.Icc.Mm.Mvc.Models;
 
 /// <summary>
-/// Represents a teacher from the Computer Engineering carrer at University of Talca.
+/// Represents a teacher from the Computer Engineering career at University of Talca.
 /// </summary>
 public class IccTeacherViewModel : IccUserViewModel {
 	/// <summary>
-	/// Indicates if this teacher is not necessarily a teacher from the Computer Engineering carrer.
+	/// Indicates if this teacher is not necessarily a teacher from the Computer Engineering career.
 	/// </summary>
 	[Display(Name = "Invitado(a)")]
 	public bool IsGuest { get; set; }
@@ -40,7 +40,7 @@ public class IccTeacherViewModel : IccUserViewModel {
 	/// </summary>
 	public bool IsCommittee { get; set; }
 	/// <summary>
-	/// Check if this teacher is the director of the Computer Engineering carrer.
+	/// Check if this teacher is the director of the Computer Engineering career.
 	/// </summary>
 	public bool IsDirector { get; set; }
 	/// <summary>

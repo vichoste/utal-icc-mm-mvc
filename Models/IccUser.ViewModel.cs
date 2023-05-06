@@ -3,7 +3,7 @@
 namespace Utal.Icc.Mm.Mvc.Models;
 
 /// <summary>
-/// Represents a user from the Computer Engineering carrer at University of Talca.
+/// Represents a user from the Computer Engineering career at University of Talca.
 /// </summary>
 public class IccUserViewModel : IccViewModel {
 	/// <summary>

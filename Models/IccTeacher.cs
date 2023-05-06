@@ -3,7 +3,7 @@
 namespace Utal.Icc.Mm.Mvc.Models;
 
 /// <summary>
-/// Represents a teacher from the Computer Engineering carrer at University of Talca.
+/// Represents a teacher from the Computer Engineering career at University of Talca.
 /// </summary>
 public class IccTeacher : IccUser {
 	#region Properties
@@ -12,7 +12,7 @@ public class IccTeacher : IccUser {
 	/// </summary>
 	public enum TeacherRole {
 		/// <summary>
-		/// Director of the Computer Engineering carrer.
+		/// Director of the Computer Engineering career.
 		/// </summary>
 		Director,
 		/// <summary>
@@ -29,7 +29,7 @@ public class IccTeacher : IccUser {
 		Assistant
 	}
 	/// <summary>
-	/// Indicates if this teacher is not necessarily a teacher from the Computer Engineering carrer.
+	/// Indicates if this teacher is not necessarily a teacher from the Computer Engineering career.
 	/// </summary>
 	public bool IsGuest { get; set; }
 	/// <summary>

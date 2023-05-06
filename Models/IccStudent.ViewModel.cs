@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Utal.Icc.Mm.Mvc.Models;
 
 /// <summary>
-/// Represents a student from the Computer Engineering carrer at University of Talca.
+/// Represents a student from the Computer Engineering career at University of Talca.
 /// </summary>
 public class IccStudentViewModel : IccUserViewModel {
 	/// <summary>

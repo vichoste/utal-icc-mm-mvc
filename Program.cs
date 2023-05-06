@@ -11,14 +11,6 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<IccDbContext>(options => options.UseSqlServer(defaultConnection));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddIdentity<IccUser, IdentityRole>().AddEntityFrameworkStores<IccDbContext>().AddDefaultTokenProviders();
-builder.Services.Configure<IdentityOptions>(options =>{
-	options.Password.RequireDigit = true;
-	options.Password.RequireLowercase = true;
-	options.Password.RequireUppercase = true;
-	options.Password.RequireNonAlphanumeric = false;
-	options.Password.RequiredLength = 6;
-	options.Password.RequiredUniqueChars = 1;
-});
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 
@@ -52,7 +44,4 @@ _ = app.MapControllerRoute(
 	name: "default",
 	pattern: "{controller=Home}/{action=Index}/{id?}"
 );
-_ = app.MapControllerRoute(
-	name: "default",
-	pattern: "{controller=Home}/{action=Index}/{id?}");
 app.Run();
