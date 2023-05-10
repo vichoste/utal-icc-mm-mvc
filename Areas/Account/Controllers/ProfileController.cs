@@ -8,7 +8,7 @@ using Utal.Icc.Mm.Mvc.Models;
 namespace Utal.Icc.Mm.Mvc.Areas.Account.Controllers;
 
 /// <summary>
-/// Controller for the user's profile.
+/// Controller for the <see cref="IccUser">user</see>'s profile.
 /// </summary>
 [Area("Account")]
 public class ProfileController : Controller {

@@ -45,7 +45,7 @@ public class Paginator<T> : List<T> where T : IccViewModel {
 	/// <param name="source">Items source.</param>
 	/// <param name="pageIndex">Page index.</param>
 	/// <param name="pageSize">Amount of items per page.</param>
-	/// <returns></returns>
+	/// <returns>A new paginator.</returns>
 	public static Paginator<T> Create(IQueryable<T> source, int pageIndex, int pageSize) {
 		var count = source.Count();
 		var items = source.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
@@ -90,7 +90,7 @@ public class Paginator<T> : List<T> where T : IccViewModel {
 	/// <param name="pageIndex">Page index.</param>
 	/// <param name="pageSize">Amount of items per page.</param>
 	/// <param name="parameters">Item parameters.</param>
-	/// <returns>Filtered paginator.</returns>
+	/// <returns>A filtered paginator.</returns>
 	public static Paginator<T> Filter(IQueryable<T> source, string searchString, int pageIndex, int pageSize, params string[] parameters) {
 		var result = new List<T>();
 		foreach (var parameter in parameters!) {
