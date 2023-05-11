@@ -15,13 +15,11 @@ public class SignOutController : Controller {
 	/// <summary>
 	/// Creates a new instance of <see cref="SignInController"/>.
 	/// </summary>
-	/// <param name="signInManager">Sign-in manager injection.</param>
 	public SignOutController(SignInManager<IccUser> signInManager) => this._signInManager = signInManager;
 
 	/// <summary>
 	/// Signs out the user.
 	/// </summary>
-	/// <returns>If the user is not authenticated, log off. Otherwise, return to home page.</returns>
 	public async Task<IActionResult> Index() {
 		if (this.User.Identity!.IsAuthenticated) {
 			await this._signInManager.SignOutAsync();

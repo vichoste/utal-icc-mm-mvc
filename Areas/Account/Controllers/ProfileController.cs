@@ -19,8 +19,6 @@ public class ProfileController : Controller {
 	/// <summary>
 	/// Creates a new instance of <see cref="ProfileController"/>.
 	/// </summary>
-	/// <param name="userManager">User manager injection.</param>
-	/// <param name="userStore">User store injection.</param>
 	public ProfileController(UserManager<IccUser> userManager, IUserStore<IccUser> userStore) {
 		this._userManager = userManager;
 		this._userStore = userStore;
@@ -55,7 +53,6 @@ public class ProfileController : Controller {
 	/// Changes the password of the user.
 	/// </summary>
 	/// <param name="model">Old, new and confirmation passwords.</param>
-	/// <returns>Returns to <see cref="Index"/> if successful. Otherwise, return <see cref="ChangePassword()"/> with the warning or error messages.</returns>
 	[Authorize, HttpPost, ValidateAntiForgeryToken]
 	public async Task<IActionResult> ChangePassword([FromForm] ChangePasswordViewModel model) {
 		var user = await this._userManager.GetUserAsync(this.User);
@@ -96,7 +93,6 @@ public class ProfileController : Controller {
 	/// Updates the student's profile.
 	/// </summary>
 	/// <param name="model">Updated information of the student.</param>
-	/// <returns>Same view with success message.</returns>
 	[Authorize, HttpPost, ValidateAntiForgeryToken]
 	public async Task<IActionResult> Student([FromForm] IccStudentViewModel model) {
 		var user = await this._userManager.GetUserAsync(this.User) as IccStudent;
@@ -139,7 +135,6 @@ public class ProfileController : Controller {
 	/// Updates the teacher's profile.
 	/// </summary>
 	/// <param name="model">Updated information of the teacher.</param>
-	/// <returns>Same view with success message.</returns>
 	[Authorize, HttpPost, ValidateAntiForgeryToken]
 	public async Task<IActionResult> Teacher([FromForm] IccTeacherViewModel model) {
 		var user = await this._userManager.GetUserAsync(this.User) as IccTeacher;
