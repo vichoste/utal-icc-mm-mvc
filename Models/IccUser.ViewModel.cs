@@ -20,12 +20,12 @@ public class IccUserViewModel : IccViewModel {
 	/// User's email.
 	/// </summary>
 	[DataType(DataType.EmailAddress), Display(Name = "E-mail"), EmailAddress]
-	public string? Email { get; set; }
+	public string Email { get; set; } = string.Empty;
 	/// <summary>
 	/// User's password.
 	/// </summary>
 	[DataType(DataType.Password), Display(Name = "Contraseña")]
-	public string? Password { get; set; }
+	public string Password { get; set; } = string.Empty;
 	/// <summary>
 	/// User's chlean RUT.
 	/// </summary>

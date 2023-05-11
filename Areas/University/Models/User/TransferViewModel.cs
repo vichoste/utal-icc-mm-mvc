@@ -9,16 +9,16 @@ public class TransferViewModel {
 	/// <summary>
 	/// Current director teacher's ID.
 	/// </summary>
-	[Display(Name = "ID del director de carrera actual")]
-	public string? CurrentDirectorTeacherId { get; set; }
+	[Required(ErrorMessage = "ID del(la) director(a) de carrera actual requerido."), Display(Name = "ID del(la) director(a) de carrera actual")]
+	public string CurrentDirectorTeacherId { get; set; } = string.Empty;
 	/// <summary>
 	/// New director teacher's ID.
 	/// </summary>
-	[Display(Name = "ID del nuevo director de carrera")]
-	public string? NewDirectorTeacherId { get; set; }
+	[Required(ErrorMessage = "ID del(la) nuevo(a) director(a) de carrera requerido."), Display(Name = "ID del(la) nuevo(a) director(a) de carrera")]
+	public string NewDirectorTeacherId { get; set; } = string.Empty;
 	/// <summary>
 	/// New director teacher's name.
 	/// </summary>
-	[Display(Name = "Nombre del nuevo director de carrera")]
-	public string? NewDirectorTeacherName { get; set; }
+	[Required(ErrorMessage = "Nombre del(la) nuevo(a) director(a) de carrera requerido."), Display(Name = "Nombre del(la) nuevo(a) director(a) de carrera.")]
+	public string NewDirectorTeacherName { get; set; } = string.Empty;
 }

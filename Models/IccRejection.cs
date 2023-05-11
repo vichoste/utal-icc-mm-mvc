@@ -7,7 +7,7 @@ public class IccRejection {
 	/// <summary>
 	/// Rejection (ID).
 	/// </summary>
-	public string? Id { get; set; }
+	public string Id { get; set; } = string.Empty;
 	/// <summary>
 	/// Rejection reason.
 	/// </summary>

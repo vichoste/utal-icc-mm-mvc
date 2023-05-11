@@ -10,22 +10,22 @@ public class FilterPartialViewModel {
 	/// Target action.
 	/// </summary>
 	[Display(Name = "Acción")]
-	public string? Action { get; set; }
+	public string Action { get; set; } = string.Empty;
 	/// <summary>
 	/// Target controller.
 	/// </summary>
 	[Display(Name = "Controlador")]
-	public string? Controller { get; set; }
+	public string Controller { get; set; } = string.Empty;
 	/// <summary>
 	/// Target area.
 	/// </summary>
 	[Display(Name = "Área")]
-	public string? Area { get; set; }
+	public string Area { get; set; } = string.Empty;
 	/// <summary>
 	/// Search string (the filter).
 	/// </summary>
 	[Display(Name = "Filtro")]
-	public string? SearchString { get; set; }
+	public string SearchString { get; set; } = string.Empty;
 
 	/// <summary>
 	/// Creates a filter.

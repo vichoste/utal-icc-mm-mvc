@@ -45,7 +45,7 @@ public class IccMemoir {
 	/// <summary>
 	/// Memoir (ID).
 	/// </summary>
-	public string? Id { get; set; }
+	public string Id { get; set; } = string.Empty;
 	/// <summary>
 	/// Memoir title.
 	/// </summary>

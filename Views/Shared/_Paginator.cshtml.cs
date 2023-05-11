@@ -10,17 +10,17 @@ public class PaginatorPartialViewModel {
 	/// Target action of the paginator.
 	/// </summary>
 	[Display(Name = "Acción")]
-	public string? Action { get; set; }
+	public string Action { get; set; } = string.Empty;
 	/// <summary>
 	/// Page index of the paginator.
 	/// </summary>
 	[Display(Name = "Índice de página")]
-	public int? PageIndex { get; set; }
+	public int PageIndex { get; set; }
 	/// <summary>
 	/// Total pages of the paginator.
 	/// </summary>
 	[Display(Name = "Total de páginas")]
-	public int? TotalPages { get; set; }
+	public int TotalPages { get; set; }
 	/// <summary>
 	/// Checks if the paginator has a previous page.
 	/// </summary>

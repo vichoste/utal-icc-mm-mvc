@@ -10,30 +10,30 @@ public class CsvFileHelper {
 	/// Student's first name.
 	/// </summary>
 	[Index(0)]
-	public string? FirstName { get; set; }
+	public string FirstName { get; set; } = string.Empty;
 	/// <summary>
 	/// Student's last name.
 	/// </summary>
 	[Index(1)]
-	public string? LastName { get; set; }
+	public string LastName { get; set; } = string.Empty;
 	/// <summary>
 	/// Student's university ID.
 	/// </summary>
 	[Index(2)]
-	public string? UniversityId { get; set; }
+	public string UniversityId { get; set; } = string.Empty;
 	/// <summary>
 	/// Student's RUT.
 	/// </summary>
 	[Index(3)]
-	public string? Rut { get; set; }
+	public string Rut { get; set; } = string.Empty;
 	/// <summary>
 	/// Student's email.
 	/// </summary>
 	[Index(4)]
-	public string? Email { get; set; }
+	public string Email { get; set; } = string.Empty;
 	/// <summary>
 	/// Student's password.
 	/// </summary>
 	[Index(5)]
-	public string? Password { get; set; }
+	public string Password { get; set; } = string.Empty;
 }

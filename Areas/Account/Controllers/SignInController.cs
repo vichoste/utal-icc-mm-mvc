@@ -29,6 +29,9 @@ public class SignInController : Controller {
 	/// <param name="model">Login form.</param>
 	[HttpPost, ValidateAntiForgeryToken]
 	public async Task<IActionResult> Index([FromForm] IndexViewModel model) {
+		if (!this.ModelState.IsValid) {
+			return this.View(model);
+		}
 		if (this.User.Identity!.IsAuthenticated) {
 			return this.RedirectToAction("Index", "Home", new { area = string.Empty });
 		}

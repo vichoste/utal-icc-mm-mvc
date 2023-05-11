@@ -9,6 +9,6 @@ public class CsvFileViewModel {
 	/// <summary>
 	/// CSV file.
 	/// </summary>
-	[Display(Name = "Archivo CSV")]
-	public IFormFile? CsvFile { get; set; }
+	[Required(ErrorMessage = "El archivo CSV de estudiantes es requerido."), Display(Name = "Archivo CSV")]
+	public IFormFile CsvFile { get; set; } = null!;
 }

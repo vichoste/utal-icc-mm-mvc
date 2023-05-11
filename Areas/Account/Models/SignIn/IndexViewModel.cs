@@ -10,12 +10,12 @@ public class IndexViewModel {
 	/// User's email.
 	/// </summary>
 	[Required(ErrorMessage = "El correo electrónico es requerido."), EmailAddress(ErrorMessage = "El correo electrónico no es válido."), Display(Name = "E-mail")]
-	public string? Email { get; set; }
+	public string Email { get; set; } = string.Empty;
 	/// <summary>
 	/// User's password.
 	/// </summary>
 	[Required(ErrorMessage = "La contraseña es requerida."), DataType(DataType.Password), StringLength(64, ErrorMessage = "La contraseña debe tener un mínimo de 6 caracteres.", MinimumLength = 6), Display(Name = "Contraseña")]
-	public string? Password { get; set; }
+	public string Password { get; set; } = string.Empty;
 	/// <summary>
 	/// Prompt to remember the user.
 	/// </summary>

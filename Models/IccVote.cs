@@ -20,7 +20,7 @@ public class IccVote {
 	/// <summary>
 	/// Vote ID.
 	/// </summary>
-	public string? Id { get; set; }
+	public string Id { get; set; } = string.Empty;
 	/// <inheritdoc cref="VoteType"></inheritdoc>
 	public VoteType Type { get; set; }
 	/// <summary>

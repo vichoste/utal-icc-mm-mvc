@@ -55,6 +55,9 @@ public class ProfileController : Controller {
 	/// <param name="model">Old, new and confirmation passwords.</param>
 	[Authorize, HttpPost, ValidateAntiForgeryToken]
 	public async Task<IActionResult> ChangePassword([FromForm] ChangePasswordViewModel model) {
+		if (!this.ModelState.IsValid) {
+			return this.View(model);
+		}
 		var user = await this._userManager.GetUserAsync(this.User);
 		if (user!.IsDeactivated) {
 			return this.RedirectToAction("Index", "Home", new { area = string.Empty });
@@ -95,6 +98,9 @@ public class ProfileController : Controller {
 	/// <param name="model">Updated information of the student.</param>
 	[Authorize, HttpPost, ValidateAntiForgeryToken]
 	public async Task<IActionResult> Student([FromForm] IccStudentViewModel model) {
+		if (!this.ModelState.IsValid) {
+			return this.View(model);
+		}
 		var user = await this._userManager.GetUserAsync(this.User) as IccStudent;
 		if (user!.IsDeactivated) {
 			return this.RedirectToAction("Index", "Home", new { area = string.Empty });
@@ -137,6 +143,9 @@ public class ProfileController : Controller {
 	/// <param name="model">Updated information of the teacher.</param>
 	[Authorize, HttpPost, ValidateAntiForgeryToken]
 	public async Task<IActionResult> Teacher([FromForm] IccTeacherViewModel model) {
+		if (!this.ModelState.IsValid) {
+			return this.View(model);
+		}
 		var user = await this._userManager.GetUserAsync(this.User) as IccTeacher;
 		if (user!.IsDeactivated) {
 			return this.RedirectToAction("Index", "Home", new { area = string.Empty });
