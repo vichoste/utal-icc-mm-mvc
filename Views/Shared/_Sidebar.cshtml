@@ -98,22 +98,6 @@
 							</div>
 						</div>
 					}
-					@if (this.User.IsInRole("Assistant")) {
-						<div class="menu-item has-sub">
-							<a href="#" class="menu-link">
-								<span class="menu-icon"><i class="fa fa-user-tie"></i></span>
-								<span class="menu-text">Profesor co-guía</span>
-								<span class="menu-caret"><b class="caret"></b></span>
-							</a>
-							<div class="menu-submenu">
-								<div class="menu-item">
-									<a href="@this.Url.Action("Students", "Memoir", new { area = "University" })" class="menu-link">
-										<span class="menu-text">Mis memoristas</span>
-									</a>
-								</div>
-							</div>
-						</div>
-					}
 				} else if (user is IccStudent) {
 					@if (this.User.IsInRole("Complete")) {
 						<div class="menu-item">

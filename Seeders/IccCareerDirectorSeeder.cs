@@ -4,17 +4,7 @@ using Utal.Icc.Mm.Mvc.Models;
 
 namespace Utal.Icc.Mm.Mvc.Seeders;
 
-/// <summary>
-/// Creates a default career director..
-/// </summary>
 public static class IccCareerDirectorSeeder {
-	/// <summary>
-	/// Seeds the database with a default career director.
-	/// </summary>
-	/// <param name="services">Inject the application's services.</param>
-	/// <param name="configuration">Inject the application's configuration.</param>
-	/// <param name="env">Inject the application's environment.</param>
-	/// <exception cref="InvalidOperationException"></exception>
 	public static async Task SeedAsync(IServiceProvider services, IConfiguration configuration, IWebHostEnvironment env) {
 		var userManager = services.GetRequiredService<UserManager<IccUser>>();
 		var userStore = services.GetRequiredService<IUserStore<IccUser>>();

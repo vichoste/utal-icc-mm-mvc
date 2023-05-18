@@ -1,33 +1,31 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.ComponentModel.DataAnnotations;
+
+using Microsoft.AspNetCore.Identity;
 
 namespace Utal.Icc.Mm.Mvc.Models;
 
-/// <summary>
-/// Represents a user from the Computer Engineering career at University of Talca.
-/// </summary>
 public class IccUser : IdentityUser {
-	/// <summary>
-	/// User's first name.
-	/// </summary>
+	[Display(Name = "ID"), Required]
+	public override string Id { get => base.Id; set => base.Id = value; }
+
+	[DataType(DataType.EmailAddress), Display(Name = "E-mail"), EmailAddress, Required]
+	public override string? Email { get => base.Email; set => base.Email = value; }
+
+	[Display(Name = "Nombre"), Required]
 	public string FirstName { get; set; } = string.Empty;
-	/// <summary>
-	/// User's last name.
-	/// </summary>
+
+	[Display(Name = "Apellido"), Required]
 	public string LastName { get; set; } = string.Empty;
-	/// <summary>
-	/// User's chlean RUT.
-	/// </summary>
+
+	[Display(Name = "RUT"), Required]
 	public string Rut { get; set; } = string.Empty;
-	/// <summary>
-	/// Checks if the user is deactivated.
-	/// </summary>
+
+	[Display(Name = "Desactivado(a)"), Required]
 	public bool IsDeactivated { get; set; }
-	/// <summary>
-	/// User creation timestamp.
-	/// </summary>
+
+	[Display(Name = "Creado(a)"), Required]
 	public DateTimeOffset CreatedAt { get; set; }
-	/// <summary>
-	/// User updated timestamp.
-	/// </summary>
+
+	[Display(Name = "Actualizado(a)"), Required]
 	public DateTimeOffset UpdatedAt { get; set; }
 }

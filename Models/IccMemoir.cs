@@ -1,93 +1,36 @@
-﻿namespace Utal.Icc.Mm.Mvc.Models;
+﻿using System.ComponentModel.DataAnnotations;
 
-/// <summary>
-/// Represents a memoir.
-/// </summary>
+namespace Utal.Icc.Mm.Mvc.Models;
+
 public class IccMemoir {
-	#region Properties
-	/// <summary>
-	/// Memoir phase.
-	/// </summary>
 	public enum MemoirPhase {
-		/// <summary>
-		/// Draft not visible to targets.
-		/// </summary>
 		Draft,
-		/// <summary>
-		/// Visible or published to targets.
-		/// </summary>
-		Visible,
-		/// <summary>
-		/// Memoir rejected by the guide teacher.
-		/// </summary>
-		RejectedByGuide,
-		/// <summary>
-		/// Memoir approved by the guide teacher.
-		/// </summary>
-		ApprovedByGuide,
-		/// <summary>
-		/// Memoir ready to be sent to commitee.
-		/// </summary>
-		ReadyByGuide,
-		/// <summary>
-		/// Memoir sent to commitee.
-		/// </summary>
+		SentToGuide,
 		SentToCommittee,
-		/// <summary>
-		/// Memoir rejected by the commitee.
-		/// </summary>
-		RejectedByCommittee,
-		/// <summary>
-		/// Memoir approved by the commitee.
-		/// </summary>
-		ApprovedByCommittee
+
 	}
-	/// <summary>
-	/// Memoir (ID).
-	/// </summary>
+
+	[Display(Name = "ID"), Required]
 	public string Id { get; set; } = string.Empty;
-	/// <summary>
-	/// Memoir title.
-	/// </summary>
+
+	[Display(Name = "Título"), Required]
 	public string Title { get; set; } = string.Empty;
-	/// <summary>
-	/// Memoir description.
-	/// </summary>
+
+	[Display(Name = "Descripción"), Required]
 	public string Description { get; set; } = string.Empty;
-	/// <inheritdoc cref="MemoirPhase"></inheritdoc>
+
+	[Display(Name = "Fase"), Required]
 	public MemoirPhase Phase { get; set; }
-	/// <summary>
-	/// Memoir creation timestamp.
-	/// </summary>
+
+	[Display(Name = "Creada"), Required]
 	public DateTimeOffset CreatedAt { get; set; }
-	/// <summary>
-	/// Memoir updated timestamp.
-	/// </summary>
+
+	[Display(Name = "Actualizada"), Required]
 	public DateTimeOffset UpdatedAt { get; set; }
-	#endregion
 
-	#region Student
-	/// <summary>
-	/// <see cref="IccStudent">Student</see> of the <see cref="IccTeacher">teacher</see>'s <see cref="IccMemoir">memoir</see>. It may be selected by the teacher previously or with <see cref="IccTeacherMemoir.Candidates">a list of candidates</see>.
-	/// </summary>
+	[Display(Name = "Estudiante")]
 	public virtual IccStudent? Student { get; set; }
-	#endregion
 
-	#region Teacher
-	/// <summary>
-	/// <see cref="IccTeacher">Guide teacher</see> of the memoir.
-	/// </summary>
+	[Display(Name = "Profesor guía")]
 	public virtual IccTeacher? GuideTeacher { get; set; }
-	/// <summary>
-	/// <see cref="IccTeacher">Assistant teachers</see> of the memoir.
-	/// </summary>
-	public virtual ICollection<IccTeacher> AssistantTeachers { get; set; } = new HashSet<IccTeacher>();
-	#endregion
-
-	#region Commitee
-	/// <summary>
-	/// <see cref="IccCommiteeRejection">Rejections</see> made by the <see cref="IccTeacher">commitee</see>.
-	/// </summary>
-	public virtual ICollection<IccCommiteeRejection> CommiteeRejections { get; set; } = new HashSet<IccCommiteeRejection>();
-	#endregion
 }
