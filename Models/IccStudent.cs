@@ -5,8 +5,19 @@ namespace Utal.Icc.Mm.Mvc.Models;
 
 public class IccStudent : IccUser {
 	public enum StudentRole {
+		[Display(Name = "Alumno memorista")]
 		Memorist,
+		[Display(Name = "Alumno regular")]
 		Regular
+	}
+
+	public enum PracticeStatus {
+		[Display(Name = "No está en alguna práctica")]
+		NotInPractice,
+		[Display(Name = "En la primera práctica")]
+		InFirstPractice,
+		[Display(Name = "En la segunda práctica")]
+		InSecondPractice
 	}
 
 	[Display(Name = "Número de matrícula")]
@@ -16,7 +27,7 @@ public class IccStudent : IccUser {
 	public string RemainingCourses { get; set; } = string.Empty;
 
 	[Display(Name = "En práctica")]
-	public int IsDoingThePractice { get; set; }
+	public PracticeStatus IsDoingThePractice { get; set; }
 
 	[Display(Name = "Trabajando")]
 	public bool IsWorking { get; set; }

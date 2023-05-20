@@ -23,9 +23,9 @@ public class IccUser : IdentityUser {
 	[Display(Name = "Desactivado(a)"), Required]
 	public bool IsDeactivated { get; set; }
 
-	[Display(Name = "Creado(a)"), Required]
+	[DataType(DataType.DateTime), Display(Name = "Creado(a)"), Required]
 	public DateTimeOffset CreatedAt { get; set; }
 
-	[Display(Name = "Actualizado(a)"), Required]
+	[DataType(DataType.DateTime), Display(Name = "Actualizado(a)"), Required]
 	public DateTimeOffset UpdatedAt { get; set; }
 }
