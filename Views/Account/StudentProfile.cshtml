@@ -3,7 +3,7 @@
 @model IccStudent
 
 @{
-	this.ViewData["Title"] = "Mi información";
+	this.ViewData["Title"] = "Mi perfil";
 	var practiceOptions = Enum.GetValues(typeof(IccStudent.StudentRole)).Cast<IccStudent.StudentRole>().Select(v => new SelectListItem {
 		Text = v.ToString(),
 		Value = ((int)v).ToString()
@@ -20,6 +20,7 @@
 				</div>
 				<div class="card-body">
 					@using (this.Html.BeginForm("Profile", "Account", FormMethod.Post)) {
+						@this.Html.AntiForgeryToken();
 						<div class="form-group mb-3">
 							@this.Html.LabelFor(m => m.FirstName, new { @class = "form-label" }):
 							@this.Html.DisplayFor(m => m.FirstName, new { @class = "form-control" })

@@ -86,14 +86,14 @@ public class AccountController : Controller {
 
 	[Authorize, HttpPost, ValidateAntiForgeryToken]
 	public async Task<IActionResult> Profile([FromForm] IccUser model) {
-		if (!this.ModelState.IsValid) {
-			return this.View(model);
-		}
 		var user = await this._userManager.GetUserAsync(this.User);
 		if (user!.IsDeactivated) {
 			return this.RedirectToAction("Index", "Home");
 		}
 		if (user is IccStudent student && model is IccStudent studentModel) {
+			if (!this.ModelState.IsValid) {
+				return this.View("StudentProfile", student);
+			}
 			student.RemainingCourses = studentModel.RemainingCourses;
 			student.IsDoingThePractice = studentModel.IsDoingThePractice;
 			student.UpdatedAt = DateTimeOffset.Now;
@@ -101,6 +101,9 @@ public class AccountController : Controller {
 			this.TempData["SuccessMessage"] = "Has actualizado tu perfil correctamente.";
 			return this.View();
 		} else if (user is IccTeacher teacher && model is IccTeacher teacherModel) {
+			if (!this.ModelState.IsValid) {
+				return this.View("TeacherProfile", teacher);
+			}
 			teacher.Office = teacherModel.Office;
 			teacher.Schedule = teacherModel.Schedule;
 			teacher.Specialization = teacherModel.Specialization;
