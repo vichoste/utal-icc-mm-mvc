@@ -1,0 +1,69 @@
+﻿@using Utal.Icc.Mm.Mvc.Models
+
+@model IccTeacher
+
+@{
+	this.ViewData["Title"] = "Mi información";
+}
+
+<div class="container">
+	<partial name="_Alerts" />
+	<div class="row justify-content-center">
+		<div class="col-10">
+			<div class="card">
+				<div class="card-header text-center">
+					@this.ViewData["Title"]
+				</div>
+				<div class="card-body">
+					@using (this.Html.BeginForm("Profile", "Account", FormMethod.Post)) {
+						<div class="form-group mb-3">
+							@this.Html.LabelFor(m => m.FirstName, new { @class = "form-label" }):
+							@this.Html.DisplayFor(m => m.FirstName, new { @class = "form-control" })
+						</div>
+						<div class="form-group mb-3">
+							@this.Html.LabelFor(m => m.LastName, new { @class = "form-label" }):
+							@this.Html.DisplayFor(m => m.LastName, new { @class = "form-control" })
+						</div>
+						<div class="form-group mb-3">
+							@this.Html.LabelFor(m => m.Rut, new { @class = "form-label" }):
+							@this.Html.DisplayFor(m => m.Rut, new { @class = "form-control" })
+						</div>
+						<div class="form-group mb-3">
+							@this.Html.LabelFor(m => m.Email, new { @class = "form-label" }):
+							@this.Html.DisplayFor(m => m.Email, new { @class = "form-control" })
+						</div>
+						<hr />
+						<div class="form-group mb-3">
+							@this.Html.LabelFor(m => m.Office, new { @class = "form-label" }):
+							@this.Html.DisplayFor(m => m.Office, new { @class = "form-control" })
+						</div>
+						<div class="form-group mb-3">
+							@this.Html.LabelFor(m => m.Schedule, new { @class = "form-label" })
+							@this.Html.TextBoxFor(m => m.Schedule, new { @class = "form-control" })
+						</div>
+						<div class="form-check mb-3">
+							@this.Html.LabelFor(m => m.Specialization, new { @class = "form-check-label" })
+							@this.Html.TextBoxFor(m => m.Specialization, new { @class = "form-check-input" })
+						</div>
+						<hr />
+						<div class="form-group mb-3 text-muted">
+							@this.Html.LabelFor(m => m.CreatedAt, new { @class = "form-label" }):
+							@this.Html.DisplayFor(m => m.CreatedAt, new { @class = "form-control" })
+						</div>
+						<div class="form-group mb-3 text-muted">
+							@this.Html.LabelFor(m => m.UpdatedAt, new { @class = "form-label" }):
+							@this.Html.DisplayFor(m => m.UpdatedAt, new { @class = "form-control" })
+						</div>
+						<div class="row text-center">
+							<div class="col">
+								<div class="btn-group">
+									<button type="submit" class="btn btn-primary">Actualizar perfil</button>
+								</div>
+							</div>
+						</div>
+					}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

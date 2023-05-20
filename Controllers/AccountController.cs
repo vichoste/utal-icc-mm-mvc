@@ -66,7 +66,7 @@ public class AccountController : Controller {
 		user.UpdatedAt = DateTimeOffset.Now;
 		_ = await this._userManager.UpdateAsync(user);
 		this.TempData["SuccessMessage"] = "Has cambiado tu contraseña correctamente.";
-		return this.RedirectToAction("Index", "Profile");
+		return this.RedirectToAction("Index", "Home");
 	}
 
 	[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0046:Convert to conditional expression", Justification = "Code legibility")]
@@ -75,7 +75,13 @@ public class AccountController : Controller {
 		if (user!.IsDeactivated) {
 			return this.RedirectToAction("Index", "Home");
 		}
-		return this.View(user);
+		if (user is IccStudent student) {
+			return this.View("StudentProfile", student);
+		}
+		if (user is IccTeacher teacher) {
+			return this.View("TeacherProfile", teacher);
+		}
+		return this.NotFound();
 	}
 
 	[Authorize, HttpPost, ValidateAntiForgeryToken]
@@ -87,18 +93,22 @@ public class AccountController : Controller {
 		if (user!.IsDeactivated) {
 			return this.RedirectToAction("Index", "Home");
 		}
-		user.RemainingCourses = model.RemainingCourses;
-		user.IsDoingThePractice = model.CurrentPractice;
-		user.IsWorking = model.IsWorking;
-		user.UpdatedAt = DateTimeOffset.Now;
-		_ = await this._userManager.UpdateAsync(user);
-		var output = new IccStudentViewModel {
-			UniversityId = user.UniversityId,
-			RemainingCourses = user.RemainingCourses,
-			CurrentPractice = user.IsDoingThePractice,
-			IsWorking = user.IsWorking
-		};
-		this.ViewBag.SuccessMessage = "Has actualizado tu perfil correctamente.";
-		return this.View(output);
+		if (user is IccStudent student && model is IccStudent studentModel) {
+			student.RemainingCourses = studentModel.RemainingCourses;
+			student.IsDoingThePractice = studentModel.IsDoingThePractice;
+			student.UpdatedAt = DateTimeOffset.Now;
+			_ = await this._userManager.UpdateAsync(student);
+			this.TempData["SuccessMessage"] = "Has actualizado tu perfil correctamente.";
+			return this.View();
+		} else if (user is IccTeacher teacher && model is IccTeacher teacherModel) {
+			teacher.Office = teacherModel.Office;
+			teacher.Schedule = teacherModel.Schedule;
+			teacher.Specialization = teacherModel.Specialization;
+			teacher.UpdatedAt = DateTimeOffset.Now;
+			_ = await this._userManager.UpdateAsync(teacher);
+			this.TempData["SuccessMessage"] = "Has actualizado tu perfil correctamente.";
+			return this.View();
+		}
+		return this.NotFound();
 	}
 }
