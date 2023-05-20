@@ -22,7 +22,7 @@
 				<span class="bar"></span>
 			</button>
 		</div>
-		@this.Html.ActionLink("Memorias", "Index", "Home", new { area = string.Empty }, new { @id = "brand", @class = "h3 text-dark" })
+		@this.Html.ActionLink("Memorias", "Index", "Home", new { @id = "brand", @class = "h3 text-dark" })
 	</div>
 	<div class="menu d-flex justify-content-end">
 		<div class="menu-item dropdown">
@@ -45,18 +45,17 @@
 			</a>
 			<div class="dropdown-menu dropdown-menu-end me-lg-3">
 				@if (this.User.Identity!.IsAuthenticated) {
-					<a class="dropdown-item d-flex align-items-center" href="@this.Url.Action("Index", "Profile", new { area = "Account" })">Mi información <i class="fa fa-user-circle fa-fw ms-auto text-gray-400 f-s-16"></i></a>
 					@if (user is IccTeacher) {
-						<a class="dropdown-item d-flex align-items-center" href="@this.Url.Action("Teacher", "Profile", new { area = "Account" })">Mi perfil<i class="fa fa-user-tie fa-fw ms-auto text-gray-400 f-s-16"></i></a>
+						<a class="dropdown-item d-flex align-items-center" href="@this.Url.Action("Profile", "Account")">Mi perfil<i class="fa fa-user-tie fa-fw ms-auto text-gray-400 f-s-16"></i></a>
 					}
 					@if (user is IccStudent) {
-						<a class="dropdown-item d-flex align-items-center" href="@this.Url.Action("Student", "Profile", new { area = "Account" })">Mi perfil <i class="fa fa-user-graduate fa-fw ms-auto text-gray-400 f-s-16"></i></a>
+						<a class="dropdown-item d-flex align-items-center" href="@this.Url.Action("Profile", "Account")">Mi perfil <i class="fa fa-user-graduate fa-fw ms-auto text-gray-400 f-s-16"></i></a>
 					}
-					<a class="dropdown-item d-flex align-items-center" href="@this.Url.Action("ChangePassword", "Profile", new { area = "Account" })">Contraseña <i class="fa fa-key fa-fw ms-auto text-gray-400 f-s-16"></i></a>
+					<a class="dropdown-item d-flex align-items-center" href="@this.Url.Action("Password", "Account")">Contraseña <i class="fa fa-key fa-fw ms-auto text-gray-400 f-s-16"></i></a>
 					<div class="dropdown-divider"></div>
-					<a class="dropdown-item d-flex align-items-center" href="@this.Url.Action("Index", "SignOut", new { area = "Account" })">Cerrar sesión <i class="fa fa-toggle-off fa-fw ms-auto text-gray-400 f-s-16"></i></a>
+					<a class="dropdown-item d-flex align-items-center" href="@this.Url.Action("Logout", "Account")">Cerrar sesión <i class="fa fa-toggle-off fa-fw ms-auto text-gray-400 f-s-16"></i></a>
 				} else {
-					<a class="dropdown-item d-flex align-items-center" href="@this.Url.Action("Index", "SignIn", new { area = "Account" })">Iniciar sesión <i class="fa fa-arrow-right-to-bracket fa-fw ms-auto text-gray-400 f-s-16"></i></a>
+					<a class="dropdown-item d-flex align-items-center" href="@this.Url.Action("Login", "Account")">Iniciar sesión <i class="fa fa-arrow-right-to-bracket fa-fw ms-auto text-gray-400 f-s-16"></i></a>
 				}
 			</div>
 		</div>

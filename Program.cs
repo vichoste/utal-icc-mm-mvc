@@ -19,7 +19,7 @@ using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
 var configuration = services.GetRequiredService<IConfiguration>();
 var environment = services.GetRequiredService<IWebHostEnvironment>();
-await RoleSeeder.SeedAsync(services);
+await IccRoleSeeder.SeedAsync(services);
 await IccCareerDirectorSeeder.SeedAsync(services, configuration, environment);
 if (!app.Environment.IsDevelopment()) {
 	_ = app.UseExceptionHandler("/Home/Error");
