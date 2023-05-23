@@ -10,22 +10,22 @@ public class IccMemoir {
 
 	}
 
-	[Display(Name = "ID"), Required]
+	[Display(Name = "ID")]
 	public string Id { get; set; } = string.Empty;
 
-	[Display(Name = "Título"), Required]
+	[Display(Name = "Título")]
 	public string Title { get; set; } = string.Empty;
 
-	[Display(Name = "Descripción"), Required]
+	[Display(Name = "Descripción")]
 	public string Description { get; set; } = string.Empty;
 
-	[Display(Name = "Fase"), Required]
+	[Display(Name = "Fase")]
 	public MemoirPhase Phase { get; set; }
 
-	[Display(Name = "Creada"), Required]
+	[Display(Name = "Creada")]
 	public DateTimeOffset CreatedAt { get; set; }
 
-	[Display(Name = "Actualizada"), Required]
+	[Display(Name = "Actualizada")]
 	public DateTimeOffset UpdatedAt { get; set; }
 
 	[Display(Name = "Estudiante")]

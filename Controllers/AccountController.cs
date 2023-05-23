@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 using Utal.Icc.Mm.Mvc.Models;
-using Utal.Icc.Mm.Mvc.Models.Dtos;
+using Utal.Icc.Mm.Mvc.Views.Account;
 
 namespace Utal.Icc.Mm.Mvc.Controllers;
 
@@ -23,17 +23,14 @@ public class AccountController : Controller {
 	public IActionResult Login() => this.User.Identity!.IsAuthenticated ? this.RedirectToAction("Index", "Home") : this.View();
 
 	[HttpPost, ValidateAntiForgeryToken]
-	public async Task<IActionResult> Login([FromForm] LoginDto dto) {
-		if (!this.ModelState.IsValid) {
-			return this.View(dto);
-		}
+	public async Task<IActionResult> Login([FromForm] Login dto) {
 		if (this.User.Identity!.IsAuthenticated) {
 			return this.RedirectToAction("Index", "Home");
 		}
 		var result = await this._signInManager.PasswordSignInAsync(dto.Email, dto.Password, dto.RememberMe, false);
 		if (!result.Succeeded) {
 			this.ViewBag.DangerMessage = "Credenciales incorrectas.";
-			return this.View(new LoginDto());
+			return this.View(dto);
 		}
 		return this.RedirectToAction("Index", "Home");
 	}
@@ -49,17 +46,14 @@ public class AccountController : Controller {
 	public IActionResult Password() => this.View();
 
 	[Authorize, HttpPost, ValidateAntiForgeryToken]
-	public async Task<IActionResult> Password([FromForm] PasswordDto dto) {
-		if (!this.ModelState.IsValid) {
-			return this.View(dto);
-		}
+	public async Task<IActionResult> Password([FromForm] Password dto) {
 		var user = await this._userManager.GetUserAsync(this.User);
 		if (user!.IsDeactivated) {
 			return this.RedirectToAction("Index", "Home");
 		}
 		var result = await this._userManager.ChangePasswordAsync(user, dto.CurrentPassword, dto.NewPassword);
 		if (!result.Succeeded) {
-			this.ViewBag.DangerMessage = "Contraseña incorrecta.";
+			this.ViewBag.DangerMessage = "Error al cambiar tu contraseña.";
 			this.ViewBag.DangerMessages = result.Errors.Select(e => e.Description).ToList();
 			return this.View(dto);
 		}
@@ -85,32 +79,36 @@ public class AccountController : Controller {
 	}
 
 	[Authorize, HttpPost, ValidateAntiForgeryToken]
-	public async Task<IActionResult> Profile([FromForm] IccUser model) {
+	public async Task<IActionResult> StudentProfile([FromForm] IccStudent model) {
 		var user = await this._userManager.GetUserAsync(this.User);
 		if (user!.IsDeactivated) {
 			return this.RedirectToAction("Index", "Home");
 		}
-		if (user is IccStudent student && model is IccStudent studentModel) {
-			if (!this.ModelState.IsValid) {
-				return this.View("StudentProfile", student);
-			}
-			student.RemainingCourses = studentModel.RemainingCourses;
-			student.IsDoingThePractice = studentModel.IsDoingThePractice;
+		if (user is IccStudent student) {
+			student.RemainingCourses = model.RemainingCourses;
+			student.IsDoingThePractice = model.IsDoingThePractice;
 			student.UpdatedAt = DateTimeOffset.Now;
 			_ = await this._userManager.UpdateAsync(student);
 			this.TempData["SuccessMessage"] = "Has actualizado tu perfil correctamente.";
-			return this.View();
-		} else if (user is IccTeacher teacher && model is IccTeacher teacherModel) {
-			if (!this.ModelState.IsValid) {
-				return this.View("TeacherProfile", teacher);
-			}
-			teacher.Office = teacherModel.Office;
-			teacher.Schedule = teacherModel.Schedule;
-			teacher.Specialization = teacherModel.Specialization;
+			return this.RedirectToAction("Profile", "Account");
+		}
+		return this.NotFound();
+	}
+
+	[Authorize, HttpPost, ValidateAntiForgeryToken]
+	public async Task<IActionResult> TeacherProfile([FromForm] IccTeacher model) {
+		var user = await this._userManager.GetUserAsync(this.User);
+		if (user!.IsDeactivated) {
+			return this.RedirectToAction("Index", "Home");
+		}
+		if (user is IccTeacher teacher) {
+			teacher.Office = model.Office;
+			teacher.Schedule = model.Schedule;
+			teacher.Specialization = model.Specialization;
 			teacher.UpdatedAt = DateTimeOffset.Now;
 			_ = await this._userManager.UpdateAsync(teacher);
 			this.TempData["SuccessMessage"] = "Has actualizado tu perfil correctamente.";
-			return this.View();
+			return this.RedirectToAction("Profile", "Account");
 		}
 		return this.NotFound();
 	}

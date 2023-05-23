@@ -15,7 +15,7 @@
 					@this.ViewData["Title"]
 				</div>
 				<div class="card-body">
-					@using (this.Html.BeginForm("Profile", "Account", FormMethod.Post)) {
+					@using (this.Html.BeginForm("TeacherProfile", "Account", FormMethod.Post)) {
 						@this.Html.AntiForgeryToken();
 						<div class="form-group mb-3">
 							@this.Html.LabelFor(m => m.FirstName, new { @class = "form-label" }):
