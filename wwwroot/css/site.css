@@ -1,9 +1,7 @@
-﻿.brand a {
+﻿#brand {
 	color: black;
 	text-decoration: none;
-	margin: 0;
-	font-size: x-large;
-	font-weight: bold;
+	margin: 0
 }
 
 th a {

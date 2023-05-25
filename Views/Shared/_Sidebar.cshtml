@@ -20,7 +20,7 @@
 					Mis roles y herramientas
 				</div>
 				@if (user is IccTeacher) {
-					@if (this.User.IsInRole("Director")) {
+					@if (this.User.IsInRole("IccDirector")) {
 						<div class="menu-item has-sub">
 							<a href="#" class="menu-link">
 								<span class="menu-icon"><i class="fa fa-university"></i></span>
@@ -46,7 +46,7 @@
 							</div>
 						</div>
 					}
-					@if (this.User.IsInRole("Committee")) {
+					@if (this.User.IsInRole("IccCommittee")) {
 						<div class="menu-item has-sub">
 							<a href="#" class="menu-link">
 								<span class="menu-icon"><i class="fa fa-people-line"></i></span>
@@ -62,7 +62,7 @@
 							</div>
 						</div>
 					}
-					@if (this.User.IsInRole("Guide")) {
+					@if (this.User.IsInRole("IccGuide")) {
 						<div class="menu-item has-sub">
 							<a href="#" class="menu-link">
 								<span class="menu-icon"><i class="fa fa-user-tie"></i></span>

@@ -9,15 +9,11 @@ public class FilterPartialViewModel {
 	[Display(Name = "Controlador")]
 	public string Controller { get; set; } = string.Empty;
 
-	[Display(Name = "Área")]
-	public string Area { get; set; } = string.Empty;
-
 	[Display(Name = "Filtro")]
 	public string SearchString { get; set; } = string.Empty;
 
-	public FilterPartialViewModel(string action, string controller, string area) {
+	public FilterPartialViewModel(string action, string controller) {
 		this.Action = action;
 		this.Controller = controller;
-		this.Area = area;
 	}
 }

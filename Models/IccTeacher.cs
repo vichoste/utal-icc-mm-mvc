@@ -4,13 +4,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Utal.Icc.Mm.Mvc.Models;
 
 public class IccTeacher : IccUser {
-	public enum TeacherRole {
+	public enum IccTeacherRole {
 		[Display(Name = "Director(a) de carrera")]
-		Director,
+		IccDirector,
 		[Display(Name = "Integrante del comité")]
-		Commitee,
+		IccCommittee,
 		[Display(Name = "Profesor guía")]
-		Guide
+		IccGuide
 	}
 
 	[Display(Name = "Invitado(a)")]

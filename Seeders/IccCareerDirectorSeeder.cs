@@ -37,7 +37,7 @@ public static class IccCareerDirectorSeeder {
 			await userStore.SetUserNameAsync(iccCareerDirector, email, CancellationToken.None);
 			await emailStore.SetEmailAsync(iccCareerDirector, email, CancellationToken.None);
 			_ = await userManager.CreateAsync(iccCareerDirector, password);
-			_ = await userManager.AddToRoleAsync(iccCareerDirector, "Director");
+			_ = await userManager.AddToRoleAsync(iccCareerDirector, "IccDirector");
 		}
 	}
 }
