@@ -3,7 +3,7 @@
 @model StudentProfile
 
 @{
-	this.ViewData["Title"] = "Mi perfil";
+	this.ViewData["Title"] = "Perfil de estudiante";
 }
 
 <div class="container">
@@ -43,7 +43,7 @@
 							@this.Html.TextBoxFor(m => m.RemainingCourses, new { @class = "form-control" })
 						</div>
 						<div class="form-check mb-3">
-							@this.Html.LabelFor(m => m.IsDoingThePractice, new { @class = "form-label" })
+							@this.Html.LabelFor(m => m.IsDoingThePractice, new { @class = "form-check-label" })
 							@this.Html.CheckBoxFor(m => m.IsDoingThePractice, new { @class = "form-check-input" })
 						</div>
 						<div class="form-check mb-3">
