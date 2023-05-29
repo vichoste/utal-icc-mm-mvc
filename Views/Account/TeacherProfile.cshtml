@@ -1,6 +1,6 @@
-﻿@using Utal.Icc.Mm.Mvc.Models
+﻿@using Utal.Icc.Mm.Mvc.Views.Account
 
-@model IccTeacher
+@model TeacherProfile
 
 @{
 	this.ViewData["Title"] = "Mi perfil";
@@ -46,19 +46,10 @@
 							@this.Html.LabelFor(m => m.Specialization, new { @class = "form-label" })
 							@this.Html.TextBoxFor(m => m.Specialization, new { @class = "form-control" })
 						</div>
-						<hr />
-						<div class="form-group mb-3 text-muted">
-							@this.Html.LabelFor(m => m.CreatedAt, new { @class = "form-label" }):
-							@this.Html.DisplayFor(m => m.CreatedAt, new { @class = "form-control" })
-						</div>
-						<div class="form-group mb-3 text-muted">
-							@this.Html.LabelFor(m => m.UpdatedAt, new { @class = "form-label" }):
-							@this.Html.DisplayFor(m => m.UpdatedAt, new { @class = "form-control" })
-						</div>
 						<div class="row text-center">
 							<div class="col">
 								<div class="btn-group">
-									<button type="submit" class="btn btn-primary">Actualizar perfil</button>
+									<button type="submit" class="btn btn-warning">Editar</button>
 								</div>
 							</div>
 						</div>

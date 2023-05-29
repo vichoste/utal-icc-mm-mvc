@@ -15,7 +15,7 @@
 				<div class="menu-header">
 					Debes iniciar sesión para visualizar tus roles y herramientas
 				</div>
-			} else if (!user!.IsDeactivated) {
+			} else if (user is not null) {
 				<div class="menu-header">
 					Mis roles y herramientas
 				</div>
@@ -150,10 +150,6 @@
 						</div>
 					}
 				}
-			} else if (user.IsDeactivated) {
-				<div class="menu-header">
-					Cuenta desactivada
-				</div>
 			}
 		</div>
 	</div>

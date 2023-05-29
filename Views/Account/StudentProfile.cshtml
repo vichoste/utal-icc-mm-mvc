@@ -1,13 +1,9 @@
-﻿@using Utal.Icc.Mm.Mvc.Models
+﻿@using Utal.Icc.Mm.Mvc.Views.Account
 
-@model IccStudent
+@model StudentProfile
 
 @{
 	this.ViewData["Title"] = "Mi perfil";
-	var practiceOptions = Enum.GetValues(typeof(IccStudent.StudentRole)).Cast<IccStudent.StudentRole>().Select(v => new SelectListItem {
-		Text = v.ToString(),
-		Value = ((int)v).ToString()
-	});
 }
 
 <div class="container">
@@ -47,26 +43,17 @@
 							@this.Html.TextBoxFor(m => m.RemainingCourses, new { @class = "form-control" })
 						</div>
 						<div class="form-check mb-3">
+							@this.Html.LabelFor(m => m.IsDoingThePractice, new { @class = "form-label" })
+							@this.Html.CheckBoxFor(m => m.IsDoingThePractice, new { @class = "form-check-input" })
+						</div>
+						<div class="form-check mb-3">
 							@this.Html.LabelFor(m => m.IsWorking, new { @class = "form-check-label" })
 							@this.Html.CheckBoxFor(m => m.IsWorking, new { @class = "form-check-input" })
-						</div>
-						<div class="form-group mb-3">
-							@this.Html.LabelFor(m => m.IsDoingThePractice, new { @class = "form-label" })
-							@this.Html.DropDownListFor(m => m.IsDoingThePractice, practiceOptions, "Selecciona tu estado de práctica", new { @class = "form-control" })
-						</div>
-						<hr />
-						<div class="form-group mb-3 text-muted">
-							@this.Html.LabelFor(m => m.CreatedAt, new { @class = "form-label" }):
-							@this.Html.DisplayFor(m => m.CreatedAt, new { @class = "form-control" })
-						</div>
-						<div class="form-group mb-3 text-muted">
-							@this.Html.LabelFor(m => m.UpdatedAt, new { @class = "form-label" }):
-							@this.Html.DisplayFor(m => m.UpdatedAt, new { @class = "form-control" })
 						</div>
 						<div class="row text-center">
 							<div class="col">
 								<div class="btn-group">
-									<button type="submit" class="btn btn-primary">Actualizar perfil</button>
+									<button type="submit" class="btn btn-warning">Editar</button>
 								</div>
 							</div>
 						</div>

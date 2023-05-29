@@ -30,9 +30,7 @@ public static class IccCareerDirectorSeeder {
 				Email = email,
 				FirstName = firstName,
 				LastName = lastName,
-				Rut = rut,
-				CreatedAt = DateTimeOffset.UtcNow,
-				UpdatedAt = DateTimeOffset.UtcNow
+				Rut = rut
 			};
 			await userStore.SetUserNameAsync(iccCareerDirector, email, CancellationToken.None);
 			await emailStore.SetEmailAsync(iccCareerDirector, email, CancellationToken.None);

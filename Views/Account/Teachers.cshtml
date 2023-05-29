@@ -51,24 +51,13 @@
 					<tbody>
 						@foreach (var item in this.ViewBag.Teachers) {
 							<tr>
-								@if (item.IsDeactivated is true) {
-									<td class="text-muted">@item.FirstName</td>
-									<td class="text-muted">@item.LastName</td>
-									<td class="text-muted">@item.Rut</td>
-									<td class="text-muted">@item.Email</td>
-									<td>
-										@this.Html.ActionLink("Activar", "Toggle", "User", new { id = item.Id }, new { @class = "btn btn-success mb-3" })
-									</td>
-								} else {
-									<td>@item.FirstName</td>
-									<td>@item.LastName</td>
-									<td>@item.Rut</td>
-									<td>@item.Email</td>
-									<td>
-										@this.Html.ActionLink("Editar", "Edit", "User", new { id = item.Id }, new { @class = "btn btn-yellow mb-3" })
-										@this.Html.ActionLink("Desactivar", "Toggle", "User", new { id = item.Id }, new { @class = "btn btn-danger mb-3" })
-									</td>
-								}
+								<td>@item.FirstName</td>
+								<td>@item.LastName</td>
+								<td>@item.Rut</td>
+								<td>@item.Email</td>
+								<td>
+									@this.Html.ActionLink("Editar", "Edit", "Account", new { id = item.Id }, new { @class = "btn btn-warning mb-3" })
+								</td>
 							</tr>
 						}
 					</tbody>

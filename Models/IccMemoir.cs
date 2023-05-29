@@ -7,7 +7,7 @@ public class IccMemoir {
 		Draft,
 		SentToGuide,
 		SentToCommittee,
-
+		//
 	}
 
 	[Display(Name = "ID")]
@@ -21,12 +21,6 @@ public class IccMemoir {
 
 	[Display(Name = "Fase")]
 	public MemoirPhase Phase { get; set; }
-
-	[Display(Name = "Creada")]
-	public DateTimeOffset CreatedAt { get; set; }
-
-	[Display(Name = "Actualizada")]
-	public DateTimeOffset UpdatedAt { get; set; }
 
 	[Display(Name = "Estudiante")]
 	public virtual IccStudent? Student { get; set; }

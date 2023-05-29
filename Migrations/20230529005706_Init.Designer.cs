@@ -12,7 +12,7 @@ using Utal.Icc.Mm.Mvc.Data;
 namespace Utal.Icc.Mm.Mvc.Migrations
 {
     [DbContext(typeof(IccDbContext))]
-    [Migration("20230525010345_Init")]
+    [Migration("20230529005706_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -178,9 +178,6 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("datetimeoffset");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -198,9 +195,6 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTimeOffset>("UpdatedAt")
-                        .HasColumnType("datetimeoffset");
 
                     b.HasKey("Id");
 
@@ -225,9 +219,6 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("datetimeoffset");
-
                     b.Property<string>("Discriminator")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -242,9 +233,6 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeactivated")
-                        .HasColumnType("bit");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -282,9 +270,6 @@ namespace Utal.Icc.Mm.Mvc.Migrations
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset>("UpdatedAt")
-                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
@@ -341,8 +326,8 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                 {
                     b.HasBaseType("Utal.Icc.Mm.Mvc.Models.IccUser");
 
-                    b.Property<int>("IsDoingThePractice")
-                        .HasColumnType("int");
+                    b.Property<bool>("IsDoingThePractice")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsWorking")
                         .HasColumnType("bit");
