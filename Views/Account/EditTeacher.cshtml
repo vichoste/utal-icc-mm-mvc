@@ -1,9 +1,9 @@
 ﻿@using Utal.Icc.Mm.Mvc.Views.Account
 
-@model TeacherProfile
+@model EditTeacher
 
 @{
-	this.ViewData["Title"] = "Perfil de profesor(a)";
+	this.ViewData["Title"] = "Editar profesor(a)";
 }
 
 <div class="container">
@@ -15,23 +15,23 @@
 					@this.ViewData["Title"]
 				</div>
 				<div class="card-body">
-					@using (this.Html.BeginForm("TeacherProfile", "Account", FormMethod.Post)) {
+					@using (this.Html.BeginForm("EditTeacher", "Account", FormMethod.Post)) {
 						@this.Html.AntiForgeryToken();
 						<div class="form-group mb-3">
 							@this.Html.LabelFor(m => m.FirstName, new { @class = "form-label" }):
-							@this.Html.DisplayFor(m => m.FirstName, new { @class = "form-control" })
+							@this.Html.TextBoxFor(m => m.FirstName, new { @class = "form-control" })
 						</div>
 						<div class="form-group mb-3">
 							@this.Html.LabelFor(m => m.LastName, new { @class = "form-label" }):
-							@this.Html.DisplayFor(m => m.LastName, new { @class = "form-control" })
+							@this.Html.TextBoxFor(m => m.LastName, new { @class = "form-control" })
 						</div>
 						<div class="form-group mb-3">
 							@this.Html.LabelFor(m => m.Rut, new { @class = "form-label" }):
-							@this.Html.DisplayFor(m => m.Rut, new { @class = "form-control" })
+							@this.Html.TextBoxFor(m => m.Rut, new { @class = "form-control" })
 						</div>
 						<div class="form-group mb-3">
 							@this.Html.LabelFor(m => m.Email, new { @class = "form-label" }):
-							@this.Html.DisplayFor(m => m.Email, new { @class = "form-control" })
+							@this.Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
 						</div>
 						<hr />
 						<div class="form-group mb-3">
@@ -39,16 +39,25 @@
 							@this.Html.TextBoxFor(m => m.Office, new { @class = "form-control" })
 						</div>
 						<div class="form-group mb-3">
-							@this.Html.LabelFor(m => m.Schedule, new { @class = "form-label" })
+							@this.Html.LabelFor(m => m.Schedule, new { @class = "form-label" }):
 							@this.Html.TextBoxFor(m => m.Schedule, new { @class = "form-control" })
 						</div>
 						<div class="form-group mb-3">
-							@this.Html.LabelFor(m => m.Specialization, new { @class = "form-label" })
+							@this.Html.LabelFor(m => m.Specialization, new { @class = "form-label" }):
 							@this.Html.TextBoxFor(m => m.Specialization, new { @class = "form-control" })
+						</div>
+						<div class="form-check mb-3">
+							@this.Html.LabelFor(m => m.IsCommittee, new { @class = "form-check-label" })
+							@this.Html.CheckBoxFor(m => m.IsCommittee, new { @class = "form-check-input" })
+						</div>
+						<div class="form-check mb-3">
+							@this.Html.LabelFor(m => m.IsGuide, new { @class = "form-check-label" })
+							@this.Html.CheckBoxFor(m => m.IsGuide, new { @class = "form-check-input" })
 						</div>
 						<div class="row text-center">
 							<div class="col">
 								<div class="btn-group">
+									@this.Html.ActionLink("Cancelar", "Teachers", "Account", new { area = string.Empty }, new { @class = "btn btn-secondary" })
 									<button type="submit" class="btn btn-warning">Editar</button>
 								</div>
 							</div>

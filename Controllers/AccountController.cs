@@ -71,10 +71,27 @@ public class AccountController : Controller {
 	public async Task<IActionResult> Profile() {
 		var user = await this._userManager.GetUserAsync(this.User);
 		if (user is IccStudent student) {
-			return this.View("StudentProfile", student);
+			return this.View("StudentProfile", new StudentProfile {
+				Email = student.Email,
+				FirstName = student.FirstName,
+				LastName = student.LastName,
+				Rut = student.Rut,
+				UniversityId = student.UniversityId,
+				RemainingCourses = student.RemainingCourses,
+				IsDoingThePractice = student.IsDoingThePractice,
+				IsWorking = student.IsWorking,
+			});
 		}
 		if (user is IccTeacher teacher) {
-			return this.View("TeacherProfile", teacher);
+			return this.View("TeacherProfile", new TeacherProfile {
+				Email = teacher.Email,
+				FirstName = teacher.FirstName,
+				LastName = teacher.LastName,
+				Rut = teacher.Rut,
+				Office = teacher.Office,
+				Schedule = teacher.Schedule,
+				Specialization = teacher.Specialization
+			});
 		}
 		return this.NotFound();
 	}
@@ -213,7 +230,7 @@ public class AccountController : Controller {
 	public IActionResult CreateTeacher() => this.View();
 
 	[Authorize(Roles = "IccDirector"), HttpPost, ValidateAntiForgeryToken]
-	public async Task<IActionResult> CreateTeacher(TeacherProfile model) {
+	public async Task<IActionResult> CreateTeacher(EditTeacher model) {
 		var teacher = new IccTeacher {
 			FirstName = model.FirstName,
 			LastName = model.LastName,
@@ -241,7 +258,7 @@ public class AccountController : Controller {
 	public async Task<IActionResult> Edit(string id) {
 		var target = await this._userManager.FindByIdAsync(id);
 		if (target is IccStudent student) {
-			return this.View("StudentProfile", new StudentProfile {
+			return this.View("EditStudent", new EditStudent {
 				Email = student.Email,
 				FirstName = student.FirstName,
 				LastName = student.LastName,
@@ -253,16 +270,68 @@ public class AccountController : Controller {
 				Password = new()
 			});
 		} else if (target is IccTeacher teacher) {
-			return this.View("TeacherProfile", new TeacherProfile {
+			return this.View("EditTeacher", new EditTeacher {
 				Email = teacher.Email,
 				FirstName = teacher.FirstName,
 				LastName = teacher.LastName,
 				Rut = teacher.Rut,
-				IsDirector = await this._userManager.IsInRoleAsync(teacher, "IccDirector"),
+				Office = teacher.Office,
+				Schedule = teacher.Schedule,
+				Specialization = teacher.Specialization,
 				IsCommittee = await this._userManager.IsInRoleAsync(teacher, "IccCommittee"),
 				IsGuide = await this._userManager.IsInRoleAsync(teacher, "IccGuide"),
 				Password = new()
 			});
+		}
+		return this.NotFound();
+	}
+
+	[Authorize(Roles = "IccDirector"), HttpPost, ValidateAntiForgeryToken]
+	public async Task<IActionResult> EditStudent(EditStudent model) {
+		var target = await this._userManager.FindByEmailAsync(model.Email!);
+		if (target is IccStudent student) {
+			student.FirstName = model.FirstName;
+			student.LastName = model.LastName;
+			student.Rut = model.Rut;
+			student.UniversityId = model.UniversityId!;
+			student.RemainingCourses = model.RemainingCourses!;
+			student.IsDoingThePractice = model.IsDoingThePractice;
+			student.IsWorking = model.IsWorking;
+			await this._userManager.UpdateAsync(student);
+			this.TempData["SuccessMessage"] = "Estudiante actualizado exitosamente.";
+			return this.RedirectToAction("Students", "Account", new { area = string.Empty });
+		}
+		return this.NotFound();
+	}
+
+	[Authorize(Roles = "IccDirector"), HttpPost, ValidateAntiForgeryToken]
+	public async Task<IActionResult> EditTeacher(EditTeacher model) {
+		var target = await this._userManager.FindByEmailAsync(model.Email!);
+		if (target is IccTeacher teacher) {
+			teacher.FirstName = model.FirstName;
+			teacher.LastName = model.LastName;
+			teacher.Rut = model.Rut;
+			teacher.Office = model.Office;
+			teacher.Schedule = model.Schedule;
+			teacher.Specialization = model.Specialization;
+			await this._userManager.UpdateAsync(teacher);
+			var roles = new List<string>();
+			if (model.IsCommittee) {
+				roles.Add("IccCommittee");
+			}
+			if (model.IsGuide) {
+				roles.Add("IccGuide");
+			}
+			var currentRoles = (await this._userManager.GetRolesAsync(teacher)).ToList();
+			var rolesToRemove = currentRoles.Except(roles).ToList();
+			if (rolesToRemove.Contains("IccDirector")) {
+				_ = rolesToRemove.Remove("IccDirector");
+			}
+			var rolesToAdd = roles.Except(currentRoles);
+			await this._userManager.RemoveFromRolesAsync(teacher, rolesToRemove);
+			await this._userManager.AddToRolesAsync(teacher, rolesToAdd);
+			this.TempData["SuccessMessage"] = "Profesor(a) actualizado(a) exitosamente.";
+			return this.RedirectToAction("Teachers", "Account", new { area = string.Empty });
 		}
 		return this.NotFound();
 	}

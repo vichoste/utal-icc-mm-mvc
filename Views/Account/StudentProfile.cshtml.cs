@@ -14,7 +14,6 @@ public class StudentProfile {
 
 	[Display(Name = "RUT")]
 	public string Rut { get; set; } = string.Empty;
-	public Password Password { get; set; } = new();
 
 	[Display(Name = "Número de matrícula")]
 	public string? UniversityId { get; set; }

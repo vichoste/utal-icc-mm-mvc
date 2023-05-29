@@ -2,7 +2,7 @@
 
 namespace Utal.Icc.Mm.Mvc.Views.Account;
 
-public class TeacherProfile {
+public class EditStudent {
 	[DataType(DataType.EmailAddress), Display(Name = "E-mail"), EmailAddress]
 	public string? Email { get; set; }
 
@@ -15,12 +15,17 @@ public class TeacherProfile {
 	[Display(Name = "RUT")]
 	public string Rut { get; set; } = string.Empty;
 
-	[Display(Name = "Oficina")]
-	public string Office { get; set; } = string.Empty;
+	[Display(Name = "Número de matrícula")]
+	public string? UniversityId { get; set; }
 
-	[Display(Name = "Horario")]
-	public string Schedule { get; set; } = string.Empty;
+	[Display(Name = "Cursos restantes")]
+	public string? RemainingCourses { get; set; }
 
-	[Display(Name = "Especialización")]
-	public string Specialization { get; set; } = string.Empty;
+	[Display(Name = "¿Está realizando práctica?")]
+	public bool IsDoingThePractice { get; set; }
+
+	[Display(Name = "¿Está trabajando?")]
+	public bool IsWorking { get; set; }
+
+	public Password Password { get; set; } = new();
 }
