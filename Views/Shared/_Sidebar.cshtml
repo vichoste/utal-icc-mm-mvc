@@ -94,7 +94,7 @@
 						</div>
 					}
 				} else if (user is IccStudent) {
-					@if (this.User.IsInRole("Complete")) {
+					@if (this.User.IsInRole("IccComplete")) {
 						<div class="menu-item">
 							<a href="#" class="menu-link">
 								<span class="menu-icon"><i class="fa fa-user-graduate"></i></span>
@@ -102,7 +102,7 @@
 							</a>
 						</div>
 					}
-					@if (this.User.IsInRole("Memorist")) {
+					@if (this.User.IsInRole("IccMemorist")) {
 						<div class="menu-item has-sub">
 							<a href="#" class="menu-link">
 								<span class="menu-icon"><i class="fa fa-user-graduate"></i></span>
@@ -118,7 +118,7 @@
 							</div>
 						</div>
 					}
-					@if (!this.User.IsInRole("Memorist")) {
+					@if (!this.User.IsInRole("IccMemorist")) {
 						<div class="menu-item has-sub">
 							<a href="#" class="menu-link">
 								<span class="menu-icon"><i class="fa fa-user-graduate"></i></span>

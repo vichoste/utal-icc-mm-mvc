@@ -124,8 +124,7 @@ public class AccountController : Controller {
 	}
 
 	[Authorize(Roles = "IccDirector")]
-	public async Task<IActionResult> Students(string sortOrder, string currentFilter, string searchString, int? pageNumber) {
-		var user = await this._userManager.GetUserAsync(this.User);
+	public IActionResult Students(string sortOrder, string currentFilter, string searchString, int? pageNumber) {
 		var students = this._userManager.Users.OfType<IccStudent>().ToList();
 		var parameters = new[] { "FirstName", "LastName", "UniversityId", "Rut", "Email" };
 		foreach (var parameter in parameters) {
@@ -155,8 +154,7 @@ public class AccountController : Controller {
 	}
 
 	[Authorize(Roles = "IccDirector")]
-	public async Task<IActionResult> Teachers(string sortOrder, string currentFilter, string searchString, int? pageNumber) {
-		var user = await this._userManager.GetUserAsync(this.User);
+	public IActionResult Teachers(string sortOrder, string currentFilter, string searchString, int? pageNumber) {
 		var teachers = this._userManager.Users.OfType<IccTeacher>().ToList();
 		var parameters = new[] { "FirstName", "LastName", "Rut", "Email" };
 		foreach (var parameter in parameters) {
@@ -210,7 +208,7 @@ public class AccountController : Controller {
 					warningMessages.Add($"Estudiante con e-mail {record.Email} ya existe");
 					continue;
 				}
-				_ = await this._userManager.AddToRoleAsync(user, "Regular");
+				_ = await this._userManager.AddToRoleAsync(user, "IccRegular");
 				successMessages.Add($"Estudiante con e-mail {record.Email} creado correctamente.");
 			}
 			if (warningMessages.Any()) {
