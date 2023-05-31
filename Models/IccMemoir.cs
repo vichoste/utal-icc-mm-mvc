@@ -10,11 +10,11 @@ public class IccMemoir {
 		Request,
 		[Display(Name = "En curso")]
 		InProgress,
-		[Display(Name = "Completo")]
+		[Display(Name = "Completa")]
 		Complete,
-		[Display(Name = "Pausado")]
+		[Display(Name = "Pausada")]
 		Paused,
-		[Display(Name = "Abandonado")]
+		[Display(Name = "Abandonada")]
 		Abandoned
 	}
 

@@ -19,26 +19,20 @@ public class MemoirController : Controller {
 	public MemoirController(IccDbContext dbContext) => this._dbContext = dbContext;
 
 	[Authorize(Roles = "IccRegular,IccGuide")]
-	public IActionResult Proposals(string sortOrder, string currentFilter, string searchString, int? pageNumber) {
-		List<IccMemoir> proposals = new();
+	public IActionResult Index(string sortOrder, string currentFilter, string searchString, int? pageNumber) {
+		List<IccMemoir> memoirs = new();
 		if (this.User.IsInRole("IccRegular")) {
-			proposals = this._dbContext.IccMemoirs
+			memoirs = this._dbContext.IccMemoirs
 				.Include(m => m.Student)
-				.Where(m => 
-					m.Student!.Id == this.User.FindFirstValue(ClaimTypes.NameIdentifier)
-					&& m.Phase == IccMemoir.Phases.Proposal
-				)
+				.Where(m => m.Student!.Id == this.User.FindFirstValue(ClaimTypes.NameIdentifier))
 				.ToList();
 		} else if (this.User.IsInRole("IccGuide")) {
-			proposals = this._dbContext.IccMemoirs
+			memoirs = this._dbContext.IccMemoirs
 				.Include(m => m.GuideTeacher)
-				.Where(m =>
-					m.GuideTeacher!.Id == this.User.FindFirstValue(ClaimTypes.NameIdentifier)
-					&& m.Phase == IccMemoir.Phases.Proposal
-				)
+				.Where(m => m.GuideTeacher!.Id == this.User.FindFirstValue(ClaimTypes.NameIdentifier))
 				.ToList();
 		}
-		var parameters = new[] { "Title", "Description" };
+		var parameters = new[] { "Title" };
 		foreach (var parameter in parameters) {
 			this.ViewData[$"{parameter}SortParam"] = sortOrder == parameter ? $"{parameter}Desc" : parameter;
 		}
@@ -48,7 +42,7 @@ public class MemoirController : Controller {
 			this.ViewData["CurrentFilter"] = searchString;
 			var filtered = new List<IccMemoir>();
 			foreach (var parameter in parameters) {
-				var partials = proposals
+				var partials = memoirs
 					.Where(vm => !(vm.GetType().GetProperty(parameter)!.GetValue(vm, null) as string)!.IsNullOrEmpty()
 						&& (vm.GetType().GetProperty(parameter)!.GetValue(vm, null) as string)!.Contains(searchString));
 				foreach (var partial in partials) {
@@ -57,11 +51,11 @@ public class MemoirController : Controller {
 					}
 				}
 			}
-			this.ViewBag.Proposals = filtered.ToPagedList(pageNumber ?? 1, 10);
-			return this.View(new PaginatorPartialViewModel("Proposals", pageNumber ?? 1, (int)Math.Ceiling((decimal)filtered.Count / 10), pageNumber > 1, pageNumber < (int)Math.Ceiling((decimal)filtered.Count / 10)));
+			this.ViewBag.Memoirs = filtered.ToPagedList(pageNumber ?? 1, 10);
+			return this.View(new PaginatorPartialViewModel("Index", pageNumber ?? 1, (int)Math.Ceiling((decimal)filtered.Count / 10), pageNumber > 1, pageNumber < (int)Math.Ceiling((decimal)filtered.Count / 10)));
 		}
 		searchString = currentFilter;
-		this.ViewBag.Proposals = proposals.ToPagedList(pageNumber ?? 1, 10);
-		return this.View(new PaginatorPartialViewModel("Proposals", pageNumber ?? 1, (int)Math.Ceiling((decimal)proposals.Count / 10), pageNumber > 1, pageNumber < (int)Math.Ceiling((decimal)proposals.Count / 10)));
+		this.ViewBag.Memoirs = memoirs.ToPagedList(pageNumber ?? 1, 10);
+		return this.View(new PaginatorPartialViewModel("Index", pageNumber ?? 1, (int)Math.Ceiling((decimal)memoirs.Count / 10), pageNumber > 1, pageNumber < (int)Math.Ceiling((decimal)memoirs.Count / 10)));
 	}
 }
