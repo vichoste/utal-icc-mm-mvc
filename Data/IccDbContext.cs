@@ -10,9 +10,7 @@ public class IccDbContext : IdentityDbContext<IccUser> {
 
 	public DbSet<IccTeacher> IccTeachers { get; set; }
 
-	public DbSet<IccStudentMemoir> IccStudentMemoirs { get; set; }
-
-	public DbSet<IccTeacherMemoir> IccTeacherMemoirs { get; set; }
+	public DbSet<IccMemoir> IccMemoirs { get; set; }
 
 	public IccDbContext(DbContextOptions<IccDbContext> options) : base(options) { }
 
@@ -20,7 +18,5 @@ public class IccDbContext : IdentityDbContext<IccUser> {
 		base.OnModelCreating(modelBuilder);
 		_ = modelBuilder.Entity<IccStudent>().HasBaseType<IccUser>();
 		_ = modelBuilder.Entity<IccTeacher>().HasBaseType<IccUser>();
-		_ = modelBuilder.Entity<IccStudentMemoir>().HasBaseType<IccMemoir>();
-		_ = modelBuilder.Entity<IccTeacherMemoir>().HasBaseType<IccMemoir>();
 	}
 }

@@ -169,40 +169,34 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "IccMemoir",
+                name: "IccMemoirs",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Phase = table.Column<int>(type: "int", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Phase = table.Column<int>(type: "int", nullable: false),
                     StudentId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     GuideTeacherId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    IccTeacherMemoir_GuideTeacherId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    Requierments = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_IccMemoir", x => x.Id);
+                    table.PrimaryKey("PK_IccMemoirs", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_IccMemoir_AspNetUsers_GuideTeacherId",
+                        name: "FK_IccMemoirs_AspNetUsers_GuideTeacherId",
                         column: x => x.GuideTeacherId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_IccMemoir_AspNetUsers_IccTeacherMemoir_GuideTeacherId",
-                        column: x => x.IccTeacherMemoir_GuideTeacherId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_IccMemoir_AspNetUsers_StudentId",
+                        name: "FK_IccMemoirs_AspNetUsers_StudentId",
                         column: x => x.StudentId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "IccStudentIccTeacherMemoir",
+                name: "IccMemoirIccStudent",
                 columns: table => new
                 {
                     CandidatesId = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -210,17 +204,17 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_IccStudentIccTeacherMemoir", x => new { x.CandidatesId, x.MemoirsWhichImCandidateId });
+                    table.PrimaryKey("PK_IccMemoirIccStudent", x => new { x.CandidatesId, x.MemoirsWhichImCandidateId });
                     table.ForeignKey(
-                        name: "FK_IccStudentIccTeacherMemoir_AspNetUsers_CandidatesId",
+                        name: "FK_IccMemoirIccStudent_AspNetUsers_CandidatesId",
                         column: x => x.CandidatesId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_IccStudentIccTeacherMemoir_IccMemoir_MemoirsWhichImCandidateId",
+                        name: "FK_IccMemoirIccStudent_IccMemoirs_MemoirsWhichImCandidateId",
                         column: x => x.MemoirsWhichImCandidateId,
-                        principalTable: "IccMemoir",
+                        principalTable: "IccMemoirs",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -265,24 +259,19 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_IccMemoir_GuideTeacherId",
-                table: "IccMemoir",
+                name: "IX_IccMemoirIccStudent_MemoirsWhichImCandidateId",
+                table: "IccMemoirIccStudent",
+                column: "MemoirsWhichImCandidateId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_IccMemoirs_GuideTeacherId",
+                table: "IccMemoirs",
                 column: "GuideTeacherId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_IccMemoir_IccTeacherMemoir_GuideTeacherId",
-                table: "IccMemoir",
-                column: "IccTeacherMemoir_GuideTeacherId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_IccMemoir_StudentId",
-                table: "IccMemoir",
+                name: "IX_IccMemoirs_StudentId",
+                table: "IccMemoirs",
                 column: "StudentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_IccStudentIccTeacherMemoir_MemoirsWhichImCandidateId",
-                table: "IccStudentIccTeacherMemoir",
-                column: "MemoirsWhichImCandidateId");
         }
 
         /// <inheritdoc />
@@ -304,13 +293,13 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "IccStudentIccTeacherMemoir");
+                name: "IccMemoirIccStudent");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "IccMemoir");
+                name: "IccMemoirs");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

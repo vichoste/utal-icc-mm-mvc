@@ -12,7 +12,7 @@ using Utal.Icc.Mm.Mvc.Data;
 namespace Utal.Icc.Mm.Mvc.Migrations
 {
     [DbContext(typeof(IccDbContext))]
-    [Migration("20230529005706_Init")]
+    [Migration("20230531014451_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -25,7 +25,7 @@ namespace Utal.Icc.Mm.Mvc.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("IccStudentIccTeacherMemoir", b =>
+            modelBuilder.Entity("IccMemoirIccStudent", b =>
                 {
                     b.Property<string>("CandidatesId")
                         .HasColumnType("nvarchar(450)");
@@ -37,7 +37,7 @@ namespace Utal.Icc.Mm.Mvc.Migrations
 
                     b.HasIndex("MemoirsWhichImCandidateId");
 
-                    b.ToTable("IccStudentIccTeacherMemoir");
+                    b.ToTable("IccMemoirIccStudent");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -182,12 +182,15 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("GuideTeacherId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Phase")
                         .HasColumnType("int");
+
+                    b.Property<string>("Requierments")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("StudentId")
                         .HasColumnType("nvarchar(450)");
@@ -198,13 +201,11 @@ namespace Utal.Icc.Mm.Mvc.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("GuideTeacherId");
+
                     b.HasIndex("StudentId");
 
-                    b.ToTable("IccMemoir");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("IccMemoir");
-
-                    b.UseTphMappingStrategy();
+                    b.ToTable("IccMemoirs");
                 });
 
             modelBuilder.Entity("Utal.Icc.Mm.Mvc.Models.IccUser", b =>
@@ -292,36 +293,6 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                     b.UseTphMappingStrategy();
                 });
 
-            modelBuilder.Entity("Utal.Icc.Mm.Mvc.Models.IccStudentMemoir", b =>
-                {
-                    b.HasBaseType("Utal.Icc.Mm.Mvc.Models.IccMemoir");
-
-                    b.Property<string>("GuideTeacherId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasIndex("GuideTeacherId");
-
-                    b.HasDiscriminator().HasValue("IccStudentMemoir");
-                });
-
-            modelBuilder.Entity("Utal.Icc.Mm.Mvc.Models.IccTeacherMemoir", b =>
-                {
-                    b.HasBaseType("Utal.Icc.Mm.Mvc.Models.IccMemoir");
-
-                    b.Property<string>("GuideTeacherId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasIndex("GuideTeacherId");
-
-                    b.ToTable("IccMemoir", t =>
-                        {
-                            t.Property("GuideTeacherId")
-                                .HasColumnName("IccTeacherMemoir_GuideTeacherId");
-                        });
-
-                    b.HasDiscriminator().HasValue("IccTeacherMemoir");
-                });
-
             modelBuilder.Entity("Utal.Icc.Mm.Mvc.Models.IccStudent", b =>
                 {
                     b.HasBaseType("Utal.Icc.Mm.Mvc.Models.IccUser");
@@ -365,7 +336,7 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                     b.HasDiscriminator().HasValue("IccTeacher");
                 });
 
-            modelBuilder.Entity("IccStudentIccTeacherMemoir", b =>
+            modelBuilder.Entity("IccMemoirIccStudent", b =>
                 {
                     b.HasOne("Utal.Icc.Mm.Mvc.Models.IccStudent", null)
                         .WithMany()
@@ -373,7 +344,7 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Utal.Icc.Mm.Mvc.Models.IccTeacherMemoir", null)
+                    b.HasOne("Utal.Icc.Mm.Mvc.Models.IccMemoir", null)
                         .WithMany()
                         .HasForeignKey("MemoirsWhichImCandidateId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -433,29 +404,17 @@ namespace Utal.Icc.Mm.Mvc.Migrations
 
             modelBuilder.Entity("Utal.Icc.Mm.Mvc.Models.IccMemoir", b =>
                 {
-                    b.HasOne("Utal.Icc.Mm.Mvc.Models.IccStudent", "Student")
-                        .WithMany("MemoirsWhichIOwn")
-                        .HasForeignKey("StudentId");
-
-                    b.Navigation("Student");
-                });
-
-            modelBuilder.Entity("Utal.Icc.Mm.Mvc.Models.IccStudentMemoir", b =>
-                {
                     b.HasOne("Utal.Icc.Mm.Mvc.Models.IccTeacher", "GuideTeacher")
                         .WithMany("MemoirsWhichIGuide")
                         .HasForeignKey("GuideTeacherId");
 
-                    b.Navigation("GuideTeacher");
-                });
-
-            modelBuilder.Entity("Utal.Icc.Mm.Mvc.Models.IccTeacherMemoir", b =>
-                {
-                    b.HasOne("Utal.Icc.Mm.Mvc.Models.IccTeacher", "GuideTeacher")
-                        .WithMany()
-                        .HasForeignKey("GuideTeacherId");
+                    b.HasOne("Utal.Icc.Mm.Mvc.Models.IccStudent", "Student")
+                        .WithMany("MemoirsWhichIOwn")
+                        .HasForeignKey("StudentId");
 
                     b.Navigation("GuideTeacher");
+
+                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("Utal.Icc.Mm.Mvc.Models.IccStudent", b =>

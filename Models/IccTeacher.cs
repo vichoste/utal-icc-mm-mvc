@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Utal.Icc.Mm.Mvc.Models;
 
 public class IccTeacher : IccUser {
-	public enum IccTeacherRole {
+	public enum IccTeacherRoles {
 		[Display(Name = "Director(a) de carrera")]
 		IccDirector,
 		[Display(Name = "Integrante del comité")]
@@ -26,5 +26,5 @@ public class IccTeacher : IccUser {
 	public string Specialization { get; set; } = string.Empty;
 
 	[Display(Name = "Mis memorias"), InverseProperty("GuideTeacher")]
-	public virtual ICollection<IccStudentMemoir> MemoirsWhichIGuide { get; set; } = new HashSet<IccStudentMemoir>();
+	public virtual ICollection<IccMemoir> MemoirsWhichIGuide { get; set; } = new HashSet<IccMemoir>();
 }

@@ -6,8 +6,8 @@ namespace Utal.Icc.Mm.Mvc.Seeders;
 public static class IccRoleSeeder {
 	public static async Task SeedAsync(IServiceProvider services) {
 		var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-		var teacherRoles = Enum.GetNames(typeof(IccTeacher.IccTeacherRole));
-		var studentRoles = Enum.GetNames(typeof(IccStudent.StudentRole));
+		var teacherRoles = Enum.GetNames(typeof(IccTeacher.IccTeacherRoles));
+		var studentRoles = Enum.GetNames(typeof(IccStudent.IccStudentRoles));
 		foreach (var roleName in teacherRoles.Concat(studentRoles)) {
 			var roleExists = await roleManager.RoleExistsAsync(roleName);
 			if (!roleExists) {

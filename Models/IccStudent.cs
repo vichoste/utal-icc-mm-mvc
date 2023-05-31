@@ -4,11 +4,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Utal.Icc.Mm.Mvc.Models;
 
 public class IccStudent : IccUser {
-	public enum StudentRole {
+	public enum IccStudentRoles {
 		[Display(Name = "Alumno memorista")]
-		Memorist,
+		IccMemorist,
 		[Display(Name = "Alumno regular")]
-		Regular
+		IccRegular
 	}
 
 	[Display(Name = "Número de matrícula")]
@@ -27,5 +27,5 @@ public class IccStudent : IccUser {
 	public virtual ICollection<IccMemoir> MemoirsWhichIOwn { get; set; } = new HashSet<IccMemoir>();
 
 	[Display(Name = "Mis postulaciones"), InverseProperty("Candidates")]
-	public virtual ICollection<IccTeacherMemoir> MemoirsWhichImCandidate { get; set; } = new HashSet<IccTeacherMemoir>();
+	public virtual ICollection<IccMemoir> MemoirsWhichImCandidate { get; set; } = new HashSet<IccMemoir>();
 }
