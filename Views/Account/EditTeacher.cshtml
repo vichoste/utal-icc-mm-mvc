@@ -43,6 +43,14 @@
 							@this.Html.Label("specialization", "Especialización", new { @class = "form-label" })
 							@this.Html.TextBox("specialization", (string)this.ViewBag.Specialization, new { @class = "form-control" })
 						</div>
+						<div class="form-check mb-3">
+							@this.Html.CheckBox("isGuide", (bool)this.ViewBag.IsGuide, new { @class = "form-check-input" })
+							@this.Html.Label("isGuide", "¿Profesor guía?", new { @class = "form-check-label" })
+						</div>
+						<div class="form-check mb-3">
+							@this.Html.CheckBox("isCommittee", (bool)this.ViewBag.IsCommittee, new { @class = "form-check-input" })
+							@this.Html.Label("isCommittee", "¿Profesor del comité?", new { @class = "form-check-label" })
+						</div>
 						<div class="row text-center">
 							<div class="col">
 								<div class="btn-group">
