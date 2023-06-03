@@ -12,7 +12,7 @@ using Utal.Icc.Mm.Mvc.Data;
 namespace Utal.Icc.Mm.Mvc.Migrations
 {
     [DbContext(typeof(IccDbContext))]
-    [Migration("20230603224600_Init")]
+    [Migration("20230603233733_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -30,8 +30,8 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                     b.Property<string>("CandidatesId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("MemoirsWhichImCandidateId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("MemoirsWhichImCandidateId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("CandidatesId", "MemoirsWhichImCandidateId");
 
@@ -175,8 +175,9 @@ namespace Utal.Icc.Mm.Mvc.Migrations
 
             modelBuilder.Entity("Utal.Icc.Mm.Mvc.Models.IccMemoir", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -339,9 +340,6 @@ namespace Utal.Icc.Mm.Mvc.Migrations
             modelBuilder.Entity("Utal.Icc.Mm.Mvc.Models.IccTeacher", b =>
                 {
                     b.HasBaseType("Utal.Icc.Mm.Mvc.Models.IccUser");
-
-                    b.Property<bool>("IsGuest")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Office")
                         .IsRequired()

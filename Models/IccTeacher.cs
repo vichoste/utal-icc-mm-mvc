@@ -10,8 +10,6 @@ public class IccTeacher : IccUser {
 		IccGuide
 	}
 
-	public bool IsGuest { get; set; }
-
 	[DataType(DataType.MultilineText)]
 	public string Office { get; set; } = string.Empty;
 

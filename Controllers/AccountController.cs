@@ -249,7 +249,7 @@ public class AccountController : Controller {
 	public IActionResult CreateTeacher() => this.View();
 
 	[Authorize(Roles = "IccDirector"), HttpPost, ValidateAntiForgeryToken]
-	public async Task<IActionResult> CreateTeacher([FromForm] string email, [FromForm] string password, [FromForm] string firstName, [FromForm] string lastName, [FromForm] string rut, [FromForm] bool isCommittee, [FromForm] bool isGuide, [FromForm] bool isGuest) {
+	public async Task<IActionResult> CreateTeacher([FromForm] string email, [FromForm] string password, [FromForm] string firstName, [FromForm] string lastName, [FromForm] string rut, [FromForm] bool isCommittee, [FromForm] bool isGuide) {
 		var teacher = new IccTeacher {
 			FirstName = firstName,
 			LastName = lastName,
@@ -262,7 +262,6 @@ public class AccountController : Controller {
 		if (isGuide) {
 			roles.Add("IccGuide");
 		}
-		teacher.IsGuest = isGuest;
 		await this._userStore.SetUserNameAsync(teacher, email, CancellationToken.None);
 		await this._emailStore.SetEmailAsync(teacher, email, CancellationToken.None);
 		_ =  await this._userManager.CreateAsync(teacher, password);
@@ -296,7 +295,6 @@ public class AccountController : Controller {
 			this.ViewBag.Specialization = teacher.Specialization;
 			this.ViewBag.IsCommittee = await this._userManager.IsInRoleAsync(teacher, "IccCommittee");
 			this.ViewBag.IsGuide = await this._userManager.IsInRoleAsync(teacher, "IccGuide");
-			this.ViewBag.IsGuest = teacher.IsGuest;
 			return this.View("EditTeacher");
 		}
 		return this.NotFound();
@@ -314,7 +312,7 @@ public class AccountController : Controller {
 			student.RemainingCourses = remainingCourses;
 			student.IsDoingThePractice = isDoingThePractice;
 			student.IsWorking = isWorking;
-			await this._userManager.UpdateAsync(student);
+			_ = await this._userManager.UpdateAsync(student);
 			this.TempData["SuccessMessage"] = "Estudiante actualizado exitosamente.";
 			return this.RedirectToAction("Students", "Account", new { area = string.Empty });
 		}
@@ -322,7 +320,7 @@ public class AccountController : Controller {
 	}
 
 	[Authorize(Roles = "IccDirector"), HttpPost, ValidateAntiForgeryToken]
-	public async Task<IActionResult> EditTeacher([FromForm] string id, [FromForm] string email, [FromForm] string firstName, [FromForm] string lastName, [FromForm] string rut, [FromForm] string office, [FromForm] string schedule, [FromForm] string specialization, [FromForm] bool isCommittee, [FromForm] bool isGuide, [FromForm] bool isGuest) {
+	public async Task<IActionResult> EditTeacher([FromForm] string id, [FromForm] string email, [FromForm] string firstName, [FromForm] string lastName, [FromForm] string rut, [FromForm] string office, [FromForm] string schedule, [FromForm] string specialization, [FromForm] bool isCommittee, [FromForm] bool isGuide) {
 		var target = await this._userManager.FindByIdAsync(id);
 		if (target is IccTeacher teacher) {
 			teacher.Email = email;
@@ -332,8 +330,7 @@ public class AccountController : Controller {
 			teacher.Office = office;
 			teacher.Schedule = schedule;
 			teacher.Specialization = specialization;
-			teacher.IsGuest = isGuest;
-			await this._userManager.UpdateAsync(teacher);
+			_ = await this._userManager.UpdateAsync(teacher);
 			var roles = new List<string>();
 			if (isCommittee) {
 				roles.Add("IccCommittee");
@@ -347,8 +344,8 @@ public class AccountController : Controller {
 				_ = rolesToRemove.Remove("IccDirector");
 			}
 			var rolesToAdd = roles.Except(currentRoles);
-			await this._userManager.RemoveFromRolesAsync(teacher, rolesToRemove);
-			await this._userManager.AddToRolesAsync(teacher, rolesToAdd);
+			_ = await this._userManager.RemoveFromRolesAsync(teacher, rolesToRemove);
+			_ = await this._userManager.AddToRolesAsync(teacher, rolesToAdd);
 			this.TempData["SuccessMessage"] = "Profesor(a) actualizado(a) exitosamente.";
 			return this.RedirectToAction("Teachers", "Account", new { area = string.Empty });
 		}

@@ -39,7 +39,6 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                     RemainingCourses = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsDoingThePractice = table.Column<bool>(type: "bit", nullable: true),
                     IsWorking = table.Column<bool>(type: "bit", nullable: true),
-                    IsGuest = table.Column<bool>(type: "bit", nullable: true),
                     Office = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Schedule = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Specialization = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -172,7 +171,7 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                 name: "IccMemoirs",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Phase = table.Column<int>(type: "int", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -201,7 +200,7 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                 columns: table => new
                 {
                     CandidatesId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    MemoirsWhichImCandidateId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    MemoirsWhichImCandidateId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {

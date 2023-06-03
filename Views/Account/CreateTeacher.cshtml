@@ -1,5 +1,5 @@
 ﻿@{
-	this.ViewData["Title"] = "Crear profesor";
+	this.ViewData["Title"] = "Crear profesor(a)";
 }
 
 <div class="container">
@@ -42,10 +42,6 @@
 								<div class="form-check mb-3">
 									@this.Html.Label("isCommittee", "¿Profesor del comité?", new { @class = "form-check-label" })
 									@this.Html.CheckBox("isCommittee", null, new { @class = "form-check-input" })
-								</div>
-								<div class="form-check mb-3">
-									@this.Html.Label("isGuest", "¿Profesor invitado?", new { @class = "form-check-label" })
-									@this.Html.CheckBox("isGuest", null, new { @class = "form-check-input" })
 								</div>
 							</div>
 						</div>

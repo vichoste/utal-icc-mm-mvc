@@ -9,7 +9,10 @@
 			<div class="card">
 				<div class="card-header text-center">@this.ViewData["Title"]</div>
 				<div class="card-body">
-					@using (this.Html.BeginForm("Create", "Memoir", new { area = string.Empty })) {
+					@{
+						var action = this.User.IsInRole("IccRegular") ? "CreateStudentMemoir" : "CreateGuideMemoir";
+					}
+					@using (this.Html.BeginForm(action, "Memoir", new { area = string.Empty }, FormMethod.Post)) {
 						@this.Html.AntiForgeryToken()
 						<div class="row">
 							<div class="col">
@@ -24,7 +27,7 @@
 								@if (this.User.IsInRole("IccRegular")) {
 									<div class="form-group mb-3">
 										@this.Html.Label("guide", "Profesor guía", new { @class = "form-label "})
-										@this.Html.DropDownList("guide", new SelectList(this.ViewBag.Guides, "Id", "FullName"), "Selecciona un(a) profesor guía", new { @class = "form-control" })
+										@this.Html.DropDownList("guide", new SelectList(this.ViewBag.Guides, "Id", "FullName"), "Selecciona un(a) profesor guía", new { @class = "form-control", required = "required" })
 									</div>
 								} else if (this.User.IsInRole("IccGuide")) {
 									<div class="form-group mb-3">
