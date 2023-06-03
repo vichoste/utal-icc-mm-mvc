@@ -36,7 +36,7 @@
 						</div>
 						<div class="form-group mb-3">
 							@this.Html.Label("remainingCourses", "Cursos restantes", new { @class = "form-label" })
-							@this.Html.TextBox("remainingCourses", (string)this.ViewBag.RemainingCourses, new { @class = "form-control" })
+							@this.Html.TextArea("remainingCourses", (string)this.ViewBag.RemainingCourses, new { @class = "form-control" })
 						</div>
 						<div class="form-check mb-3">
 							@this.Html.CheckBox("isDoingThePractice", (bool)this.ViewBag.IsDoingThePractice, new { @class = "form-check-input" })

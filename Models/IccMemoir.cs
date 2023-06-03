@@ -27,7 +27,7 @@ public class IccMemoir {
 	[Display(Name = "Título")]
 	public string Title { get; set; } = string.Empty;
 
-	[Display(Name = "Descripción")]
+	[DataType(DataType.MultilineText), Display(Name = "Descripción")]
 	public string Description { get; set; } = string.Empty;
 
 	[Display(Name = "Estudiante")]
@@ -36,7 +36,7 @@ public class IccMemoir {
 	[Display(Name = "Profesor guía")]
 	public virtual IccTeacher? Guide { get; set; }
 
-	[Display(Name = "Requisitos")]
+	[DataType(DataType.MultilineText), Display(Name = "Requisitos")]
 	public string Requierments { get; set; } = string.Empty;
 
 	[Display(Name = "Candidatos")]

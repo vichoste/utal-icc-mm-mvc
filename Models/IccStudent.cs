@@ -14,7 +14,7 @@ public class IccStudent : IccUser {
 	[Display(Name = "Número de matrícula")]
 	public string UniversityId { get; set; } = string.Empty;
 
-	[Display(Name = "Cursos restantes")]
+	[DataType(DataType.MultilineText), Display(Name = "Cursos restantes")]
 	public string RemainingCourses { get; set; } = string.Empty;
 
 	[Display(Name = "¿Está realizando práctica?")]

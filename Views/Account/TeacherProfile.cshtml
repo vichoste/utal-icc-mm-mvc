@@ -32,15 +32,15 @@
 						<hr />
 						<div class="form-group mb-3">
 							@this.Html.Label("office", "Oficina", new { @class = "form-label" })
-							@this.Html.TextBox("office", (string)this.ViewBag.Office, new { @class = "form-control" })
+							@this.Html.TextArea("office", (string)this.ViewBag.Office, new { @class = "form-control" })
 						</div>
 						<div class="form-group mb-3">
 							@this.Html.Label("schedule", "Horario", new { @class = "form-label" })
-							@this.Html.TextBox("schedule", (string)this.ViewBag.Schedule, new { @class = "form-control" })
+							@this.Html.TextArea("schedule", (string)this.ViewBag.Schedule, new { @class = "form-control" })
 						</div>
 						<div class="form-group mb-3">
 							@this.Html.Label("specialization", "Especialización", new { @class = "form-label" })
-							@this.Html.TextBox("specialization", (string)this.ViewBag.Specialization, new { @class = "form-control" })
+							@this.Html.TextArea("specialization", (string)this.ViewBag.Specialization, new { @class = "form-control" })
 						</div>
 						<div class="row text-center">
 							<div class="col">

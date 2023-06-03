@@ -16,13 +16,13 @@ public class IccTeacher : IccUser {
 	[Display(Name = "Invitado(a)")]
 	public bool IsGuest { get; set; }
 
-	[Display(Name = "Oficina")]
+	[DataType(DataType.MultilineText), Display(Name = "Oficina")]
 	public string Office { get; set; } = string.Empty;
 
-	[Display(Name = "Horario")]
+	[DataType(DataType.MultilineText), Display(Name = "Horario")]
 	public string Schedule { get; set; } = string.Empty;
 
-	[Display(Name = "Especialización")]
+	[DataType(DataType.MultilineText), Display(Name = "Especialización")]
 	public string Specialization { get; set; } = string.Empty;
 
 	[Display(Name = "Mis memorias"), InverseProperty("Guide")]

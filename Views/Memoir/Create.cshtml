@@ -1,8 +1,4 @@
-﻿@using Utal.Icc.Mm.Mvc.Models
-
-@model IccMemoir
-
-@{
+﻿@{
 	this.ViewData["Title"] = "Crear memoria";
 }
 
@@ -18,19 +14,18 @@
 						<div class="row">
 							<div class="col">
 								<div class="form-group mb-3">
-									@this.Html.LabelFor(m => m.Title, new { @class = "form-label" })
-									@this.Html.TextBoxFor(m => m.Title, new { @class = "form-control" })
+									@this.Html.Label("title", "Título", new { @class = "form-label" })
+									@this.Html.TextBox("title", null, new { @class = "form-control", required = "required" })
 								</div>
 								<div class="form-group mb-3">
-									@this.Html.LabelFor(m => m.Description, new { @class = "form-label" })
-									@this.Html.TextBoxFor(m => m.Description, new { @class = "form-control" })
+									@this.Html.Label("description", "Descripción", new { @class = "form-label" })
+									@this.Html.TextArea("description", null, new { @class = "form-control", required = "required" })
 								</div>
 								@if (this.User.IsInRole("IccRegular")) {
-									@this.Html.LabelFor(m => m.Guide, new { @class = "form-label" })
-
+									
 								} else if (this.User.IsInRole("IccGuide")) {
-									@this.Html.LabelFor(m => m.Requierments, new { @class = "form-label" })
-									@this.Html.TextBoxFor(m => m.Requierments, new { @class = "form-control" })
+									@this.Html.Label("requirements", "Requisitos", new { @class = "form-label" })
+									@this.Html.TextArea("requirements", null, new { @class = "form-control" })
 								}
 							</div>
 						</div>
