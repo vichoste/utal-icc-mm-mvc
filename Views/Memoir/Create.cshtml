@@ -24,7 +24,7 @@
 								@if (this.User.IsInRole("IccRegular")) {
 									<div class="form-group mb-3">
 										@this.Html.Label("guide", "Profesor guía", new { @class = "form-label "})
-										@this.Html.DropDownList("guide", new SelectList(this.ViewBag.Guides, "Id", "UserName"), "Selecciona un(a) profesor guía", new { @class = "form-control" })
+										@this.Html.DropDownList("guide", new SelectList(this.ViewBag.Guides, "Id", "FullName"), "Selecciona un(a) profesor guía", new { @class = "form-control" })
 									</div>
 								} else if (this.User.IsInRole("IccGuide")) {
 									<div class="form-group mb-3">

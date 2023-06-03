@@ -31,6 +31,7 @@
 							@this.Html.TextBox("email", (string)this.ViewBag.Email, new { @class = "form-control" })
 						</div>
 						<hr />
+						<p><strong>Perfil</strong></p>
 						<div class="form-group mb-3">
 							@this.Html.Label("office", "Oficina", new { @class = "form-label" })
 							@this.Html.TextArea("office", (string)this.ViewBag.Office, new { @class = "form-control" })
@@ -50,6 +51,10 @@
 						<div class="form-check mb-3">
 							@this.Html.CheckBox("isCommittee", (bool)this.ViewBag.IsCommittee, new { @class = "form-check-input" })
 							@this.Html.Label("isCommittee", "¿Profesor del comité?", new { @class = "form-check-label" })
+						</div>
+						<div class="form-check mb-3">
+							@this.Html.Label("isGuest", "¿Profesor invitado?", new { @class = "form-check-label" })
+							@this.Html.CheckBox("isGuest", (bool)this.ViewBag.IsGuest, new { @class = "form-check-input" })
 						</div>
 						<div class="row text-center">
 							<div class="col">

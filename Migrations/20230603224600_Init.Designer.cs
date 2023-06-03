@@ -12,7 +12,7 @@ using Utal.Icc.Mm.Mvc.Data;
 namespace Utal.Icc.Mm.Mvc.Migrations
 {
     [DbContext(typeof(IccDbContext))]
-    [Migration("20230603221344_Init")]
+    [Migration("20230603224600_Init")]
     partial class Init
     {
         /// <inheritdoc />

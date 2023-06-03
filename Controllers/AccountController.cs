@@ -249,7 +249,7 @@ public class AccountController : Controller {
 	public IActionResult CreateTeacher() => this.View();
 
 	[Authorize(Roles = "IccDirector"), HttpPost, ValidateAntiForgeryToken]
-	public async Task<IActionResult> CreateTeacher([FromForm] string email, [FromForm] string password, [FromForm] string firstName, [FromForm] string lastName, [FromForm] string rut, [FromForm] bool isCommittee, [FromForm] bool isGuide) {
+	public async Task<IActionResult> CreateTeacher([FromForm] string email, [FromForm] string password, [FromForm] string firstName, [FromForm] string lastName, [FromForm] string rut, [FromForm] bool isCommittee, [FromForm] bool isGuide, [FromForm] bool isGuest) {
 		var teacher = new IccTeacher {
 			FirstName = firstName,
 			LastName = lastName,
@@ -262,6 +262,7 @@ public class AccountController : Controller {
 		if (isGuide) {
 			roles.Add("IccGuide");
 		}
+		teacher.IsGuest = isGuest;
 		await this._userStore.SetUserNameAsync(teacher, email, CancellationToken.None);
 		await this._emailStore.SetEmailAsync(teacher, email, CancellationToken.None);
 		_ =  await this._userManager.CreateAsync(teacher, password);
@@ -295,6 +296,7 @@ public class AccountController : Controller {
 			this.ViewBag.Specialization = teacher.Specialization;
 			this.ViewBag.IsCommittee = await this._userManager.IsInRoleAsync(teacher, "IccCommittee");
 			this.ViewBag.IsGuide = await this._userManager.IsInRoleAsync(teacher, "IccGuide");
+			this.ViewBag.IsGuest = teacher.IsGuest;
 			return this.View("EditTeacher");
 		}
 		return this.NotFound();
@@ -320,7 +322,7 @@ public class AccountController : Controller {
 	}
 
 	[Authorize(Roles = "IccDirector"), HttpPost, ValidateAntiForgeryToken]
-	public async Task<IActionResult> EditTeacher([FromForm] string id, [FromForm] string email, [FromForm] string firstName, [FromForm] string lastName, [FromForm] string rut, [FromForm] string office, [FromForm] string schedule, [FromForm] string specialization, [FromForm] bool isCommittee, [FromForm] bool isGuide) {
+	public async Task<IActionResult> EditTeacher([FromForm] string id, [FromForm] string email, [FromForm] string firstName, [FromForm] string lastName, [FromForm] string rut, [FromForm] string office, [FromForm] string schedule, [FromForm] string specialization, [FromForm] bool isCommittee, [FromForm] bool isGuide, [FromForm] bool isGuest) {
 		var target = await this._userManager.FindByIdAsync(id);
 		if (target is IccTeacher teacher) {
 			teacher.Email = email;
@@ -330,6 +332,7 @@ public class AccountController : Controller {
 			teacher.Office = office;
 			teacher.Schedule = schedule;
 			teacher.Specialization = specialization;
+			teacher.IsGuest = isGuest;
 			await this._userManager.UpdateAsync(teacher);
 			var roles = new List<string>();
 			if (isCommittee) {
