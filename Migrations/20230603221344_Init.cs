@@ -178,7 +178,8 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StudentId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     GuideId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    Requierments = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Requierments = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -196,7 +197,7 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "IccMemoirIccStudent",
+                name: "IccStudentIccTeacherMemoir",
                 columns: table => new
                 {
                     CandidatesId = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -204,15 +205,15 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_IccMemoirIccStudent", x => new { x.CandidatesId, x.MemoirsWhichImCandidateId });
+                    table.PrimaryKey("PK_IccStudentIccTeacherMemoir", x => new { x.CandidatesId, x.MemoirsWhichImCandidateId });
                     table.ForeignKey(
-                        name: "FK_IccMemoirIccStudent_AspNetUsers_CandidatesId",
+                        name: "FK_IccStudentIccTeacherMemoir_AspNetUsers_CandidatesId",
                         column: x => x.CandidatesId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_IccMemoirIccStudent_IccMemoirs_MemoirsWhichImCandidateId",
+                        name: "FK_IccStudentIccTeacherMemoir_IccMemoirs_MemoirsWhichImCandidateId",
                         column: x => x.MemoirsWhichImCandidateId,
                         principalTable: "IccMemoirs",
                         principalColumn: "Id",
@@ -259,11 +260,6 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_IccMemoirIccStudent_MemoirsWhichImCandidateId",
-                table: "IccMemoirIccStudent",
-                column: "MemoirsWhichImCandidateId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_IccMemoirs_GuideId",
                 table: "IccMemoirs",
                 column: "GuideId");
@@ -272,6 +268,11 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                 name: "IX_IccMemoirs_StudentId",
                 table: "IccMemoirs",
                 column: "StudentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_IccStudentIccTeacherMemoir_MemoirsWhichImCandidateId",
+                table: "IccStudentIccTeacherMemoir",
+                column: "MemoirsWhichImCandidateId");
         }
 
         /// <inheritdoc />
@@ -293,7 +294,7 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "IccMemoirIccStudent");
+                name: "IccStudentIccTeacherMemoir");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

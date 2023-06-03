@@ -130,7 +130,18 @@ public class AccountController : Controller {
 			this.ViewData[$"{parameter}SortParam"] = sortOrder == parameter ? $"{parameter}Desc" : parameter;
 		}
 		this.ViewData["CurrentSort"] = sortOrder;
-		if (searchString is not null) {
+		if (!string.IsNullOrEmpty(sortOrder)) {
+			foreach (var parameter in parameters) {
+				if (parameter == sortOrder) {
+					students = students.OrderBy(e => e.GetType().GetProperty(parameter)!.GetValue(e, null)).ToList();
+					break;
+				} else if ($"{parameter}Desc" == sortOrder) {
+					students = students.OrderByDescending(e => e.GetType().GetProperty(parameter)!.GetValue(e, null)).ToList();
+					break;
+				}
+			}
+		}
+		if (!string.IsNullOrEmpty(searchString)) {
 			pageNumber = 1;
 			this.ViewData["CurrentFilter"] = searchString;
 			var filtered = new List<IccStudent>();
@@ -160,7 +171,18 @@ public class AccountController : Controller {
 			this.ViewData[$"{parameter}SortParam"] = sortOrder == parameter ? $"{parameter}Desc" : parameter;
 		}
 		this.ViewData["CurrentSort"] = sortOrder;
-		if (searchString is not null) {
+		if (!string.IsNullOrEmpty(sortOrder)) {
+			foreach (var parameter in parameters) {
+				if (parameter == sortOrder) {
+					teachers = teachers.OrderBy(e => e.GetType().GetProperty(parameter)!.GetValue(e, null)).ToList();
+					break;
+				} else if ($"{parameter}Desc" == sortOrder) {
+					teachers = teachers.OrderByDescending(e => e.GetType().GetProperty(parameter)!.GetValue(e, null)).ToList();
+					break;
+				}
+			}
+		}
+		if (!string.IsNullOrEmpty(searchString)) {
 			pageNumber = 1;
 			this.ViewData["CurrentFilter"] = searchString;
 			var filtered = new List<IccTeacher>();

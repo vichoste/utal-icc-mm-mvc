@@ -35,10 +35,4 @@ public class IccMemoir {
 
 	[Display(Name = "Profesor guía")]
 	public virtual IccTeacher? Guide { get; set; }
-
-	[DataType(DataType.MultilineText), Display(Name = "Requisitos")]
-	public string Requierments { get; set; } = string.Empty;
-
-	[Display(Name = "Candidatos")]
-	public virtual ICollection<IccStudent> Candidates { get; set; } = new HashSet<IccStudent>();
 }

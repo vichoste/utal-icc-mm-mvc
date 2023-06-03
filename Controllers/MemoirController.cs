@@ -26,7 +26,7 @@ public class MemoirController : Controller {
 	[Authorize(Roles = "IccRegular,IccGuide")]
 	public IActionResult Index(string sortOrder, string currentFilter, string searchString, int? pageNumber) {
 		List<IccMemoir> memoirs = new();
-		if (this.User.IsInRole("IccRegular")) {
+		if (!this.User.IsInRole("IccRegular")) {
 			memoirs = this._dbContext.IccMemoirs
 				.Include(m => m.Student)
 				.Where(m => m.Student!.Id == this.User.FindFirstValue(ClaimTypes.NameIdentifier))
@@ -42,7 +42,18 @@ public class MemoirController : Controller {
 			this.ViewData[$"{parameter}SortParam"] = sortOrder == parameter ? $"{parameter}Desc" : parameter;
 		}
 		this.ViewData["CurrentSort"] = sortOrder;
-		if (searchString is not null) {
+		if (!string.IsNullOrEmpty(sortOrder)) {
+			foreach (var parameter in parameters) {
+				if (parameter == sortOrder) {
+					memoirs = memoirs.OrderBy(e => e.GetType().GetProperty(parameter)!.GetValue(e, null)).ToList();
+					break;
+				} else if ($"{parameter}Desc" == sortOrder) {
+					memoirs = memoirs.OrderByDescending(e => e.GetType().GetProperty(parameter)!.GetValue(e, null)).ToList();
+					break;
+				}
+			}
+		}
+		if (!string.IsNullOrEmpty(searchString)) {
 			pageNumber = 1;
 			this.ViewData["CurrentFilter"] = searchString;
 			var filtered = new List<IccMemoir>();
@@ -66,7 +77,9 @@ public class MemoirController : Controller {
 
 	[Authorize(Roles = "IccRegular,IccGuide")]
 	public async Task<IActionResult> Create() {
-		this.ViewBag.Guides = (await this._userManager.GetUsersInRoleAsync("IccGuide")).ToList();
+		if (this.User.IsInRole("IccRegular")) {
+			this.ViewBag.Guides = (await this._userManager.GetUsersInRoleAsync("IccGuide")).ToList();
+		}
 		return this.View();
 	}
 }

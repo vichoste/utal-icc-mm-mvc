@@ -27,5 +27,5 @@ public class IccStudent : IccUser {
 	public virtual ICollection<IccMemoir> MemoirsWhichIOwn { get; set; } = new HashSet<IccMemoir>();
 
 	[Display(Name = "Mis postulaciones"), InverseProperty("Candidates")]
-	public virtual ICollection<IccMemoir> MemoirsWhichImCandidate { get; set; } = new HashSet<IccMemoir>();
+	public virtual ICollection<IccTeacherMemoir> MemoirsWhichImCandidate { get; set; } = new HashSet<IccTeacherMemoir>();
 }
