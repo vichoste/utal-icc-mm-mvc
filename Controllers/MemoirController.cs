@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -15,8 +16,12 @@ namespace Utal.Icc.Mm.Mvc.Controllers;
 
 public class MemoirController : Controller {
 	private readonly IccDbContext _dbContext;
+	private readonly UserManager<IccUser> _userManager;
 
-	public MemoirController(IccDbContext dbContext) => this._dbContext = dbContext;
+	public MemoirController(IccDbContext dbContext, UserManager<IccUser> userManager) {
+		this._dbContext = dbContext;
+		this._userManager = userManager;
+	}
 
 	[Authorize(Roles = "IccRegular,IccGuide")]
 	public IActionResult Index(string sortOrder, string currentFilter, string searchString, int? pageNumber) {
@@ -28,8 +33,8 @@ public class MemoirController : Controller {
 				.ToList();
 		} else if (this.User.IsInRole("IccGuide")) {
 			memoirs = this._dbContext.IccMemoirs
-				.Include(m => m.GuideTeacher)
-				.Where(m => m.GuideTeacher!.Id == this.User.FindFirstValue(ClaimTypes.NameIdentifier))
+				.Include(m => m.Guide)
+				.Where(m => m.Guide!.Id == this.User.FindFirstValue(ClaimTypes.NameIdentifier))
 				.ToList();
 		}
 		var parameters = new[] { "Title" };
@@ -57,5 +62,11 @@ public class MemoirController : Controller {
 		searchString = currentFilter;
 		this.ViewBag.Memoirs = memoirs.ToPagedList(pageNumber ?? 1, 10);
 		return this.View(new PaginatorPartialViewModel("Index", pageNumber ?? 1, (int)Math.Ceiling((decimal)memoirs.Count / 10), pageNumber > 1, pageNumber < (int)Math.Ceiling((decimal)memoirs.Count / 10)));
+	}
+
+	[Authorize(Roles = "IccRegular,IccGuide")]
+	public async Task<IActionResult> Create() {
+		this.ViewBag.Guides = (await this._userManager.GetUsersInRoleAsync("IccGuide")).ToList();
+		return this.View();
 	}
 }

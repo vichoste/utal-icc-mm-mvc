@@ -1,8 +1,4 @@
-﻿@using Utal.Icc.Mm.Mvc.Views.Account
-
-@model StudentProfile
-
-@{
+﻿@{
 	this.ViewData["Title"] = "Perfil de estudiante";
 }
 
@@ -16,39 +12,39 @@
 				</div>
 				<div class="card-body">
 					@using (this.Html.BeginForm("StudentProfile", "Account", FormMethod.Post)) {
-						@this.Html.AntiForgeryToken();
+						@this.Html.AntiForgeryToken()
 						<div class="form-group mb-3">
-							@this.Html.LabelFor(m => m.FirstName, new { @class = "form-label" }):
-							@this.Html.DisplayFor(m => m.FirstName, new { @class = "form-control" })
+							@this.Html.Label("firstName", "Nombre", new { @class = "form-label" }):
+							@this.Html.Display("firstName", (string)this.ViewBag.FirstName , new { @class = "form-control" })
 						</div>
 						<div class="form-group mb-3">
-							@this.Html.LabelFor(m => m.LastName, new { @class = "form-label" }):
-							@this.Html.DisplayFor(m => m.LastName, new { @class = "form-control" })
+							@this.Html.Label("lastName", "Apellido", new { @class = "form-label" }):
+							@this.Html.Display("lastName", (string)this.ViewBag.LastName, new { @class = "form-control" })
 						</div>
 						<div class="form-group mb-3">
-							@this.Html.LabelFor(m => m.Rut, new { @class = "form-label" }):
-							@this.Html.DisplayFor(m => m.Rut, new { @class = "form-control" })
+							@this.Html.Label("rut", "RUT", new { @class = "form-label" }):
+							@this.Html.Display("rut", (string)this.ViewBag.Rut, new { @class = "form-control" })
 						</div>
 						<div class="form-group mb-3">
-							@this.Html.LabelFor(m => m.Email, new { @class = "form-label" }):
-							@this.Html.DisplayFor(m => m.Email, new { @class = "form-control" })
+							@this.Html.Label("email", "E-mail", new { @class = "form-label" }):
+							@this.Html.Display("email", (string)this.ViewBag.Email, new { @class = "form-control" })
 						</div>
 						<hr />
 						<div class="form-group mb-3">
-							@this.Html.LabelFor(m => m.UniversityId, new { @class = "form-label" }):
-							@this.Html.DisplayFor(m => m.UniversityId, new { @class = "form-control" })
+							@this.Html.Label("universityId", "Número de matrícula", new { @class = "form-label" }):
+							@this.Html.Display("universityId", (string)this.ViewBag.UniversityId, new { @class = "form-control" })
 						</div>
 						<div class="form-group mb-3">
-							@this.Html.LabelFor(m => m.RemainingCourses, new { @class = "form-label" })
-							@this.Html.TextBoxFor(m => m.RemainingCourses, new { @class = "form-control" })
+							@this.Html.Label("remainingCourses", "Cursos restantes", new { @class = "form-label" })
+							@this.Html.TextBox("remainingCourses", (string)this.ViewBag.RemainingCourses, new { @class = "form-control" })
 						</div>
 						<div class="form-check mb-3">
-							@this.Html.LabelFor(m => m.IsDoingThePractice, new { @class = "form-check-label" })
-							@this.Html.CheckBoxFor(m => m.IsDoingThePractice, new { @class = "form-check-input" })
+							@this.Html.CheckBox("isDoingThePractice", (bool)this.ViewBag.IsDoingThePractice, new { @class = "form-check-input" })
+							@this.Html.Label("isDoingThePractice", "¿Haciendo práctica?", new { @class = "form-check-label" })
 						</div>
 						<div class="form-check mb-3">
-							@this.Html.LabelFor(m => m.IsWorking, new { @class = "form-check-label" })
-							@this.Html.CheckBoxFor(m => m.IsWorking, new { @class = "form-check-input" })
+							@this.Html.CheckBox("isWorking", (bool)this.ViewBag.IsWorking, new { @class = "form-check-input" })
+							@this.Html.Label("isWorking", "¿Trabajando?", new { @class = "form-check-label" })
 						</div>
 						<div class="row text-center">
 							<div class="col">

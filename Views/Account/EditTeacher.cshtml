@@ -1,8 +1,4 @@
-﻿@using Utal.Icc.Mm.Mvc.Views.Account
-
-@model EditTeacher
-
-@{
+﻿@{
 	this.ViewData["Title"] = "Editar profesor(a)";
 }
 
@@ -16,43 +12,36 @@
 				</div>
 				<div class="card-body">
 					@using (this.Html.BeginForm("EditTeacher", "Account", FormMethod.Post)) {
-						@this.Html.AntiForgeryToken();
+						@this.Html.AntiForgeryToken()
+						@this.Html.Hidden("id", (string)this.ViewBag.Id)
 						<div class="form-group mb-3">
-							@this.Html.LabelFor(m => m.FirstName, new { @class = "form-label" }):
-							@this.Html.TextBoxFor(m => m.FirstName, new { @class = "form-control" })
+							@this.Html.Label("firstName", "Nombre", new { @class = "form-label" })
+							@this.Html.TextBox("firstName", (string)this.ViewBag.FirstName, new { @class = "form-control" })
 						</div>
 						<div class="form-group mb-3">
-							@this.Html.LabelFor(m => m.LastName, new { @class = "form-label" }):
-							@this.Html.TextBoxFor(m => m.LastName, new { @class = "form-control" })
+							@this.Html.Label("lastName", "Apellido", new { @class = "form-label" })
+							@this.Html.TextBox("lastName", (string)this.ViewBag.LastName, new { @class = "form-control" })
 						</div>
 						<div class="form-group mb-3">
-							@this.Html.LabelFor(m => m.Rut, new { @class = "form-label" }):
-							@this.Html.TextBoxFor(m => m.Rut, new { @class = "form-control" })
+							@this.Html.Label("rut", "RUT", new { @class = "form-label" })
+							@this.Html.TextBox("rut", (string)this.ViewBag.Rut, new { @class = "form-control" })
 						</div>
 						<div class="form-group mb-3">
-							@this.Html.LabelFor(m => m.Email, new { @class = "form-label" }):
-							@this.Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+							@this.Html.Label("email", "E-mail", new { @class = "form-label" })
+							@this.Html.TextBox("email", (string)this.ViewBag.Email, new { @class = "form-control" })
 						</div>
 						<hr />
 						<div class="form-group mb-3">
-							@this.Html.LabelFor(m => m.Office, new { @class = "form-label" }):
-							@this.Html.TextBoxFor(m => m.Office, new { @class = "form-control" })
+							@this.Html.Label("office", "Oficina", new { @class = "form-label" })
+							@this.Html.TextBox("office", (string)this.ViewBag.Office, new { @class = "form-control" })
 						</div>
 						<div class="form-group mb-3">
-							@this.Html.LabelFor(m => m.Schedule, new { @class = "form-label" }):
-							@this.Html.TextBoxFor(m => m.Schedule, new { @class = "form-control" })
+							@this.Html.Label("schedule", "Horario", new { @class = "form-label" })
+							@this.Html.TextBox("schedule", (string)this.ViewBag.Schedule, new { @class = "form-control" })
 						</div>
 						<div class="form-group mb-3">
-							@this.Html.LabelFor(m => m.Specialization, new { @class = "form-label" }):
-							@this.Html.TextBoxFor(m => m.Specialization, new { @class = "form-control" })
-						</div>
-						<div class="form-check mb-3">
-							@this.Html.LabelFor(m => m.IsCommittee, new { @class = "form-check-label" })
-							@this.Html.CheckBoxFor(m => m.IsCommittee, new { @class = "form-check-input" })
-						</div>
-						<div class="form-check mb-3">
-							@this.Html.LabelFor(m => m.IsGuide, new { @class = "form-check-label" })
-							@this.Html.CheckBoxFor(m => m.IsGuide, new { @class = "form-check-input" })
+							@this.Html.Label("specialization", "Especialización", new { @class = "form-label" })
+							@this.Html.TextBox("specialization", (string)this.ViewBag.Specialization, new { @class = "form-control" })
 						</div>
 						<div class="row text-center">
 							<div class="col">

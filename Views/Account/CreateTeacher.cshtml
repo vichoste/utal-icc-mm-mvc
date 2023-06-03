@@ -1,8 +1,4 @@
-﻿@using Utal.Icc.Mm.Mvc.Views.Account
-
-@model EditTeacher
-
-@{
+﻿@{
 	this.ViewData["Title"] = "Crear profesor";
 }
 
@@ -13,42 +9,38 @@
 			<div class="card">
 				<div class="card-header text-center">@this.ViewData["Title"]</div>
 				<div class="card-body">
-					@using (this.Html.BeginForm("CreateTeacher", "Account", new { area = string.Empty })) {
+					@using (this.Html.BeginForm("CreateTeacher", "Account", new { area = string.Empty }, FormMethod.Post)) {
 						@this.Html.AntiForgeryToken()
 						<div class="row">
 							<div class="col">
 								<div class="form-group mb-3">
-									@this.Html.LabelFor(m => m.FirstName, new { @class = "form-label" })
-									@this.Html.TextBoxFor(m => m.FirstName, new { @class = "form-control" })
+									@this.Html.Label("firstName", "Nombre", new { @class = "form-label" })
+									@this.Html.TextBox("firstName", new { @class = "form-control", required = "required" })
 								</div>
 								<div class="form-group mb-3">
-									@this.Html.LabelFor(m => m.LastName, new { @class = "form-label" })
-									@this.Html.TextBoxFor(m => m.LastName, new { @class = "form-control" })
+									@this.Html.Label("lastName", "Apellido", new { @class = "form-label" })
+									@this.Html.TextBox("lastName", new { @class = "form-control", required = "required" })
 								</div>
 								<div class="form-group mb-3">
-									@this.Html.LabelFor(m => m.Rut, new { @class = "form-label" })
-									@this.Html.TextBoxFor(m => m.Rut, new { @class = "form-control" })
+									@this.Html.Label("rut", "RUT", new { @class = "form-label" })
+									@this.Html.TextBox("rut", new { @class = "form-control", required = "required" })
 								</div>
 								<div class="form-group mb-3">
-									@this.Html.LabelFor(m => m.Email, new { @class = "form-label" })
-									@this.Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+									@this.Html.Label("email", "E-mail", new { @class = "form-label" })
+									@this.Html.TextBox("email", new { @class = "form-control", required = "required" })
 								</div>
 								<div class="form-group mb-3">
-									@this.Html.LabelFor(m => m.Password.NewPassword, new { @class = "form-label" })
-									@this.Html.PasswordFor(m => m.Password.NewPassword, new { @class = "form-control" })
-								</div>
-								<div class="form-group mb-3">
-									@this.Html.LabelFor(m => m.Password.ConfirmNewPassword, new { @class = "form-label" })
-									@this.Html.PasswordFor(m => m.Password.ConfirmNewPassword, new { @class = "form-control" })
+									@this.Html.Label("password", "Contraseña", new { @class = "form-label" })
+									@this.Html.Password("password", new { @class = "form-control", required = "required" })
 								</div>
 								<p><strong>Roles</strong></p>
 								<div class="form-check mb-3">
-									@this.Html.LabelFor(m => m.IsGuide, new { @class = "form-check-label" })
-									@this.Html.CheckBoxFor(m => m.IsGuide, new { @class = "form-check-input" })
+									@this.Html.Label("isGuide", "¿Profesor guía?", new { @class = "form-check-label" })
+									@this.Html.CheckBox("isGuide", new { @class = "form-check-input", required = "required" })
 								</div>
 								<div class="form-check mb-3">
-									@this.Html.LabelFor(m => m.IsCommittee, new { @class = "form-check-label" })
-									@this.Html.CheckBoxFor(m => m.IsCommittee, new { @class = "form-check-input" })
+									@this.Html.Label("isCommittee", "¿Profesor del comité?", new { @class = "form-check-label" })
+									@this.Html.CheckBox("isCommittee", new { @class = "form-check-input", required = "required" })
 								</div>
 							</div>
 						</div>

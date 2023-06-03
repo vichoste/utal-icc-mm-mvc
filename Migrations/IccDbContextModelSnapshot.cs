@@ -179,7 +179,7 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("GuideTeacherId")
+                    b.Property<string>("GuideId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Phase")
@@ -198,7 +198,7 @@ namespace Utal.Icc.Mm.Mvc.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GuideTeacherId");
+                    b.HasIndex("GuideId");
 
                     b.HasIndex("StudentId");
 
@@ -401,15 +401,15 @@ namespace Utal.Icc.Mm.Mvc.Migrations
 
             modelBuilder.Entity("Utal.Icc.Mm.Mvc.Models.IccMemoir", b =>
                 {
-                    b.HasOne("Utal.Icc.Mm.Mvc.Models.IccTeacher", "GuideTeacher")
+                    b.HasOne("Utal.Icc.Mm.Mvc.Models.IccTeacher", "Guide")
                         .WithMany("MemoirsWhichIGuide")
-                        .HasForeignKey("GuideTeacherId");
+                        .HasForeignKey("GuideId");
 
                     b.HasOne("Utal.Icc.Mm.Mvc.Models.IccStudent", "Student")
                         .WithMany("MemoirsWhichIOwn")
                         .HasForeignKey("StudentId");
 
-                    b.Navigation("GuideTeacher");
+                    b.Navigation("Guide");
 
                     b.Navigation("Student");
                 });

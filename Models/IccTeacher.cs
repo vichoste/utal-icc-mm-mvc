@@ -25,6 +25,6 @@ public class IccTeacher : IccUser {
 	[Display(Name = "Especialización")]
 	public string Specialization { get; set; } = string.Empty;
 
-	[Display(Name = "Mis memorias"), InverseProperty("GuideTeacher")]
+	[Display(Name = "Mis memorias"), InverseProperty("Guide")]
 	public virtual ICollection<IccMemoir> MemoirsWhichIGuide { get; set; } = new HashSet<IccMemoir>();
 }

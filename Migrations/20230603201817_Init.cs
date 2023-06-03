@@ -177,15 +177,15 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StudentId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    GuideTeacherId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    GuideId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Requierments = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_IccMemoirs", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_IccMemoirs_AspNetUsers_GuideTeacherId",
-                        column: x => x.GuideTeacherId,
+                        name: "FK_IccMemoirs_AspNetUsers_GuideId",
+                        column: x => x.GuideId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
@@ -264,9 +264,9 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                 column: "MemoirsWhichImCandidateId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_IccMemoirs_GuideTeacherId",
+                name: "IX_IccMemoirs_GuideId",
                 table: "IccMemoirs",
-                column: "GuideTeacherId");
+                column: "GuideId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_IccMemoirs_StudentId",

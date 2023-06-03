@@ -34,7 +34,7 @@ public class IccMemoir {
 	public virtual IccStudent? Student { get; set; }
 
 	[Display(Name = "Profesor guía")]
-	public virtual IccTeacher? GuideTeacher { get; set; }
+	public virtual IccTeacher? Guide { get; set; }
 
 	[Display(Name = "Requisitos")]
 	public string Requierments { get; set; } = string.Empty;
