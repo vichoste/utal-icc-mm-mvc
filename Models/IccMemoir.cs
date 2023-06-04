@@ -14,7 +14,7 @@ public class IccMemoir {
 
 	public Phases Phase { get; set; } = Phases.Proposal;
 
-	public Guid Id { get; set; } = Guid.NewGuid();
+	public string Id { get; set; } = Guid.NewGuid().ToString();
 
 	public string Title { get; set; } = string.Empty;
 

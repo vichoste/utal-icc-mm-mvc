@@ -26,8 +26,20 @@
 								</div>
 								@if (this.User.IsInRole("IccRegular")) {
 									<div class="form-group mb-3">
-										@this.Html.Label("guide", "Profesor guía", new { @class = "form-label "})
+										@this.Html.Label("guide", "Profesor guía", new { @class = "form-label" })
 										@this.Html.DropDownList("guide", new SelectList(this.ViewBag.Guides, "Id", "FullName"), "Selecciona un(a) profesor guía", new { @class = "form-control", required = "required" })
+									</div>
+									<div class="form-group mb-3" id="officeShow">
+										@this.Html.Label("office", "Oficina", new { @class = "form-label" }):
+										<pre id="office"></pre>
+									</div>
+									<div class="form-group mb-3" id="scheduleShow">
+										@this.Html.Label("schedule", "Horario", new { @class = "form-label" }):
+										<pre id="schedule"></pre>
+									</div>
+									<div class="form-group mb-3" id="specializationShow">
+										@this.Html.Label("specialization", "Especialización", new { @class = "form-label" }):
+										<pre id="specialization"></pre>
 									</div>
 								} else if (this.User.IsInRole("IccGuide")) {
 									<div class="form-group mb-3">
@@ -51,3 +63,33 @@
 		</div>
 	</div>
 </div>
+
+@section Scripts {
+	<script>
+		$(document).ready(function () {
+			$("#officeShow").hide();
+			$("#scheduleShow").hide();
+			$("#specializationShow").hide();
+
+			$("#guide").change(function () {
+				var guideId = $(this).val();
+				if (guideId) {
+					$.getJSON("/Memoir/GetTeacherDetails/" + guideId, function (data) {
+						console.log(data);
+						$("#officeShow").show();
+						$("#scheduleShow").show();
+						$("#specializationShow").show();
+						$("#office").text(data.office);
+						$("#schedule").text(data.schedule);
+						$("#specialization").text(data.specialization);
+					});
+				}
+				else {
+					$("#officeShow").hide();
+					$("#scheduleShow").hide();
+					$("#specializationShow").hide();
+				}
+			});
+		});
+	</script>
+}

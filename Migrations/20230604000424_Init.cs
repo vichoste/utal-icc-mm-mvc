@@ -171,7 +171,7 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                 name: "IccMemoirs",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Phase = table.Column<int>(type: "int", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -200,7 +200,7 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                 columns: table => new
                 {
                     CandidatesId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    MemoirsWhichImCandidateId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    MemoirsWhichImCandidateId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {

@@ -26,7 +26,7 @@ public class MemoirController : Controller {
 	[Authorize(Roles = "IccRegular,IccGuide")]
 	public IActionResult Index(string sortOrder, string currentFilter, string searchString, int? pageNumber) {
 		List<IccMemoir> memoirs = new();
-		if (!this.User.IsInRole("IccRegular")) {
+		if (this.User.IsInRole("IccRegular")) {
 			memoirs = this._dbContext.IccMemoirs
 				.Include(m => m.Student)
 				.Where(m => m.Student!.Id == this.User.FindFirstValue(ClaimTypes.NameIdentifier))
@@ -98,5 +98,15 @@ public class MemoirController : Controller {
 			return this.RedirectToAction("Index", "Memoir");
 		}
 		return this.NotFound();
+	}
+
+	[HttpGet]
+	public ActionResult GetTeacherDetails(string id) {
+		var teacher = this._dbContext.IccTeachers.Find(id);
+		return this.Json(new {
+			office = teacher!.Office,
+			schedule = teacher.Schedule,
+			specialization = teacher.Specialization
+		});
 	}
 }
