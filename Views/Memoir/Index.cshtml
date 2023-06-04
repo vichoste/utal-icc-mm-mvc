@@ -36,65 +36,40 @@
 					</thead>
 					<tbody>
 						@foreach (var item in this.ViewBag.Memoirs) {
-							@if (this.User.IsInRole("IccRegular") && item is IccStudentMemoir || this.User.IsInRole("IccGuide") && item is IccTeacherMemoir) {
-								<tr>
-									<td>@item.Title</td>
+							<tr>
+								<td>@item.Title</td>
+								<td>
+									@switch (item.Phase) {
+										case IccMemoir.Phases.Proposal:
+											<span class="badge bg-secondary">Propuesta</span>
+											break;
+										case IccMemoir.Phases.Request:
+											<span class="badge bg-primary">Solicitud</span>
+											break;
+										case IccMemoir.Phases.InProgress:
+											<span class="badge bg-info">En progreso</span>
+											break;
+										case IccMemoir.Phases.Complete:
+											<span class="badge bg-success">Completa</span>
+											break;
+										case IccMemoir.Phases.Paused:
+											<span class="badge bg-warning">Pausada</span>
+											break;
+										case IccMemoir.Phases.Abandoned:
+											<span class="badge bg-danger">Abandonada</span>
+											break;
+									}
+								</td>
+								@if (this.User.IsInRole("IccRegular") && item is IccStudentMemoir || this.User.IsInRole("IccGuide") && item is IccTeacherMemoir) {
 									<td>
-										@switch (item.Phase) {
-											case IccMemoir.Phases.Proposal:
-												<span class="badge bg-secondary">Propuesta</span>
-												break;
-											case IccMemoir.Phases.Request:
-												<span class="badge bg-primary">Solicitud</span>
-												break;
-											case IccMemoir.Phases.InProgress:
-												<span class="badge bg-info">En progreso</span>
-												break;
-											case IccMemoir.Phases.Complete:
-												<span class="badge bg-success">Completa</span>
-												break;
-											case IccMemoir.Phases.Paused:
-												<span class="badge bg-warning">Pausada</span>
-												break;
-											case IccMemoir.Phases.Abandoned:
-												<span class="badge bg-danger">Abandonada</span>
-												break;
-										}
+										@this.Html.ActionLink("Editar", "Get", "Memoir", new { id = item.Id, isReadOnly = false }, new { @class = "btn btn-warning mb-3" })
 									</td>
+								} else {
 									<td>
-										@this.Html.ActionLink("Editar", "Edit", "Memoir", new { id = item.Id }, new { @class = "btn btn-warning mb-3" })
+										@this.Html.ActionLink("Ver", "Get", "Memoir", new { id = item.Id, isReadOnly = true }, new { @class = "btn btn-primary mb-3" })
 									</td>
-								</tr>
-							} else {
-								<tr>
-									<td>@item.Title</td>
-									<td>
-										@switch (item.Phase) {
-											case IccMemoir.Phases.Proposal:
-												<span class="badge bg-secondary">Propuesta</span>
-												break;
-											case IccMemoir.Phases.Request:
-												<span class="badge bg-primary">Solicitud</span>
-												break;
-											case IccMemoir.Phases.InProgress:
-												<span class="badge bg-info">En progreso</span>
-												break;
-											case IccMemoir.Phases.Complete:
-												<span class="badge bg-success">Completa</span>
-												break;
-											case IccMemoir.Phases.Paused:
-												<span class="badge bg-warning">Pausada</span>
-												break;
-											case IccMemoir.Phases.Abandoned:
-												<span class="badge bg-danger">Abandonada</span>
-												break;
-										}
-									</td>
-									<td>
-										@this.Html.ActionLink("Ver", "View", "Memoir", new { id = item.Id }, new { @class = "btn btn-primary mb-3" })
-									</td>
-								</tr>
-							}
+								}
+							</tr>
 						}
 					</tbody>
 				</table>

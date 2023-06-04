@@ -31,9 +31,6 @@ public class AccountController : Controller {
 
 	[HttpPost, ValidateAntiForgeryToken]
 	public async Task<IActionResult> Login([FromForm] string email, [FromForm] string password, [FromForm] bool rememberMe) {
-		if (this.User.Identity!.IsAuthenticated) {
-			return this.RedirectToAction("Index", "Home");
-		}
 		var result = await this._signInManager.PasswordSignInAsync(email, password, rememberMe, false);
 		if (!result.Succeeded) {
 			this.ViewBag.DangerMessage = "Credenciales incorrectas.";
@@ -70,56 +67,44 @@ public class AccountController : Controller {
 	[Authorize]
 	public async Task<IActionResult> Profile() {
 		var user = await this._userManager.GetUserAsync(this.User);
+		this.ViewBag.Email = user!.Email;
+		this.ViewBag.FirstName = user.FirstName;
+		this.ViewBag.LastName = user.LastName;
+		this.ViewBag.Rut = user.Rut;
 		if (user is IccStudent student) {
-			this.ViewBag.Email = student.Email;
-			this.ViewBag.FirstName = student.FirstName;
-			this.ViewBag.LastName = student.LastName;
-			this.ViewBag.Rut = student.Rut;
 			this.ViewBag.UniversityId = student.UniversityId;
 			this.ViewBag.RemainingCourses = student.RemainingCourses;
 			this.ViewBag.IsDoingThePractice = student.IsDoingThePractice;
 			this.ViewBag.IsWorking = student.IsWorking;
-			return this.View("StudentProfile");
 		}
 		if (user is IccTeacher teacher) {
-			this.ViewBag.Email = teacher.Email;
-			this.ViewBag.FirstName = teacher.FirstName;
-			this.ViewBag.LastName = teacher.LastName;
-			this.ViewBag.Rut = teacher.Rut;
 			this.ViewBag.Office = teacher.Office;
 			this.ViewBag.Schedule = teacher.Schedule;
 			this.ViewBag.Specialization = teacher.Specialization;
-			return this.View("TeacherProfile");
 		}
-		return this.NotFound();
+		return this.View();
 	}
 
 	[Authorize, HttpPost, ValidateAntiForgeryToken]
 	public async Task<IActionResult> StudentProfile([FromForm] string remainingCourses, [FromForm] bool isDoingThePractice, [FromForm] bool isWorking) {
-		var user = await this._userManager.GetUserAsync(this.User);
-		if (user is IccStudent student) {
-			student.RemainingCourses = remainingCourses;
-			student.IsDoingThePractice = isDoingThePractice;
-			student.IsWorking = isWorking;
-			_ = await this._userManager.UpdateAsync(student);
-			this.TempData["SuccessMessage"] = "Has actualizado tu perfil correctamente.";
-			return this.RedirectToAction("Profile", "Account");
-		}
-		return this.NotFound();
+		var student = await this._userManager.GetUserAsync(this.User) as IccStudent;
+		student!.RemainingCourses = remainingCourses;
+		student.IsDoingThePractice = isDoingThePractice;
+		student.IsWorking = isWorking;
+		_ = await this._userManager.UpdateAsync(student);
+		this.TempData["SuccessMessage"] = "Has actualizado tu perfil correctamente.";
+		return this.RedirectToAction("Profile", "Account");
 	}
 
 	[Authorize, HttpPost, ValidateAntiForgeryToken]
 	public async Task<IActionResult> TeacherProfile([FromForm] string office, [FromForm] string schedule, [FromForm] string specialization) {
-		var user = await this._userManager.GetUserAsync(this.User);
-		if (user is IccTeacher teacher) {
-			teacher.Office = office;
-			teacher.Schedule = schedule;
-			teacher.Specialization = specialization;
-			_ = await this._userManager.UpdateAsync(teacher);
-			this.TempData["SuccessMessage"] = "Has actualizado tu perfil correctamente.";
-			return this.RedirectToAction("Profile", "Account");
-		}
-		return this.NotFound();
+		var teacher = await this._userManager.GetUserAsync(this.User) as IccTeacher;
+		teacher!.Office = office;
+		teacher.Schedule = schedule;
+		teacher.Specialization = specialization;
+		_ = await this._userManager.UpdateAsync(teacher);
+		this.TempData["SuccessMessage"] = "Has actualizado tu perfil correctamente.";
+		return this.RedirectToAction("Profile", "Account");
 	}
 
 	[Authorize(Roles = "IccDirector")]
@@ -273,23 +258,18 @@ public class AccountController : Controller {
 	[Authorize(Roles = "IccDirector")]
 	public async Task<IActionResult> Edit(string id) {
 		var target = await this._userManager.FindByIdAsync(id);
+		this.ViewBag.Id = id;
+		this.ViewBag.Email = target!.Email;
+		this.ViewBag.FirstName = target.FirstName;
+		this.ViewBag.LastName = target.LastName;
+		this.ViewBag.Rut = target.Rut;
 		if (target is IccStudent student) {
-			this.ViewBag.Id = id;
-			this.ViewBag.Email = student.Email;
-			this.ViewBag.FirstName = student.FirstName;
-			this.ViewBag.LastName = student.LastName;
-			this.ViewBag.Rut = student.Rut;
 			this.ViewBag.UniversityId = student.UniversityId;
 			this.ViewBag.RemainingCourses = student.RemainingCourses;
 			this.ViewBag.IsDoingThePractice = student.IsDoingThePractice;
 			this.ViewBag.IsWorking = student.IsWorking;
 			return this.View("EditStudent");
 		} else if (target is IccTeacher teacher) {
-			this.ViewBag.Id = id;
-			this.ViewBag.Email = teacher.Email;
-			this.ViewBag.FirstName = teacher.FirstName;
-			this.ViewBag.LastName = teacher.LastName;
-			this.ViewBag.Rut = teacher.Rut;
 			this.ViewBag.Office = teacher.Office;
 			this.ViewBag.Schedule = teacher.Schedule;
 			this.ViewBag.Specialization = teacher.Specialization;
@@ -302,53 +282,47 @@ public class AccountController : Controller {
 
 	[Authorize(Roles = "IccDirector"), HttpPost, ValidateAntiForgeryToken]
 	public async Task<IActionResult> EditStudent([FromForm] string id, [FromForm] string email, [FromForm] string firstName, [FromForm] string lastName, [FromForm] string rut, [FromForm] string universityId, [FromForm] string remainingCourses, [FromForm] bool isDoingThePractice, [FromForm] bool isWorking) {
-		var target = await this._userManager.FindByIdAsync(id);
-		if (target is IccStudent student) {
-			student.Email = email;
-			student.FirstName = firstName;
-			student.LastName = lastName;
-			student.Rut = rut;
-			student.UniversityId = universityId;
-			student.RemainingCourses = remainingCourses;
-			student.IsDoingThePractice = isDoingThePractice;
-			student.IsWorking = isWorking;
-			_ = await this._userManager.UpdateAsync(student);
-			this.TempData["SuccessMessage"] = "Estudiante actualizado exitosamente.";
-			return this.RedirectToAction("Students", "Account", new { area = string.Empty });
-		}
-		return this.NotFound();
+		var student = await this._userManager.FindByIdAsync(id) as IccStudent;
+		student!.Email = email;
+		student.FirstName = firstName;
+		student.LastName = lastName;
+		student.Rut = rut;
+		student.UniversityId = universityId;
+		student.RemainingCourses = remainingCourses;
+		student.IsDoingThePractice = isDoingThePractice;
+		student.IsWorking = isWorking;
+		_ = await this._userManager.UpdateAsync(student);
+		this.TempData["SuccessMessage"] = "Estudiante actualizado exitosamente.";
+		return this.RedirectToAction("Students", "Account", new { area = string.Empty });
 	}
 
 	[Authorize(Roles = "IccDirector"), HttpPost, ValidateAntiForgeryToken]
 	public async Task<IActionResult> EditTeacher([FromForm] string id, [FromForm] string email, [FromForm] string firstName, [FromForm] string lastName, [FromForm] string rut, [FromForm] string office, [FromForm] string schedule, [FromForm] string specialization, [FromForm] bool isCommittee, [FromForm] bool isGuide) {
-		var target = await this._userManager.FindByIdAsync(id);
-		if (target is IccTeacher teacher) {
-			teacher.Email = email;
-			teacher.FirstName = firstName;
-			teacher.LastName = lastName;
-			teacher.Rut = rut;
-			teacher.Office = office;
-			teacher.Schedule = schedule;
-			teacher.Specialization = specialization;
-			_ = await this._userManager.UpdateAsync(teacher);
-			var roles = new List<string>();
-			if (isCommittee) {
-				roles.Add("IccCommittee");
-			}
-			if (isGuide) {
-				roles.Add("IccGuide");
-			}
-			var currentRoles = (await this._userManager.GetRolesAsync(teacher)).ToList();
-			var rolesToRemove = currentRoles.Except(roles).ToList();
-			if (rolesToRemove.Contains("IccDirector")) {
-				_ = rolesToRemove.Remove("IccDirector");
-			}
-			var rolesToAdd = roles.Except(currentRoles);
-			_ = await this._userManager.RemoveFromRolesAsync(teacher, rolesToRemove);
-			_ = await this._userManager.AddToRolesAsync(teacher, rolesToAdd);
-			this.TempData["SuccessMessage"] = "Profesor(a) actualizado(a) exitosamente.";
-			return this.RedirectToAction("Teachers", "Account", new { area = string.Empty });
+		var teacher = await this._userManager.FindByIdAsync(id) as IccTeacher;
+		teacher!.Email = email;
+		teacher.FirstName = firstName;
+		teacher.LastName = lastName;
+		teacher.Rut = rut;
+		teacher.Office = office;
+		teacher.Schedule = schedule;
+		teacher.Specialization = specialization;
+		_ = await this._userManager.UpdateAsync(teacher);
+		var roles = new List<string>();
+		if (isCommittee) {
+			roles.Add("IccCommittee");
 		}
-		return this.NotFound();
+		if (isGuide) {
+			roles.Add("IccGuide");
+		}
+		var currentRoles = (await this._userManager.GetRolesAsync(teacher)).ToList();
+		var rolesToRemove = currentRoles.Except(roles).ToList();
+		if (rolesToRemove.Contains("IccDirector")) {
+			_ = rolesToRemove.Remove("IccDirector");
+		}
+		var rolesToAdd = roles.Except(currentRoles);
+		_ = await this._userManager.RemoveFromRolesAsync(teacher, rolesToRemove);
+		_ = await this._userManager.AddToRolesAsync(teacher, rolesToAdd);
+		this.TempData["SuccessMessage"] = "Profesor(a) actualizado(a) exitosamente.";
+		return this.RedirectToAction("Teachers", "Account", new { area = string.Empty });
 	}
 }

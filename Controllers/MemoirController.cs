@@ -122,18 +122,17 @@ public class MemoirController : Controller {
 	}
 
 	[Authorize(Roles = "IccRegular,IccGuide")]
-	public async Task<IActionResult> Edit(string id) {
+	public async Task<IActionResult> Get(string id, bool isReadOnly) {
+		this.ViewBag.Id = id;
+		this.ViewBag.IsReadOnly = isReadOnly;
 		if (this.User.IsInRole("IccRegular")) {
 			this.ViewBag.Guides = (await this._userManager.GetUsersInRoleAsync("IccGuide")).ToList();
 			var studentMemoir = await this._dbContext.IccStudentMemoirs.FindAsync(id);
-			this.ViewBag.Id = id;
 			this.ViewBag.MemoirTitle = studentMemoir!.Title;
 			this.ViewBag.Description = studentMemoir.Description;
 			var guide = studentMemoir.Guide;
 			this.ViewBag.Guide = guide is not null ? guide.Id : string.Empty;
-			return this.View();
-		}
-		if (this.User.IsInRole("IccGuide")) {
+		} else if (this.User.IsInRole("IccGuide")) {
 			var teacherMemoir = await this._dbContext.IccTeacherMemoirs.FindAsync(id);
 			this.ViewBag.Id = id;
 			this.ViewBag.MemoirTitle = teacherMemoir!.Title;
@@ -142,13 +141,12 @@ public class MemoirController : Controller {
 			this.ViewBag.Student = student is not null ? student.Id : string.Empty;
 			this.ViewBag.Requirements = teacherMemoir.Requirements;
 			this.ViewBag.Candidates = teacherMemoir.Candidates;
-			return this.View();
 		}
-		return this.NotFound();
+		return this.View();
 	}
 
 	[Authorize(Roles = "IccRegular"), HttpPost]
-	public async Task<IActionResult> EditStudentMemoir([FromForm] string id, [FromForm] string memoirTitle, [FromForm] string description, [FromForm] string guide) {
+	public async Task<IActionResult> GetStudentMemoir([FromForm] string id, [FromForm] string memoirTitle, [FromForm] string description, [FromForm] string guide) {
 		var target = await this._dbContext.IccStudentMemoirs.FindAsync(id);
 		target!.Title = memoirTitle;
 		target.Description = description;
@@ -170,7 +168,7 @@ public class MemoirController : Controller {
 	}
 
 	[Authorize(Roles = "IccGuide"), HttpPost]
-	public async Task<IActionResult> EditTeacherMemoir([FromForm] string id, [FromForm] string memoirTitle, [FromForm] string description, [FromForm] string student, [FromForm] string requirements) {
+	public async Task<IActionResult> GetTeacherMemoir([FromForm] string id, [FromForm] string memoirTitle, [FromForm] string description, [FromForm] string student, [FromForm] string requirements) {
 		var target = await this._dbContext.IccTeacherMemoirs.FindAsync(id);
 		target!.Title = memoirTitle;
 		target.Description = description;

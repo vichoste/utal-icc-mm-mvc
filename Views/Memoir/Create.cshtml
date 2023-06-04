@@ -1,5 +1,6 @@
 ﻿@{
 	this.ViewData["Title"] = "Crear memoria";
+	var action = this.User.IsInRole("IccRegular") ? "CreateStudentMemoir" : "CreateTeacherMemoir";
 }
 
 <div class="container">
@@ -9,9 +10,6 @@
 			<div class="card">
 				<div class="card-header text-center">@this.ViewData["Title"]</div>
 				<div class="card-body">
-					@{
-						var action = this.User.IsInRole("IccRegular") ? "CreateStudentMemoir" : "CreateTeacherMemoir";
-					}
 					@using (this.Html.BeginForm(action, "Memoir", new { area = string.Empty }, FormMethod.Post)) {
 						@this.Html.AntiForgeryToken()
 						<div class="row">
