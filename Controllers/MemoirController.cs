@@ -83,30 +83,41 @@ public class MemoirController : Controller {
 		return this.View();
 	}
 
-	[Authorize(Roles = "IccRegular,IccGuide")]
+	[Authorize(Roles = "IccRegular"), HttpPost]
 	public async Task<IActionResult> CreateStudentMemoir([FromForm] string memoirTitle, [FromForm] string description, [FromForm] string guide) {
-		if (this.User.IsInRole("IccRegular")) {
-			var @new = new IccStudentMemoir {
-				Title = memoirTitle,
-				Description = description,
-				Student = await this._userManager.FindByIdAsync(this.User.FindFirstValue(ClaimTypes.NameIdentifier)!) as IccStudent,
-				Guide = await this._userManager.FindByIdAsync(guide) as IccTeacher
-			};
-			_ = this._dbContext.IccMemoirs.Add(@new);
-			_ = await this._dbContext.SaveChangesAsync();
-			this.TempData["SuccessMessage"] = "Tu memoria ha sido registrada correctamente.";
-			return this.RedirectToAction("Index", "Memoir");
-		}
-		return this.NotFound();
+		var @new = new IccStudentMemoir {
+			Title = memoirTitle,
+			Description = description,
+			Student = await this._userManager.FindByIdAsync(this.User.FindFirstValue(ClaimTypes.NameIdentifier)!) as IccStudent,
+			Guide = await this._userManager.FindByIdAsync(guide) as IccTeacher
+		};
+		_ = this._dbContext.IccMemoirs.Add(@new);
+		_ = await this._dbContext.SaveChangesAsync();
+		this.TempData["SuccessMessage"] = "Tu memoria ha sido registrada correctamente.";
+		return this.RedirectToAction("Index", "Memoir");
 	}
 
-	[HttpGet]
-	public ActionResult GetTeacherDetails(string id) {
+	[Authorize(Roles = "IccRegular")]
+	public IActionResult GetTeacherDetails(string id) {
 		var teacher = this._dbContext.IccTeachers.Find(id);
 		return this.Json(new {
 			office = teacher!.Office,
 			schedule = teacher.Schedule,
 			specialization = teacher.Specialization
 		});
+	}
+
+	[Authorize(Roles = "IccRegular"), HttpPost]
+	public async Task<IActionResult> CreateTeacherMemoir([FromForm] string memoirTitle, [FromForm] string description, [FromForm] string requirements) {
+		var @new = new IccTeacherMemoir {
+			Title = memoirTitle,
+			Description = description,
+			Guide = await this._userManager.FindByIdAsync(this.User.FindFirstValue(ClaimTypes.NameIdentifier)!) as IccTeacher,
+			Requirements = requirements
+		};
+		_ = this._dbContext.IccMemoirs.Add(@new);
+		_ = await this._dbContext.SaveChangesAsync();
+		this.TempData["SuccessMessage"] = "Tu memoria ha sido registrada correctamente.";
+		return this.RedirectToAction("Index", "Memoir");
 	}
 }

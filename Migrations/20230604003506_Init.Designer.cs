@@ -12,7 +12,7 @@ using Utal.Icc.Mm.Mvc.Data;
 namespace Utal.Icc.Mm.Mvc.Migrations
 {
     [DbContext(typeof(IccDbContext))]
-    [Migration("20230604000424_Init")]
+    [Migration("20230604003506_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -308,7 +308,7 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                 {
                     b.HasBaseType("Utal.Icc.Mm.Mvc.Models.IccMemoir");
 
-                    b.Property<string>("Requierments")
+                    b.Property<string>("Requirements")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

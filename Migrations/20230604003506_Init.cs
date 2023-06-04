@@ -178,7 +178,7 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                     StudentId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     GuideId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Requierments = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Requirements = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {

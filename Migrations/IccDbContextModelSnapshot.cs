@@ -305,7 +305,7 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                 {
                     b.HasBaseType("Utal.Icc.Mm.Mvc.Models.IccMemoir");
 
-                    b.Property<string>("Requierments")
+                    b.Property<string>("Requirements")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
