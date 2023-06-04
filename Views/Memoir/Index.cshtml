@@ -36,7 +36,7 @@
 					</thead>
 					<tbody>
 						@foreach (var item in this.ViewBag.Memoirs) {
-							@if (this.User.IsInRole("IccRegular") && item is IccStudentMemoir studentMemoir) {
+							@if (this.User.IsInRole("IccRegular") && item is IccStudentMemoir || this.User.IsInRole("IccGuide") && item is IccTeacherMemoir) {
 								<tr>
 									<td>@item.Title</td>
 									<td>
@@ -65,7 +65,7 @@
 										@this.Html.ActionLink("Editar", "Edit", "Memoir", new { id = item.Id }, new { @class = "btn btn-warning mb-3" })
 									</td>
 								</tr>
-							} else if (this.User.IsInRole("IccGuide") && item is IccStudentMemoir studentMemoir1) {
+							} else {
 								<tr>
 									<td>@item.Title</td>
 									<td>

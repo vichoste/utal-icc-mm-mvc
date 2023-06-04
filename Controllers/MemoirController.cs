@@ -107,7 +107,7 @@ public class MemoirController : Controller {
 		});
 	}
 
-	[Authorize(Roles = "IccRegular"), HttpPost]
+	[Authorize(Roles = "IccGuide"), HttpPost]
 	public async Task<IActionResult> CreateTeacherMemoir([FromForm] string memoirTitle, [FromForm] string description, [FromForm] string requirements) {
 		var @new = new IccTeacherMemoir {
 			Title = memoirTitle,
