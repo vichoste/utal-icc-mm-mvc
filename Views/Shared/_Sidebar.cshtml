@@ -95,7 +95,7 @@
 							</div>
 						</div>
 					}
-					@if (!this.User.IsInRole("IccMemorist")) {
+					@if (this.User.IsInRole("IccRegular")) {
 						<div class="menu-item has-sub">
 							<a href="#" class="menu-link">
 								<span class="menu-icon"><i class="fa fa-user-graduate"></i></span>
