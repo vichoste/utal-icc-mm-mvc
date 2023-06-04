@@ -120,4 +120,65 @@ public class MemoirController : Controller {
 		this.TempData["SuccessMessage"] = "Tu memoria ha sido registrada correctamente.";
 		return this.RedirectToAction("Index", "Memoir");
 	}
+
+	[Authorize(Roles = "IccRegular,IccGuide")]
+	public async Task<IActionResult> Edit(string id) {
+		if (this.User.IsInRole("IccRegular")) {
+			this.ViewBag.Guides = (await this._userManager.GetUsersInRoleAsync("IccGuide")).ToList();
+			var studentMemoir = await this._dbContext.IccStudentMemoirs.FindAsync(id);
+			this.ViewBag.Id = id;
+			this.ViewBag.MemoirTitle = studentMemoir!.Title;
+			this.ViewBag.Description = studentMemoir.Description;
+			var guide = studentMemoir.Guide;
+			this.ViewBag.Guide = guide is not null ? guide.Id : string.Empty;
+			return this.View();
+		}
+		if (this.User.IsInRole("IccGuide")) {
+			var teacherMemoir = await this._dbContext.IccTeacherMemoirs.FindAsync(id);
+			this.ViewBag.Id = id;
+			this.ViewBag.MemoirTitle = teacherMemoir!.Title;
+			this.ViewBag.Description = teacherMemoir.Description;
+			var student = teacherMemoir.Student;
+			this.ViewBag.Student = student is not null ? student.Id : string.Empty;
+			this.ViewBag.Requirements = teacherMemoir.Requirements;
+			this.ViewBag.Candidates = teacherMemoir.Candidates;
+			return this.View();
+		}
+		return this.NotFound();
+	}
+
+	[Authorize(Roles = "IccRegular"), HttpPost]
+	public async Task<IActionResult> EditStudentMemoir([FromForm] string id, [FromForm] string memoirTitle, [FromForm] string description, [FromForm] string guide) {
+		var target = await this._dbContext.IccStudentMemoirs.FindAsync(id);
+		target!.Title = memoirTitle;
+		target.Description = description;
+		target.Guide = await this._userManager.FindByIdAsync(guide) as IccTeacher;
+		_ = this._dbContext.IccMemoirs.Update(target);
+		_ = await this._dbContext.SaveChangesAsync();
+		this.TempData["SuccessMessage"] = "Tu memoria ha sido editada correctamente.";
+		return this.RedirectToAction("Index", "Memoir");
+	}
+
+	[Authorize(Roles = "IccGuide")]
+	public IActionResult GetStudentDetails(string id) {
+		var student = this._dbContext.IccStudents.Find(id);
+		return this.Json(new {
+			remainingCourses = student!.RemainingCourses,
+			isDoingThePractice = student.IsDoingThePractice,
+			isWorking = student.IsWorking
+		});
+	}
+
+	[Authorize(Roles = "IccGuide"), HttpPost]
+	public async Task<IActionResult> EditTeacherMemoir([FromForm] string id, [FromForm] string memoirTitle, [FromForm] string description, [FromForm] string student, [FromForm] string requirements) {
+		var target = await this._dbContext.IccTeacherMemoirs.FindAsync(id);
+		target!.Title = memoirTitle;
+		target.Description = description;
+		target.Student = await this._userManager.FindByIdAsync(student) as IccStudent;
+		target.Requirements = requirements;
+		_ = this._dbContext.IccMemoirs.Update(target);
+		_ = await this._dbContext.SaveChangesAsync();
+		this.TempData["SuccessMessage"] = "Tu memoria ha sido editada correctamente.";
+		return this.RedirectToAction("Index", "Memoir");
+	}
 }

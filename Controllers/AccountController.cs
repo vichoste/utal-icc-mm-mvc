@@ -274,7 +274,7 @@ public class AccountController : Controller {
 	public async Task<IActionResult> Edit(string id) {
 		var target = await this._userManager.FindByIdAsync(id);
 		if (target is IccStudent student) {
-			this.ViewBag.Id = student.Id;
+			this.ViewBag.Id = id;
 			this.ViewBag.Email = student.Email;
 			this.ViewBag.FirstName = student.FirstName;
 			this.ViewBag.LastName = student.LastName;
@@ -285,7 +285,7 @@ public class AccountController : Controller {
 			this.ViewBag.IsWorking = student.IsWorking;
 			return this.View("EditStudent");
 		} else if (target is IccTeacher teacher) {
-			this.ViewBag.Id = teacher.Id;
+			this.ViewBag.Id = id;
 			this.ViewBag.Email = teacher.Email;
 			this.ViewBag.FirstName = teacher.FirstName;
 			this.ViewBag.LastName = teacher.LastName;

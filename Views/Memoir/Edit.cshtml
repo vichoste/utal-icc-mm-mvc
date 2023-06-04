@@ -1,5 +1,5 @@
 ﻿@{
-	this.ViewData["Title"] = "Crear memoria";
+	this.ViewData["Title"] = "Editar memoria";
 }
 
 <div class="container">
@@ -10,24 +10,25 @@
 				<div class="card-header text-center">@this.ViewData["Title"]</div>
 				<div class="card-body">
 					@{
-						var action = this.User.IsInRole("IccRegular") ? "CreateStudentMemoir" : "CreateTeacherMemoir";
+						var action = this.User.IsInRole("IccRegular") ? "EditStudentMemoir" : "EditTeacherMemoir";
 					}
 					@using (this.Html.BeginForm(action, "Memoir", new { area = string.Empty }, FormMethod.Post)) {
 						@this.Html.AntiForgeryToken()
+						@this.Html.Hidden("id", (string)this.ViewBag.Id)
 						<div class="row">
 							<div class="col">
 								<div class="form-group mb-3">
 									@this.Html.Label("memoirTitle", "Título", new { @class = "form-label" })
-									@this.Html.TextBox("memoirTitle", null, new { @class = "form-control", required = "required" })
+									@this.Html.TextBox("memoirTitle", (string)this.ViewBag.MemoirTitle, new { @class = "form-control", required = "required" })
 								</div>
 								<div class="form-group mb-3">
 									@this.Html.Label("description", "Descripción", new { @class = "form-label" })
-									@this.Html.TextArea("description", null, new { @class = "form-control", required = "required" })
+									@this.Html.TextArea("description", (string)this.ViewBag.Description, new { @class = "form-control", required = "required" })
 								</div>
 								@if (this.User.IsInRole("IccRegular")) {
 									<div class="form-group mb-3">
 										@this.Html.Label("guide", "Profesor guía", new { @class = "form-label" })
-										@this.Html.DropDownList("guide", new SelectList(this.ViewBag.Guides, "Id", "FullName"), "Selecciona un(a) profesor(a) guía", new { @class = "form-select", required = "required" })
+										@this.Html.DropDownList("guide", new SelectList(this.ViewBag.Guides, "Id", "FullName", selectedValue: (string)this.ViewBag.Guide), "Selecciona un(a) profesor(a) guía", new { @class = "form-select", required = "required" })
 									</div>
 									<div class="form-group mb-3" id="officeShow">
 										@this.Html.Label("office", "Oficina", new { @class = "form-label" }):
@@ -44,7 +45,7 @@
 								} else if (this.User.IsInRole("IccGuide")) {
 									<div class="form-group mb-3">
 										@this.Html.Label("requirements", "Requisitos", new { @class = "form-label" })
-										@this.Html.TextArea("requirements", null, new { @class = "form-control", required = "required" })
+										@this.Html.TextArea("requirements", (string)this.ViewBag.Requirements, new { @class = "form-control", required = "required" })
 									</div>
 								}
 							</div>
@@ -53,7 +54,7 @@
 							<div class="col">
 								<div class="btn-group">
 									@this.Html.ActionLink("Cancelar", "Index", "Memoir", new { area = string.Empty }, new { @class = "btn btn-secondary" })
-									<button type="submit" class="btn btn-success">Crear</button>
+									<button type="submit" class="btn btn-warning">Editar</button>
 								</div>
 							</div>
 						</div>
@@ -71,11 +72,14 @@
 			$("#scheduleShow").hide();
 			$("#specializationShow").hide();
 
+			$("#remainingCourses").hide();
+			$("#isDoingThePractice").hide();
+			$("#isWorking").hide();
+
 			$("#guide").change(function () {
 				var guideId = $(this).val();
 				if (guideId) {
 					$.getJSON("/Memoir/GetTeacherDetails/" + guideId, function (data) {
-						console.log(data);
 						$("#officeShow").show();
 						$("#scheduleShow").show();
 						$("#specializationShow").show();
@@ -88,6 +92,25 @@
 					$("#officeShow").hide();
 					$("#scheduleShow").hide();
 					$("#specializationShow").hide();
+				}
+			});
+
+			$("#regular").change(function () {
+				var regularId = $(this).val();
+				if (regularId) {
+					$.getJSON("/Memoir/GetStudentDetails/" + regularId, function (data) {
+						$("#remainingCoursesShow").show();
+						$("#isDoingThePracticeShow").show();
+						$("#isWorkingShow").show();
+						$("#remainingCourses").text(data.office);
+						$("#isDoingThePractice").text(data.schedule);
+						$("#isWorking").text(data.specialization);
+					});
+				}
+				else {
+					$("#remainingCourses").hide();
+					$("#isDoingThePractice").hide();
+					$("#isWorking").hide();
 				}
 			});
 		});
