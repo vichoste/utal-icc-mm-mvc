@@ -98,7 +98,7 @@ public class MemoirController : Controller {
 	}
 
 	[Authorize(Roles = "IccRegular")]
-	public IActionResult GetTeacherDetails(string id) {
+	public IActionResult GetGuideDetails(string id) {
 		var teacher = this._dbContext.IccTeachers.Find(id);
 		return this.Json(new {
 			office = teacher!.Office,
@@ -121,42 +121,6 @@ public class MemoirController : Controller {
 		return this.RedirectToAction("Index", "Memoir");
 	}
 
-	[Authorize(Roles = "IccRegular,IccGuide")]
-	public async Task<IActionResult> Get(string id, bool isReadOnly) {
-		this.ViewBag.Id = id;
-		this.ViewBag.IsReadOnly = isReadOnly;
-		if (this.User.IsInRole("IccRegular")) {
-			this.ViewBag.Guides = (await this._userManager.GetUsersInRoleAsync("IccGuide")).ToList();
-			var studentMemoir = await this._dbContext.IccStudentMemoirs.FindAsync(id);
-			this.ViewBag.MemoirTitle = studentMemoir!.Title;
-			this.ViewBag.Description = studentMemoir.Description;
-			var guide = studentMemoir.Guide;
-			this.ViewBag.Guide = guide is not null ? guide.Id : string.Empty;
-		} else if (this.User.IsInRole("IccGuide")) {
-			var teacherMemoir = await this._dbContext.IccTeacherMemoirs.FindAsync(id);
-			this.ViewBag.Id = id;
-			this.ViewBag.MemoirTitle = teacherMemoir!.Title;
-			this.ViewBag.Description = teacherMemoir.Description;
-			var student = teacherMemoir.Student;
-			this.ViewBag.Student = student is not null ? student.Id : string.Empty;
-			this.ViewBag.Requirements = teacherMemoir.Requirements;
-			this.ViewBag.Candidates = teacherMemoir.Candidates;
-		}
-		return this.View();
-	}
-
-	[Authorize(Roles = "IccRegular"), HttpPost]
-	public async Task<IActionResult> GetStudentMemoir([FromForm] string id, [FromForm] string memoirTitle, [FromForm] string description, [FromForm] string guide) {
-		var target = await this._dbContext.IccStudentMemoirs.FindAsync(id);
-		target!.Title = memoirTitle;
-		target.Description = description;
-		target.Guide = await this._userManager.FindByIdAsync(guide) as IccTeacher;
-		_ = this._dbContext.IccMemoirs.Update(target);
-		_ = await this._dbContext.SaveChangesAsync();
-		this.TempData["SuccessMessage"] = "Tu memoria ha sido editada correctamente.";
-		return this.RedirectToAction("Index", "Memoir");
-	}
-
 	[Authorize(Roles = "IccGuide")]
 	public IActionResult GetStudentDetails(string id) {
 		var student = this._dbContext.IccStudents.Find(id);
@@ -167,14 +131,55 @@ public class MemoirController : Controller {
 		});
 	}
 
+	[Authorize(Roles = "IccRegular,IccGuide")]
+	public async Task<IActionResult> Get(string id, bool isReadOnly) {
+		this.ViewBag.Id = id;
+		this.ViewBag.IsReadOnly = isReadOnly;
+		var memoirQuery = this._dbContext.IccMemoirs.Include(m => m.Student).Include(m => m.Guide).Where(m => m.Id == id);
+		if (memoirQuery is IQueryable<IccTeacherMemoir> teacherMemoirQuery) {
+			memoirQuery = teacherMemoirQuery.Include(m => m.Candidates); // DARK MAGIC!!!
+		}
+		var memoir = memoirQuery.FirstOrDefault();
+		this.ViewBag.MemoirTitle = memoir!.Title;
+		this.ViewBag.Description = memoir.Description;
+		var student = memoir.Student;
+		var guide = memoir.Guide;
+		this.ViewBag.Student = student is not null ? student.Id : string.Empty;
+		this.ViewBag.Guide = guide is not null ? guide.Id : string.Empty;
+		if (this.User.IsInRole("IccRegular")) {
+			this.ViewBag.Guides = (await this._userManager.GetUsersInRoleAsync("IccGuide")).ToList();
+		}
+		if (memoir is IccTeacherMemoir teacherMemoir) {
+			this.ViewBag.Requirements = teacherMemoir.Requirements;
+			this.ViewBag.Candidates = teacherMemoir.Candidates;
+		}
+		if (isReadOnly) {
+			this.ViewBag.StudentFullName = student is not null ? student.FullName : string.Empty;
+			this.ViewBag.GuideFullName = guide is not null ? guide.FullName : string.Empty;
+		}
+		return this.View();
+	}
+
+	[Authorize(Roles = "IccRegular"), HttpPost]
+	public async Task<IActionResult> GetStudentMemoir([FromForm] string id, [FromForm] string memoirTitle, [FromForm] string description, [FromForm] string guide) {
+		var studentMemoir = await this._dbContext.IccStudentMemoirs.FindAsync(id);
+		studentMemoir!.Title = memoirTitle;
+		studentMemoir.Description = description;
+		studentMemoir.Guide = await this._userManager.FindByIdAsync(guide) as IccTeacher;
+		_ = this._dbContext.IccMemoirs.Update(studentMemoir);
+		_ = await this._dbContext.SaveChangesAsync();
+		this.TempData["SuccessMessage"] = "Tu memoria ha sido editada correctamente.";
+		return this.RedirectToAction("Index", "Memoir");
+	}
+
 	[Authorize(Roles = "IccGuide"), HttpPost]
 	public async Task<IActionResult> GetTeacherMemoir([FromForm] string id, [FromForm] string memoirTitle, [FromForm] string description, [FromForm] string student, [FromForm] string requirements) {
-		var target = await this._dbContext.IccTeacherMemoirs.FindAsync(id);
-		target!.Title = memoirTitle;
-		target.Description = description;
-		target.Student = await this._userManager.FindByIdAsync(student) as IccStudent;
-		target.Requirements = requirements;
-		_ = this._dbContext.IccMemoirs.Update(target);
+		var teacherMemoir = await this._dbContext.IccTeacherMemoirs.FindAsync(id);
+		teacherMemoir!.Title = memoirTitle;
+		teacherMemoir.Description = description;
+		teacherMemoir.Student = await this._userManager.FindByIdAsync(student) as IccStudent;
+		teacherMemoir.Requirements = requirements;
+		_ = this._dbContext.IccMemoirs.Update(teacherMemoir);
 		_ = await this._dbContext.SaveChangesAsync();
 		this.TempData["SuccessMessage"] = "Tu memoria ha sido editada correctamente.";
 		return this.RedirectToAction("Index", "Memoir");

@@ -76,13 +76,15 @@ public class AccountController : Controller {
 			this.ViewBag.RemainingCourses = student.RemainingCourses;
 			this.ViewBag.IsDoingThePractice = student.IsDoingThePractice;
 			this.ViewBag.IsWorking = student.IsWorking;
+			return this.View("StudentProfile");
 		}
 		if (user is IccTeacher teacher) {
 			this.ViewBag.Office = teacher.Office;
 			this.ViewBag.Schedule = teacher.Schedule;
 			this.ViewBag.Specialization = teacher.Specialization;
+			return this.View("TeacherProfile");
 		}
-		return this.View();
+		return this.NotFound();
 	}
 
 	[Authorize, HttpPost, ValidateAntiForgeryToken]

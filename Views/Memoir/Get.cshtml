@@ -1,0 +1,218 @@
+﻿@{
+	this.ViewData["Title"] = !(bool)this.ViewBag.IsReadOnly ? "Editar memoria" : "Ver memoria";
+	string action;
+	@if (!(bool)this.ViewBag.isReadOnly) {
+		action = this.User.IsInRole("IccRegular") ? "GetStudentMemoir" : "GetTeacherMemoir";
+	} else {
+		action = this.User.IsInRole("IccRegular") ? "Apply" : "Approve";
+	}
+}
+
+<div class="container">
+	<partial name="_Alerts" />
+	<div class="row justify-content-center">
+		<div class="col-10">
+			<div class="card">
+				<div class="card-header text-center">@this.ViewData["Title"]</div>
+				<div class="card-body">
+					@using (this.Html.BeginForm(action, "Memoir", new { area = string.Empty }, FormMethod.Post)) {
+						@this.Html.AntiForgeryToken()
+						@this.Html.Hidden("id", (string)this.ViewBag.Id)
+						<div class="row">
+							<div class="col">
+								@if (!(bool)this.ViewBag.IsReadOnly) {
+									<div class="form-group mb-3">
+										@this.Html.Label("memoirTitle", "Título", new { @class = "form-label" })
+										@this.Html.TextBox("memoirTitle", (string)this.ViewBag.MemoirTitle, new { @class = "form-control", required = "required" })
+									</div>
+									<div class="form-group mb-3">
+										@this.Html.Label("description", "Descripción", new { @class = "form-label" })
+										@this.Html.TextArea("description", (string)this.ViewBag.Description, new { @class = "form-control", required = "required" })
+									</div>
+									@if (this.User.IsInRole("IccRegular")) {
+										<div class="form-group mb-3">
+											@this.Html.Label("guide", "Profesor guía", new { @class = "form-label" })
+											@this.Html.DropDownList("guide", new SelectList(this.ViewBag.Guides, "Id", "FullName", selectedValue: (string)this.ViewBag.Guide), "Selecciona un(a) profesor(a) guía", new { @class = "form-select", required = "required" })
+										</div>
+										<div class="form-group mb-3" id="officeShow">
+											@this.Html.Label("office", "Oficina", new { @class = "form-label" })
+											<pre id="office"></pre>
+										</div>
+										<div class="form-group mb-3" id="scheduleShow">
+											@this.Html.Label("schedule", "Horario", new { @class = "form-label" })
+											<pre id="schedule"></pre>
+										</div>
+										<div class="form-group mb-3" id="specializationShow">
+											@this.Html.Label("specialization", "Especialización", new { @class = "form-label" })
+											<pre id="specialization"></pre>
+										</div>
+									} else if (this.User.IsInRole("IccGuide")) {
+										<div class="form-group mb-3">
+											@this.Html.Label("requirements", "Requisitos", new { @class = "form-label" })
+											@this.Html.TextArea("requirements", (string)this.ViewBag.Requirements, new { @class = "form-control", required = "required" })
+										</div>
+										<div class="form-group mb-3">
+											@this.Html.Label("student", "Estudiante", new { @class = "form-label" })
+											@this.Html.DropDownList("student", new SelectList(this.ViewBag.Candidates, "Id", "FullName", selectedValue: (string)this.ViewBag.Student), "Selecciona un(a) estudiante", new { @class = "form-select", required = "required" })
+										</div>
+										<div class="form-group mb-3" id="remainingCoursesShow">
+											@this.Html.Label("remainingCourses", "Cursos restantes", new { @class = "form-label" })
+											<pre id="remainingCourses"></pre>
+										</div>
+										<div class="form-group mb-3" id="isDoingThePracticeShow">
+											@this.Html.Label("isDoingThePractice", "¿Haciendo práctica?", new { @class = "form-label" })
+											<pre id="isDoingThePractice"></pre>
+										</div>
+										<div class="form-group mb-3" id="isWorkingShow">
+											@this.Html.Label("isWorking", "¿Trabajando?", new { @class = "form-label" })
+											<pre id="isWorking"></pre>
+										</div>
+									}
+								} else {
+									<div class="form-group mb-3">
+										@this.Html.Label("memoirTitle", "Título", new { @class = "form-label" }):
+										@this.Html.Display("memoirTitle", (string)this.ViewBag.MemoirTitle, new { @class = "form-control" })
+									</div>
+									<div class="form-group mb-3">
+										@this.Html.Label("description", "Descripción", new { @class = "form-label" }):
+										@this.Html.Display("description", (string)this.ViewBag.Description, new { @class = "form-control" })
+									</div>
+									@if (this.User.IsInRole("IccRegular")) {
+										<div class="form-group mb-3">
+											@this.Html.Hidden("guide", (string)this.ViewBag.Guide)
+											@this.Html.Label("guide", "Profesor guía", new { @class = "form-label" }):
+											@this.Html.Display("guideFullName", (string)this.ViewBag.GuideFullName, new { @class = "form-control" })
+										</div>
+										<div class="form-group mb-3">
+											@this.Html.Label("requirements", "Requisitos", new { @class = "form-label" })
+											@this.Html.TextArea("requirements", (string)this.ViewBag.Requirements, new { @class = "form-control" })
+										</div>
+										<div class="form-group mb-3" id="officeShow">
+											@this.Html.Label("office", "Oficina", new { @class = "form-label" })
+											<pre id="office"></pre>
+										</div>
+										<div class="form-group mb-3" id="scheduleShow">
+											@this.Html.Label("schedule", "Horario", new { @class = "form-label" })
+											<pre id="schedule"></pre>
+										</div>
+										<div class="form-group mb-3" id="specializationShow">
+											@this.Html.Label("specialization", "Especialización", new { @class = "form-label" }):
+											<pre id="specialization"></pre>
+										</div>
+									} else if (this.User.IsInRole("IccGuide")) {
+										<div class="form-group mb-3">
+											@this.Html.Hidden("student", (string)this.ViewBag.Student)
+											@this.Html.Label("student", "Estudiante", new { @class = "form-label" }):
+											@this.Html.Display("studentFullName", (string)this.ViewBag.StudentFullName, new { @class = "form-control" })
+										</div>
+										<div class="form-group mb-3" id="remainingCoursesShow">
+											@this.Html.Label("remainingCourses", "Cursos restantes", new { @class = "form-label" }):
+											<pre id="remainingCourses"></pre>
+										</div>
+										<div class="form-group mb-3" id="isDoingThePracticeShow">
+											@this.Html.Label("isDoingThePractice", "¿Haciendo práctica?", new { @class = "form-label" }):
+											<pre id="isDoingThePractice"></pre>
+										</div>
+										<div class="form-group mb-3" id="isWorkingShow">
+											@this.Html.Label("isWorking", "¿Trabajando?", new { @class = "form-label" }):
+											<pre id="isWorking"></pre>
+										</div>
+									}
+								}
+							</div>
+						</div>
+						<div class="row text-center">
+							<div class="col">
+								<div class="btn-group">
+									@this.Html.ActionLink("Cancelar", "Index", "Memoir", new { area = string.Empty }, new { @class = "btn btn-secondary" })
+									@if (!(bool)this.ViewBag.IsReadOnly) {
+										<button type="submit" class="btn btn-warning">Editar</button>
+									} else if ((bool)this.ViewBag.IsReadOnly && this.User.IsInRole("IccRegular")) {
+										<button type="submit" class="btn btn-primary">Postular</button>
+									} else if ((bool)this.ViewBag.IsReadOnly && this.User.IsInRole("IccGuide")) {
+										<button type="submit" class="btn btn-success">Aprobar</button>
+									}
+								</div>
+							</div>
+						</div>
+					}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	<script>
+		$(document).ready(function () {
+			var isRegular = @(this.User.IsInRole("IccRegular").ToString().ToLower());
+			if (isRegular) {
+				let guideIdCheck = $("#guide").val();
+				if (guideIdCheck) {
+					$.getJSON("/Memoir/GetGuideDetails/" + guideIdCheck, function (data) {
+						$("#officeShow").show();
+						$("#scheduleShow").show();
+						$("#specializationShow").show();
+						$("#office").text(data.office);
+						$("#schedule").text(data.schedule);
+						$("#specialization").text(data.specialization);
+					});
+				} else {
+					$("#office").text(data.office);
+					$("#schedule").text(data.schedule);
+					$("#specialization").text(data.specialization);
+				}
+				$("#guide").change(function () {
+					let guideId = $("#guide").val();
+					if (guideId) {
+						$.getJSON("/Memoir/GetGuideDetails/" + guideId, function (data) {
+							$("#officeShow").show();
+							$("#scheduleShow").show();
+							$("#specializationShow").show();
+							$("#office").text(data.office);
+							$("#schedule").text(data.schedule);
+							$("#specialization").text(data.specialization);
+						});
+					} else {
+						$("#officeShow").hide();
+						$("#scheduleShow").hide();
+						$("#specializationShow").hide();
+					}
+				});
+			} else {
+				let studentCheck = $("#student").val();
+				if (studentCheck) {
+					$.getJSON("/Memoir/GetStudentDetails/" + studentCheck, function (data) {
+						$("#remainingCoursesShow").show();
+						$("#isDoingThePracticeShow").show();
+						$("#isWorkingShow").show();
+						$("#remainingCourses").text(data.remainingCourses);
+						$("#isDoingThePractice").text(data.isDoingThePractice ? 'Sí' : 'No');
+						$("#isWorking").text(data.isWorking ? 'Sí' : 'No');
+					});
+				} else {
+					$("#remainingCoursesShow").hide();
+					$("#isDoingThePracticeShow").hide();
+					$("#isWorkingShow").hide();
+				}
+				$("#student").change(function () {
+					let studentId = $("#student").val();
+					if (studentId) {
+						$.getJSON("/Memoir/GetStudentDetails/" + studentId, function (data) {
+							$("#remainingCoursesShow").show();
+							$("#isDoingThePracticeShow").show();
+							$("#isWorkingShow").show();
+							$("#remainingCourses").text(data.remainingCourses);
+							$("#isDoingThePractice").text(data.isDoingThePractice ? 'Sí' : 'No');
+							$("#isWorking").text(data.isWorking ? 'Sí' : 'No');
+						});
+					} else {
+						$("#remainingCoursesShow").hide();
+						$("#isDoingThePracticeShow").hide();
+						$("#isWorkingShow").hide();
+					}
+				});
+			}
+		});
+	</script>
+}

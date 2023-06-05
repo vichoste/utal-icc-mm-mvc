@@ -28,15 +28,15 @@
 										@this.Html.DropDownList("guide", new SelectList(this.ViewBag.Guides, "Id", "FullName"), "Selecciona un(a) profesor(a) guía", new { @class = "form-select", required = "required" })
 									</div>
 									<div class="form-group mb-3" id="officeShow">
-										@this.Html.Label("office", "Oficina", new { @class = "form-label" }):
+										@this.Html.Label("office", "Oficina", new { @class = "form-label" })
 										<pre id="office"></pre>
 									</div>
 									<div class="form-group mb-3" id="scheduleShow">
-										@this.Html.Label("schedule", "Horario", new { @class = "form-label" }):
+										@this.Html.Label("schedule", "Horario", new { @class = "form-label" })
 										<pre id="schedule"></pre>
 									</div>
 									<div class="form-group mb-3" id="specializationShow">
-										@this.Html.Label("specialization", "Especialización", new { @class = "form-label" }):
+										@this.Html.Label("specialization", "Especialización", new { @class = "form-label" })
 										<pre id="specialization"></pre>
 									</div>
 								} else if (this.User.IsInRole("IccGuide")) {
@@ -72,7 +72,7 @@
 			$("#guide").change(function () {
 				var guideId = $(this).val();
 				if (guideId) {
-					$.getJSON("/Memoir/GetTeacherDetails/" + guideId, function (data) {
+					$.getJSON("/Memoir/GetGuideDetails/" + guideId, function (data) {
 						console.log(data);
 						$("#officeShow").show();
 						$("#scheduleShow").show();
