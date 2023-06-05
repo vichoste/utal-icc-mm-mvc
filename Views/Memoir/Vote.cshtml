@@ -83,6 +83,11 @@
 @section Scripts {
 	<script>
 		$(document).ready(function () {
+			$("#approve").click(function (e) {
+				e.preventDefault();
+				$(this).closest("form").attr("action", "/Memoir/Approve");
+				$(this).closest("form").submit();
+			});
 			let guideIdCheck = $("#guide").val();
 			if (guideIdCheck) {
 				$.getJSON("/Memoir/GetGuideDetails/" + guideIdCheck, function (data) {

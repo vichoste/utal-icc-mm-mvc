@@ -285,8 +285,8 @@ public class MemoirController : Controller {
 		return this.View(new PaginatorPartialViewModel("Admin", pageNumber ?? 1, (int)Math.Ceiling((decimal)memoirs.Count / 10), pageNumber > 1, pageNumber < (int)Math.Ceiling((decimal)memoirs.Count / 10)));
 	}
 
-	[Authorize(Roles = "IccCommittee,IccDirector")]
-	public async Task<IActionResult> Vote(string id) {
+	[Authorize(Roles = "IccCommittee,IccDirector"), System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0045:Convert to conditional expression", Justification = "Code legibility.")]
+	public IActionResult Vote(string id) {
 		this.ViewBag.Id = id;
 		IQueryable<IccMemoir> memoirQuery;
 		if (this._dbContext.IccTeacherMemoirs.Any(m => m.Id == id)) {
@@ -307,5 +307,28 @@ public class MemoirController : Controller {
 		this.ViewBag.StudentFullName = student is not null ? student.FullName : string.Empty;
 		this.ViewBag.GuideFullName = guide is not null ? guide.FullName : string.Empty;
 		return this.View();
+	}
+
+	[Authorize(Roles = "IccCommittee,IccDirector")]
+	public async Task<IActionResult> Reject(string id) {
+		var memoir = await this._dbContext.IccMemoirs.FindAsync(id);
+		memoir!.Phase = IccMemoir.Phases.Proposal;
+		_ = this._dbContext.IccMemoirs.Update(memoir);
+		_ = await this._dbContext.SaveChangesAsync();
+		this.TempData["SuccessMessage"] = "La memoria ha sido rechazada correctamente.";
+		return this.RedirectToAction("Admin", "Memoir");
+	}
+
+	[Authorize(Roles = "IccCommittee,IccDirector")]
+	public async Task<IActionResult> Approve(string id) {
+		var memoir = await this._dbContext.IccMemoirs.Include(m => m.Student).Where(m => m.Id == id).FirstOrDefaultAsync();
+		memoir!.Phase = IccMemoir.Phases.InProgress;
+		var student = await this._userManager.FindByIdAsync(memoir.Student!.Id);
+		_ = await this._userManager.RemoveFromRoleAsync(student!, "IccRegular");
+		_ = await this._userManager.AddToRoleAsync(student!, "IccMemorist");
+		_ = this._dbContext.IccMemoirs.Update(memoir);
+		_ = await this._dbContext.SaveChangesAsync();
+		this.TempData["SuccessMessage"] = "La memoria ha sido aprobada correctamente.";
+		return this.RedirectToAction("Admin", "Memoir");
 	}
 }
