@@ -4,7 +4,7 @@
 	@if (!(bool)this.ViewBag.isReadOnly) {
 		action = this.User.IsInRole("IccRegular") ? "GetStudentMemoir" : "GetTeacherMemoir";
 	} else {
-		action = this.User.IsInRole("IccRegular") ? "Apply" : "Approve";
+		action = this.User.IsInRole("IccRegular") ? "Apply" : "Send";
 	}
 }
 
@@ -125,12 +125,12 @@
 							<div class="col">
 								<div class="btn-group">
 									@this.Html.ActionLink("Cancelar", (bool)this.ViewBag.IsApplying ? "Application" : "Index", "Memoir", new { area = string.Empty }, new { @class = "btn btn-secondary" })
-									@if (!(bool)this.ViewBag.IsReadOnly) {
-										<button type="submit" class="btn btn-warning">Editar</button>
-									} else if ((bool)this.ViewBag.IsReadOnly && this.User.IsInRole("IccRegular") && !(bool)this.ViewBag.IsCandidate) {
+									@if (!(bool)this.ViewBag.IsReadOnly && (bool)this.ViewBag.IsProposal) {
+										<button type="submit" id="editButton" class="btn btn-warning">Editar</button>
+									} else if ((bool)this.ViewBag.IsReadOnly && this.User.IsInRole("IccRegular") && !(bool)this.ViewBag.IsCandidate && (bool)this.ViewBag.IsProposal) {
 										<button type="submit" class="btn btn-primary">Postular</button>
-									} else if ((bool)this.ViewBag.IsReadOnly && this.User.IsInRole("IccGuide")) {
-										<button type="submit" class="btn btn-success">Aprobar</button>
+									} else if ((bool)this.ViewBag.IsReadOnly && this.User.IsInRole("IccGuide") && (bool)this.ViewBag.IsProposal) {
+										<button type="submit" class="btn btn-success">Enviar a comité</button>
 									}
 								</div>
 							</div>
@@ -144,7 +144,20 @@
 
 @section Scripts {
 	<script>
-		$(document).ready(function () {
+		$(document).ready(function () {	
+			$("#student").change(function () {
+				if ($(this).val()) {
+					$("form").attr("action", "/Memoir/Send");
+					$("#editButton").text("Enviar a comité");
+					$("#editButton").removeClass("btn-warning");
+					$("#editButton").addClass("btn-success");
+				} else {
+					$("#editButton").text("Editar");
+					$("#editButton").removeClass("btn-success");
+					$("#editButton").addClass("btn-warning");
+				}
+			});
+
 			var isRegular = @(this.User.IsInRole("IccRegular").ToString().ToLower());
 			if (isRegular) {
 				let guideIdCheck = $("#guide").val();

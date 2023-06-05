@@ -158,6 +158,7 @@ public class MemoirController : Controller {
 			this.ViewBag.StudentFullName = student is not null ? student.FullName : string.Empty;
 			this.ViewBag.GuideFullName = guide is not null ? guide.FullName : string.Empty;
 		}
+		this.ViewBag.IsProposal = memoir.Phase == IccMemoir.Phases.Proposal;
 		return this.View();
 	}
 
@@ -232,6 +233,16 @@ public class MemoirController : Controller {
 		_ = this._dbContext.IccTeacherMemoirs.Update(memoir);
 		_ = this._dbContext.SaveChangesAsync();
 		this.TempData["SuccessMessage"] = "Te has postulado correctamente.";
+		return this.RedirectToAction("Index", "Memoir");
+	}
+
+	[Authorize(Roles = "IccRegular,IccGuide"), HttpPost]
+	public async Task<IActionResult> Send(string id) {
+		var memoir = this._dbContext.IccMemoirs.FirstOrDefault(m => m.Id == id);
+		memoir!.Phase = IccMemoir.Phases.Request;
+		_ = this._dbContext.IccMemoirs.Update(memoir);
+		_ = await this._dbContext.SaveChangesAsync();
+		this.TempData["SuccessMessage"] = "Tu memoria ha sido enviada correctamente.";
 		return this.RedirectToAction("Index", "Memoir");
 	}
 }
