@@ -27,15 +27,12 @@ public class MemoirController : Controller {
 	public IActionResult Index(string sortOrder, string currentFilter, string searchString, int? pageNumber) {
 		List<IccMemoir> memoirs = new();
 		if (this.User.IsInRole("IccRegular")) {
-			memoirs = this._dbContext.IccMemoirs
-				.Include(m => m.Student)
-				.Where(m => m.Student!.Id == this.User.FindFirstValue(ClaimTypes.NameIdentifier))
-				.ToList();
+			var memoirsQuery = this._dbContext.IccMemoirs.Include(m => m.Student).Where(m => m.Student!.Id == this.User.FindFirstValue(ClaimTypes.NameIdentifier)).ToList();
+			var teacherMemoirsQuery = this._dbContext.IccTeacherMemoirs.Include(m => m.Candidates).Where(m => m.Candidates!.Any(c => c.Id == this.User.FindFirstValue(ClaimTypes.NameIdentifier))).ToList();
+			memoirs.AddRange(memoirsQuery);
+			memoirs.AddRange(teacherMemoirsQuery);
 		} else if (this.User.IsInRole("IccGuide")) {
-			memoirs = this._dbContext.IccMemoirs
-				.Include(m => m.Guide)
-				.Where(m => m.Guide!.Id == this.User.FindFirstValue(ClaimTypes.NameIdentifier))
-				.ToList();
+			memoirs = this._dbContext.IccMemoirs.Include(m => m.Guide).Where(m => m.Guide!.Id == this.User.FindFirstValue(ClaimTypes.NameIdentifier)).ToList();
 		}
 		var parameters = new[] { "Title" };
 		foreach (var parameter in parameters) {
@@ -58,9 +55,7 @@ public class MemoirController : Controller {
 			this.ViewData["CurrentFilter"] = searchString;
 			var filtered = new List<IccMemoir>();
 			foreach (var parameter in parameters) {
-				var partials = memoirs
-					.Where(vm => !(vm.GetType().GetProperty(parameter)!.GetValue(vm, null) as string)!.IsNullOrEmpty()
-						&& (vm.GetType().GetProperty(parameter)!.GetValue(vm, null) as string)!.Contains(searchString));
+				var partials = memoirs.Where(vm => !(vm.GetType().GetProperty(parameter)!.GetValue(vm, null) as string)!.IsNullOrEmpty() && (vm.GetType().GetProperty(parameter)!.GetValue(vm, null) as string)!.Contains(searchString));
 				foreach (var partial in partials) {
 					if (!filtered.Any(vm => vm.Id == partial.Id)) {
 						filtered.Add(partial);
@@ -131,13 +126,16 @@ public class MemoirController : Controller {
 		});
 	}
 
-	[Authorize(Roles = "IccRegular,IccGuide")]
-	public async Task<IActionResult> Get(string id, bool isReadOnly) {
+	[Authorize(Roles = "IccRegular,IccGuide"), System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0045:Convert to conditional expression", Justification = "Code legibility.")]
+	public async Task<IActionResult> Get(string id, bool isReadOnly, bool isApplying) {
 		this.ViewBag.Id = id;
 		this.ViewBag.IsReadOnly = isReadOnly;
-		var memoirQuery = this._dbContext.IccMemoirs.Include(m => m.Student).Include(m => m.Guide).Where(m => m.Id == id);
-		if (memoirQuery is IQueryable<IccTeacherMemoir> teacherMemoirQuery) {
-			memoirQuery = teacherMemoirQuery.Include(m => m.Candidates); // DARK MAGIC!!!
+		this.ViewBag.IsApplying = isApplying;
+		IQueryable<IccMemoir> memoirQuery;
+		if (this._dbContext.IccTeacherMemoirs.Any(m => m.Id == id)) {
+			memoirQuery = this._dbContext.IccTeacherMemoirs.Include(m => m.Student).Include(m => m.Guide).Include(m => m.Candidates).Where(m => m.Id == id);
+		} else {
+			memoirQuery = this._dbContext.IccMemoirs.Include(m => m.Student).Include(m => m.Guide).Where(m => m.Id == id);
 		}
 		var memoir = memoirQuery.FirstOrDefault();
 		this.ViewBag.MemoirTitle = memoir!.Title;
@@ -152,6 +150,9 @@ public class MemoirController : Controller {
 		if (memoir is IccTeacherMemoir teacherMemoir) {
 			this.ViewBag.Requirements = teacherMemoir.Requirements;
 			this.ViewBag.Candidates = teacherMemoir.Candidates;
+			if (this.User.IsInRole("IccRegular")) {
+				this.ViewBag.IsCandidate = teacherMemoir.Candidates.Any(c => c.Id == this.User.FindFirstValue(ClaimTypes.NameIdentifier));
+			}
 		}
 		if (isReadOnly) {
 			this.ViewBag.StudentFullName = student is not null ? student.FullName : string.Empty;
@@ -182,6 +183,55 @@ public class MemoirController : Controller {
 		_ = this._dbContext.IccMemoirs.Update(teacherMemoir);
 		_ = await this._dbContext.SaveChangesAsync();
 		this.TempData["SuccessMessage"] = "Tu memoria ha sido editada correctamente.";
+		return this.RedirectToAction("Index", "Memoir");
+	}
+
+	[Authorize(Roles = "IccRegular")]
+	public IActionResult Application(string sortOrder, string currentFilter, string searchString, int? pageNumber) {
+		var memoirs = this._dbContext.IccTeacherMemoirs.Include(m => m.Candidates).Where(m => m.Phase == IccMemoir.Phases.Proposal && !m.Candidates!.Any(c => c.Id == this.User.FindFirstValue(ClaimTypes.NameIdentifier))).ToList();
+		var parameters = new[] { "Title" };
+		foreach (var parameter in parameters) {
+			this.ViewData[$"{parameter}SortParam"] = sortOrder == parameter ? $"{parameter}Desc" : parameter;
+		}
+		this.ViewData["CurrentSort"] = sortOrder;
+		if (!string.IsNullOrEmpty(sortOrder)) {
+			foreach (var parameter in parameters) {
+				if (parameter == sortOrder) {
+					memoirs = memoirs.OrderBy(e => e.GetType().GetProperty(parameter)!.GetValue(e, null)).ToList();
+					break;
+				} else if ($"{parameter}Desc" == sortOrder) {
+					memoirs = memoirs.OrderByDescending(e => e.GetType().GetProperty(parameter)!.GetValue(e, null)).ToList();
+					break;
+				}
+			}
+		}
+		if (!string.IsNullOrEmpty(searchString)) {
+			pageNumber = 1;
+			this.ViewData["CurrentFilter"] = searchString;
+			var filtered = new List<IccMemoir>();
+			foreach (var parameter in parameters) {
+				var partials = memoirs.Where(vm => !(vm.GetType().GetProperty(parameter)!.GetValue(vm, null) as string)!.IsNullOrEmpty() && (vm.GetType().GetProperty(parameter)!.GetValue(vm, null) as string)!.Contains(searchString));
+				foreach (var partial in partials) {
+					if (!filtered.Any(vm => vm.Id == partial.Id)) {
+						filtered.Add(partial);
+					}
+				}
+			}
+			this.ViewBag.Memoirs = filtered.ToPagedList(pageNumber ?? 1, 10);
+			return this.View(new PaginatorPartialViewModel("Index", pageNumber ?? 1, (int)Math.Ceiling((decimal)filtered.Count / 10), pageNumber > 1, pageNumber < (int)Math.Ceiling((decimal)filtered.Count / 10)));
+		}
+		searchString = currentFilter;
+		this.ViewBag.Memoirs = memoirs.ToPagedList(pageNumber ?? 1, 10);
+		return this.View(new PaginatorPartialViewModel("Index", pageNumber ?? 1, (int)Math.Ceiling((decimal)memoirs.Count / 10), pageNumber > 1, pageNumber < (int)Math.Ceiling((decimal)memoirs.Count / 10)));
+	}
+
+	[Authorize(Roles = "IccRegular"), HttpPost]
+	public async Task<IActionResult> Apply(string id) {
+		var memoir = this._dbContext.IccTeacherMemoirs.Include(m => m.Candidates).FirstOrDefault(m => m.Id == id);
+		memoir!.Candidates!.Add((await this._userManager.FindByIdAsync(this.User.FindFirstValue(ClaimTypes.NameIdentifier)!) as IccStudent)!);
+		_ = this._dbContext.IccMemoirs.Update(memoir);
+		_ = this._dbContext.SaveChangesAsync();
+		this.TempData["SuccessMessage"] = "Te has postulado correctamente.";
 		return this.RedirectToAction("Index", "Memoir");
 	}
 }

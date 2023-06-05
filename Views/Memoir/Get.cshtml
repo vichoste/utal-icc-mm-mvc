@@ -124,10 +124,10 @@
 						<div class="row text-center">
 							<div class="col">
 								<div class="btn-group">
-									@this.Html.ActionLink("Cancelar", "Index", "Memoir", new { area = string.Empty }, new { @class = "btn btn-secondary" })
+									@this.Html.ActionLink("Cancelar", (bool)this.ViewBag.IsApplying ? "Application" : "Index", "Memoir", new { area = string.Empty }, new { @class = "btn btn-secondary" })
 									@if (!(bool)this.ViewBag.IsReadOnly) {
 										<button type="submit" class="btn btn-warning">Editar</button>
-									} else if ((bool)this.ViewBag.IsReadOnly && this.User.IsInRole("IccRegular")) {
+									} else if ((bool)this.ViewBag.IsReadOnly && this.User.IsInRole("IccRegular") && !(bool)this.ViewBag.IsCandidate) {
 										<button type="submit" class="btn btn-primary">Postular</button>
 									} else if ((bool)this.ViewBag.IsReadOnly && this.User.IsInRole("IccGuide")) {
 										<button type="submit" class="btn btn-success">Aprobar</button>

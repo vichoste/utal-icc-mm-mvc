@@ -51,7 +51,6 @@ public class AccountController : Controller {
 
 	[Authorize, HttpPost, ValidateAntiForgeryToken]
 	public async Task<IActionResult> Password([FromForm] string currentPassword, [FromForm] string newPassword) {
-
 		var user = await this._userManager.GetUserAsync(this.User);
 		var result = await this._userManager.ChangePasswordAsync(user!, currentPassword, newPassword);
 		if (!result.Succeeded) {
@@ -133,9 +132,7 @@ public class AccountController : Controller {
 			this.ViewData["CurrentFilter"] = searchString;
 			var filtered = new List<IccStudent>();
 			foreach (var parameter in parameters) {
-				var partials = students
-					.Where(vm => !(vm.GetType().GetProperty(parameter)!.GetValue(vm, null) as string)!.IsNullOrEmpty()
-						&& (vm.GetType().GetProperty(parameter)!.GetValue(vm, null) as string)!.Contains(searchString));
+				var partials = students.Where(vm => !(vm.GetType().GetProperty(parameter)!.GetValue(vm, null) as string)!.IsNullOrEmpty() && (vm.GetType().GetProperty(parameter)!.GetValue(vm, null) as string)!.Contains(searchString));
 				foreach (var partial in partials) {
 					if (!filtered.Any(vm => vm.Id == partial.Id)) {
 						filtered.Add(partial);
@@ -174,9 +171,7 @@ public class AccountController : Controller {
 			this.ViewData["CurrentFilter"] = searchString;
 			var filtered = new List<IccTeacher>();
 			foreach (var parameter in parameters) {
-				var partials = teachers
-					.Where(vm => !(vm.GetType().GetProperty(parameter)!.GetValue(vm, null) as string)!.IsNullOrEmpty()
-						&& (vm.GetType().GetProperty(parameter)!.GetValue(vm, null) as string)!.Contains(searchString));
+				var partials = teachers.Where(vm => !(vm.GetType().GetProperty(parameter)!.GetValue(vm, null) as string)!.IsNullOrEmpty() && (vm.GetType().GetProperty(parameter)!.GetValue(vm, null) as string)!.Contains(searchString));
 				foreach (var partial in partials) {
 					if (!filtered.Any(vm => vm.Id == partial.Id)) {
 						filtered.Add(partial);
