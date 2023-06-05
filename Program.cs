@@ -23,9 +23,7 @@ await IccRoleSeeder.SeedAsync(services);
 await IccCareerDirectorSeeder.SeedAsync(services, configuration, environment);
 if (!app.Environment.IsDevelopment()) {
 	_ = app.UseExceptionHandler("/Home/Error");
-	_ = app.UseHsts();
 }
-_ = app.UseHttpsRedirection();
 _ = app.UseStaticFiles();
 _ = app.UseRouting();
 _ = app.UseAuthentication();
