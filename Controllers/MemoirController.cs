@@ -377,4 +377,29 @@ public class MemoirController : Controller {
 		this.ViewBag.Memoirs = memoirs.ToPagedList(pageNumber ?? 1, 10);
 		return this.View(new PaginatorPartialViewModel("My", pageNumber ?? 1, (int)Math.Ceiling((decimal)memoirs.Count / 10), pageNumber > 1, pageNumber < (int)Math.Ceiling((decimal)memoirs.Count / 10)));
 	}
+
+	[Authorize(Roles = "IccMemorist,IccGuide,IccDirector")]
+	public async Task<IActionResult> Status(string id) {
+		var memoir = await this._dbContext.IccMemoirs.Include(m => m.Student).Include(m => m.Guide).Where(m => m.Id == id).FirstOrDefaultAsync();
+		this.ViewBag.MemoirTitle = memoir!.Title;
+		this.ViewBag.Description = memoir.Description;
+		var student = memoir.Student;
+		var guide = memoir.Guide;
+		this.ViewBag.Student = student is not null ? student.Id : string.Empty;
+		this.ViewBag.Guide = guide is not null ? guide.Id : string.Empty;
+		this.ViewBag.StudentFullName = student is not null ? student.FullName : string.Empty;
+		this.ViewBag.GuideFullName = guide is not null ? guide.FullName : string.Empty;
+		this.ViewBag.Phase = memoir.Phase;
+		return this.View();
+	}
+
+	[Authorize(Roles = "IccGuide,IccDirector")]
+	public async Task<IActionResult> Set([FromForm] string id, [FromForm] string phase) {
+		var memoir = await this._dbContext.IccMemoirs.FindAsync(id);
+		memoir!.Phase = Enum.Parse<IccMemoir.Phases>(phase);
+		_ = this._dbContext.IccMemoirs.Update(memoir);
+		_ = await this._dbContext.SaveChangesAsync();
+		this.TempData["SuccessMessage"] = "El estado de la memoria ha sido actualizado correctamente.";
+		return this.RedirectToAction("My", "Memoir");
+	}
 }

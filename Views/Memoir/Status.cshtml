@@ -1,0 +1,126 @@
+﻿@{
+	this.ViewData["Title"] = "Estado de la memoria";
+	var phases = Enum.GetValues(typeof(IccMemoir.Phases)).Cast<IccMemoir.Phases>().Where(p => p != IccMemoir.Phases.Proposal && p != IccMemoir.Phases.Request).Select(p => new SelectListItem {
+		Text = p.ToString() is "InProgress" ? "En progreso" : p.ToString() is "Complete" ? "Completada" : p.ToString() is "Paused" ? "Pausada" : "Abandonada",
+		Value = ((int)p).ToString()
+	});
+}
+
+<div class="container">
+	<partial name="_Alerts" />
+	<div class="row justify-content-center">
+		<div class="col-10">
+			<div class="card">
+				<div class="card-header text-center">@this.ViewData["Title"]</div>
+				<div class="card-body">
+					@using (this.Html.BeginForm("Set", "Memoir", new { area = string.Empty }, FormMethod.Post)) {
+						@this.Html.AntiForgeryToken()
+						@this.Html.Hidden("id", (string)this.ViewBag.Id)
+						<div class="row">
+							<div class="col">
+								<div class="form-group mb-3">
+									@this.Html.Label("memoirTitle", "Título", new { @class = "form-label" }):
+									@this.Html.Display("memoirTitle", (string)this.ViewBag.MemoirTitle, new { @class = "form-control" })
+								</div>
+								<div class="form-group mb-3">
+									@this.Html.Label("description", "Descripción", new { @class = "form-label" }):
+									@this.Html.Display("description", (string)this.ViewBag.Description, new { @class = "form-control" })
+								</div>
+								<div class="form-group mb-3">
+									@this.Html.Hidden("guide", (string)this.ViewBag.Guide)
+									@this.Html.Label("guide", "Profesor guía", new { @class = "form-label" }):
+									@this.Html.Display("guideFullName", (string)this.ViewBag.GuideFullName, new { @class = "form-control" })
+								</div>
+								<div class="form-group mb-3" id="officeShow">
+									@this.Html.Label("office", "Oficina", new { @class = "form-label" })
+									<pre id="office"></pre>
+								</div>
+								<div class="form-group mb-3" id="scheduleShow">
+									@this.Html.Label("schedule", "Horario", new { @class = "form-label" })
+									<pre id="schedule"></pre>
+								</div>
+								<div class="form-group mb-3" id="specializationShow">
+									@this.Html.Label("specialization", "Especialización", new { @class = "form-label" }):
+									<pre id="specialization"></pre>
+								</div>
+								<div class="form-group mb-3">
+									@this.Html.Hidden("student", (string)this.ViewBag.Student)
+									@this.Html.Label("student", "Estudiante", new { @class = "form-label" }):
+									@this.Html.Display("studentFullName", (string)this.ViewBag.StudentFullName, new { @class = "form-control" })
+								</div>
+								<div class="form-group mb-3" id="remainingCoursesShow">
+									@this.Html.Label("remainingCourses", "Cursos restantes", new { @class = "form-label" }):
+									<pre id="remainingCourses"></pre>
+								</div>
+								<div class="form-group mb-3" id="isDoingThePracticeShow">
+									@this.Html.Label("isDoingThePractice", "¿Haciendo práctica?", new { @class = "form-label" }):
+									<pre id="isDoingThePractice"></pre>
+								</div>
+								<div class="form-group mb-3" id="isWorkingShow">
+									@this.Html.Label("isWorking", "¿Trabajando?", new { @class = "form-label" }):
+									<pre id="isWorking"></pre>
+								</div>
+								@if (this.User.IsInRole("IccGuide") || this.User.IsInRole("IccDirector")) {
+									<hr />
+									<p><strong>Estado de la memoria</strong></p>
+									<div class="form-group mb-3">
+										@this.Html.Label("phase", "Fase", new { @class = "form-label" })
+										@this.Html.DropDownList("phase", phases, "Selecciona la fase actual de la memoria", new { @class = "form-select", required = "required" })
+									</div>
+								}
+
+							</div>
+						</div>
+						<div class="row text-center">
+							<div class="col">
+								<div class="btn-group">
+									@this.Html.ActionLink("Volver", "My", "Memoir", new { area = string.Empty }, new { @class = "btn btn-secondary" })
+									@if (this.User.IsInRole("IccGuide") || this.User.IsInRole("IccDirector")) {
+										<button type="submit" class="btn btn-primary">Actualizar</button>
+									}
+								</div>
+							</div>
+						</div>
+					}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	<script>
+		$(document).ready(function () {
+			let guideIdCheck = $("#guide").val();
+			if (guideIdCheck) {
+				$.getJSON("/Memoir/GetGuideDetails/" + guideIdCheck, function (data) {
+					$("#officeShow").show();
+					$("#scheduleShow").show();
+					$("#specializationShow").show();
+					$("#office").text(data.office);
+					$("#schedule").text(data.schedule);
+					$("#specialization").text(data.specialization);
+				});
+			} else {
+				$("#office").text(data.office);
+				$("#schedule").text(data.schedule);
+				$("#specialization").text(data.specialization);
+			}
+			let studentCheck = $("#student").val();
+			if (studentCheck) {
+				$.getJSON("/Memoir/GetStudentDetails/" + studentCheck, function (data) {
+					$("#remainingCoursesShow").show();
+					$("#isDoingThePracticeShow").show();
+					$("#isWorkingShow").show();
+					$("#remainingCourses").text(data.remainingCourses);
+					$("#isDoingThePractice").text(data.isDoingThePractice ? 'Sí' : 'No');
+					$("#isWorking").text(data.isWorking ? 'Sí' : 'No');
+				});
+			} else {
+				$("#remainingCoursesShow").hide();
+				$("#isDoingThePracticeShow").hide();
+				$("#isWorkingShow").hide();
+			}
+		});
+	</script>
+}
