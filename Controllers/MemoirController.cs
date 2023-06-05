@@ -229,7 +229,7 @@ public class MemoirController : Controller {
 	public async Task<IActionResult> Apply(string id) {
 		var memoir = this._dbContext.IccTeacherMemoirs.Include(m => m.Candidates).FirstOrDefault(m => m.Id == id);
 		memoir!.Candidates!.Add((await this._userManager.FindByIdAsync(this.User.FindFirstValue(ClaimTypes.NameIdentifier)!) as IccStudent)!);
-		_ = this._dbContext.IccMemoirs.Update(memoir);
+		_ = this._dbContext.IccTeacherMemoirs.Update(memoir);
 		_ = this._dbContext.SaveChangesAsync();
 		this.TempData["SuccessMessage"] = "Te has postulado correctamente.";
 		return this.RedirectToAction("Index", "Memoir");
