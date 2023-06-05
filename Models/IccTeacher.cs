@@ -1,71 +1,24 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Utal.Icc.Mm.Mvc.Models;
 
-/// <summary>
-/// Represents a teacher from the Computer Engineering carrer at University of Talca.
-/// </summary>
 public class IccTeacher : IccUser {
-	#region Properties
-	/// <summary>
-	/// Roles a teacher can have.
-	/// </summary>
-	public enum TeacherRole {
-		/// <summary>
-		/// Director of the Computer Engineering carrer.
-		/// </summary>
-		CareerDirector,
-		/// <summary>
-		/// Member of the Computer Engineering's memoir commitee.
-		/// </summary>
-		CommiteeMember,
-		/// <summary>
-		/// Mentor of the Computer Engineering's memoir courses.
-		/// </summary>
-		CourseTeacher,
-		/// <summary>
-		/// They are able to be mentor of a group of <see cref="IccStudent">memorists</see> ("Profesor guía").
-		/// </summary>
-		GuideTeacher,
-		/// <summary>
-		/// They are able to be co-mentor of a group of <see cref="IccStudent">memorists</see> ("Profesor co-guía").
-		/// </summary>
-		AssistantTeacher
+	public enum IccTeacherRoles {
+		IccDirector,
+		IccCommittee,
+		IccGuide
 	}
-	/// <summary>
-	/// Indicates if this teacher is not necessarily a teacher from the Computer Engineering carrer.
-	/// </summary>
-	public bool IsGuest { get; set; }
-	/// <summary>
-	/// Teacher's office location.
-	/// </summary>
+
+	[DataType(DataType.MultilineText)]
 	public string Office { get; set; } = string.Empty;
-	/// <summary>
-	/// Teacher's schedule.
-	/// </summary>
+
+	[DataType(DataType.MultilineText)]
 	public string Schedule { get; set; } = string.Empty;
-	/// <summary>
-	/// Teacher's specialization.
-	/// </summary>
+
+	[DataType(DataType.MultilineText)]
 	public string Specialization { get; set; } = string.Empty;
-	#endregion
-	#region Student memoirs
-	/// <summary>
-	/// <see cref="IccStudentMemoir">Student memoirs</see> which they guide.
-	/// </summary>
-	[InverseProperty("GuideTeacher")]
-	public virtual ICollection<IccStudentMemoir> MemoirsWhichIGuide { get; set; } = new HashSet<IccStudentMemoir>();
-	/// <summary>
-	/// <see cref="IccStudentMemoir">Student memoirs</see> which they assist.
-	/// </summary>
-	[InverseProperty("AssistantTeachers")]
-	public virtual ICollection<IccStudentMemoir> MemoirsWhichIAssist { get; set; } = new HashSet<IccStudentMemoir>();
-	#endregion
-	#region Rejections
-	/// <summary>
-	/// Teacher rejections for memoir proposals.
-	/// </summary>
-	[InverseProperty("Teacher")]
-	public virtual ICollection<IccTeacherRejection> MemoirsWhichIRejected { get; set; } = new HashSet<IccTeacherRejection>();
-	#endregion
+
+	[InverseProperty("Guide")]
+	public virtual ICollection<IccMemoir> MemoirsWhichIGuide { get; set; } = new HashSet<IccMemoir>();
 }

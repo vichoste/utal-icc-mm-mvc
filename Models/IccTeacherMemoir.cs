@@ -1,11 +1,10 @@
-﻿namespace Utal.Icc.Mm.Mvc.Models;
+﻿using System.ComponentModel.DataAnnotations;
 
-/// <summary>
-/// A <see cref="IccMemoir">memoir</see> created by a <see cref="IccStudent">teacher</see>.
-/// </summary>
+namespace Utal.Icc.Mm.Mvc.Models;
+
 public class IccTeacherMemoir : IccMemoir {
-	/// <summary>
-	/// <see cref="IccStudent">Candidates</see> of the <see cref="IccTeacher">teacher</see>'s <see cref="IccMemoir">memoir</see>. One of them will become the <see cref="Student">chosen one</see>.
-	/// </summary>
+	[DataType(DataType.MultilineText)]
+	public string Requirements { get; set; } = string.Empty;
+
 	public virtual ICollection<IccStudent> Candidates { get; set; } = new HashSet<IccStudent>();
 }

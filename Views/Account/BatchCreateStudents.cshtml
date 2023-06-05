@@ -1,0 +1,35 @@
+﻿@{
+	this.ViewData["Title"] = "Importar estudiantes desde CSV";
+}
+
+<div class="container">
+	<partial name="_Alerts" />
+	<div class="row justify-content-center">
+		<div class="col-10">
+			<div class="card">
+				<div class="card-header text-center">@this.ViewData["Title"]</div>
+				<div class="card-body">
+					@using (this.Html.BeginForm("BatchCreateStudents", "Account", new { area = string.Empty }, FormMethod.Post, true, new { @enctype = "multipart/form-data" })) {
+						@this.Html.AntiForgeryToken()
+						<div class="row">
+							<div class="col">
+								<div class="mb-3">
+									@this.Html.Label("csv", "Archivo CSV", new { @class = "form-label" })
+									@this.Html.TextBox("csv", null, new { @class = "form-control", required = "required", type = "file" })
+								</div>
+							</div>
+						</div>
+						<div class="row text-center">
+							<div class="col">
+								<div class="btn-group">
+									@this.Html.ActionLink("Cancelar", "Students", "Account", new { area = string.Empty }, new { @class = "btn btn-secondary" })
+									<button type="submit" class="btn btn-success">Importar</button>
+								</div>
+							</div>
+						</div>
+					}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

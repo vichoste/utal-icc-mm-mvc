@@ -1,0 +1,68 @@
+﻿@{
+	this.ViewData["Title"] = "Editar profesor(a)";
+}
+
+<div class="container">
+	<partial name="_Alerts" />
+	<div class="row justify-content-center">
+		<div class="col-10">
+			<div class="card">
+				<div class="card-header text-center">
+					@this.ViewData["Title"]
+				</div>
+				<div class="card-body">
+					@using (this.Html.BeginForm("EditTeacher", "Account", FormMethod.Post)) {
+						@this.Html.AntiForgeryToken()
+						@this.Html.Hidden("id", (string)this.ViewBag.Id)
+						<div class="form-group mb-3">
+							@this.Html.Label("firstName", "Nombre", new { @class = "form-label" })
+							@this.Html.TextBox("firstName", (string)this.ViewBag.FirstName, new { @class = "form-control" })
+						</div>
+						<div class="form-group mb-3">
+							@this.Html.Label("lastName", "Apellido", new { @class = "form-label" })
+							@this.Html.TextBox("lastName", (string)this.ViewBag.LastName, new { @class = "form-control" })
+						</div>
+						<div class="form-group mb-3">
+							@this.Html.Label("rut", "RUT", new { @class = "form-label" })
+							@this.Html.TextBox("rut", (string)this.ViewBag.Rut, new { @class = "form-control" })
+						</div>
+						<div class="form-group mb-3">
+							@this.Html.Label("email", "E-mail", new { @class = "form-label" })
+							@this.Html.TextBox("email", (string)this.ViewBag.Email, new { @class = "form-control" })
+						</div>
+						<hr />
+						<p><strong>Perfil</strong></p>
+						<div class="form-group mb-3">
+							@this.Html.Label("office", "Oficina", new { @class = "form-label" })
+							@this.Html.TextArea("office", (string)this.ViewBag.Office, new { @class = "form-control" })
+						</div>
+						<div class="form-group mb-3">
+							@this.Html.Label("schedule", "Horario", new { @class = "form-label" })
+							@this.Html.TextArea("schedule", (string)this.ViewBag.Schedule, new { @class = "form-control" })
+						</div>
+						<div class="form-group mb-3">
+							@this.Html.Label("specialization", "Especialización", new { @class = "form-label" })
+							@this.Html.TextArea("specialization", (string)this.ViewBag.Specialization, new { @class = "form-control" })
+						</div>
+						<div class="form-check mb-3">
+							@this.Html.CheckBox("isGuide", (bool)this.ViewBag.IsGuide, new { @class = "form-check-input" })
+							@this.Html.Label("isGuide", "¿Profesor guía?", new { @class = "form-check-label" })
+						</div>
+						<div class="form-check mb-3">
+							@this.Html.CheckBox("isCommittee", (bool)this.ViewBag.IsCommittee, new { @class = "form-check-input" })
+							@this.Html.Label("isCommittee", "¿Profesor del comité?", new { @class = "form-check-label" })
+						</div>
+						<div class="row text-center">
+							<div class="col">
+								<div class="btn-group">
+									@this.Html.ActionLink("Cancelar", "Teachers", "Account", new { area = string.Empty }, new { @class = "btn btn-secondary" })
+									<button type="submit" class="btn btn-warning">Editar</button>
+								</div>
+							</div>
+						</div>
+					}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

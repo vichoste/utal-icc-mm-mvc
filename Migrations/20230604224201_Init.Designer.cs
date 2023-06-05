@@ -12,7 +12,7 @@ using Utal.Icc.Mm.Mvc.Data;
 namespace Utal.Icc.Mm.Mvc.Migrations
 {
     [DbContext(typeof(IccDbContext))]
-    [Migration("20230424192854_Init")]
+    [Migration("20230604224201_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -38,21 +38,6 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                     b.HasIndex("MemoirsWhichImCandidateId");
 
                     b.ToTable("IccStudentIccTeacherMemoir");
-                });
-
-            modelBuilder.Entity("IccStudentMemoirIccTeacher", b =>
-                {
-                    b.Property<string>("AssistantTeachersId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("MemoirsWhichIAssistId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("AssistantTeachersId", "MemoirsWhichIAssistId");
-
-                    b.HasIndex("MemoirsWhichIAssistId");
-
-                    b.ToTable("IccStudentMemoirIccTeacher");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -193,9 +178,6 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("datetimeoffset");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -204,8 +186,11 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("GuideTeacherId")
+                    b.Property<string>("GuideId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Phase")
+                        .HasColumnType("int");
 
                     b.Property<string>("StudentId")
                         .HasColumnType("nvarchar(450)");
@@ -214,47 +199,15 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
-                        .HasColumnType("datetimeoffset");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("GuideId");
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("IccMemoir");
+                    b.ToTable("IccMemoirs");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("IccMemoir");
-
-                    b.UseTphMappingStrategy();
-                });
-
-            modelBuilder.Entity("Utal.Icc.Mm.Mvc.Models.IccRejection", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MemoirId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Reason")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTimeOffset>("UpdatedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("IccRejection");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("IccRejection");
 
                     b.UseTphMappingStrategy();
                 });
@@ -271,9 +224,6 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("datetimeoffset");
-
                     b.Property<string>("Discriminator")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -288,9 +238,6 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeactivated")
-                        .HasColumnType("bit");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -329,9 +276,6 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
-                        .HasColumnType("datetimeoffset");
-
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -353,39 +297,9 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                     b.UseTphMappingStrategy();
                 });
 
-            modelBuilder.Entity("Utal.Icc.Mm.Mvc.Models.IccVote", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("IccCommiteeRejectionId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("IssuerId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("MemoirId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IccCommiteeRejectionId");
-
-                    b.HasIndex("IssuerId");
-
-                    b.HasIndex("MemoirId");
-
-                    b.ToTable("IccVote");
-                });
-
             modelBuilder.Entity("Utal.Icc.Mm.Mvc.Models.IccStudentMemoir", b =>
                 {
                     b.HasBaseType("Utal.Icc.Mm.Mvc.Models.IccMemoir");
-
-                    b.HasIndex("GuideTeacherId");
 
                     b.HasDiscriminator().HasValue("IccStudentMemoir");
                 });
@@ -394,45 +308,19 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                 {
                     b.HasBaseType("Utal.Icc.Mm.Mvc.Models.IccMemoir");
 
-                    b.HasIndex("GuideTeacherId");
+                    b.Property<string>("Requirements")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasDiscriminator().HasValue("IccTeacherMemoir");
-                });
-
-            modelBuilder.Entity("Utal.Icc.Mm.Mvc.Models.IccCommiteeRejection", b =>
-                {
-                    b.HasBaseType("Utal.Icc.Mm.Mvc.Models.IccRejection");
-
-                    b.HasIndex("MemoirId");
-
-                    b.HasDiscriminator().HasValue("IccCommiteeRejection");
-                });
-
-            modelBuilder.Entity("Utal.Icc.Mm.Mvc.Models.IccTeacherRejection", b =>
-                {
-                    b.HasBaseType("Utal.Icc.Mm.Mvc.Models.IccRejection");
-
-                    b.Property<string>("IccStudentMemoirId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("TeacherId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasIndex("IccStudentMemoirId");
-
-                    b.HasIndex("MemoirId");
-
-                    b.HasIndex("TeacherId");
-
-                    b.HasDiscriminator().HasValue("IccTeacherRejection");
                 });
 
             modelBuilder.Entity("Utal.Icc.Mm.Mvc.Models.IccStudent", b =>
                 {
                     b.HasBaseType("Utal.Icc.Mm.Mvc.Models.IccUser");
 
-                    b.Property<int>("IsDoingThePractice")
-                        .HasColumnType("int");
+                    b.Property<bool>("IsDoingThePractice")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsWorking")
                         .HasColumnType("bit");
@@ -452,12 +340,6 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                 {
                     b.HasBaseType("Utal.Icc.Mm.Mvc.Models.IccUser");
 
-                    b.Property<string>("IccTeacherMemoirId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<bool>("IsGuest")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Office")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -469,8 +351,6 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                     b.Property<string>("Specialization")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.HasIndex("IccTeacherMemoirId");
 
                     b.HasDiscriminator().HasValue("IccTeacher");
                 });
@@ -486,21 +366,6 @@ namespace Utal.Icc.Mm.Mvc.Migrations
                     b.HasOne("Utal.Icc.Mm.Mvc.Models.IccTeacherMemoir", null)
                         .WithMany()
                         .HasForeignKey("MemoirsWhichImCandidateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("IccStudentMemoirIccTeacher", b =>
-                {
-                    b.HasOne("Utal.Icc.Mm.Mvc.Models.IccTeacher", null)
-                        .WithMany()
-                        .HasForeignKey("AssistantTeachersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Utal.Icc.Mm.Mvc.Models.IccStudentMemoir", null)
-                        .WithMany()
-                        .HasForeignKey("MemoirsWhichIAssistId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -558,103 +423,17 @@ namespace Utal.Icc.Mm.Mvc.Migrations
 
             modelBuilder.Entity("Utal.Icc.Mm.Mvc.Models.IccMemoir", b =>
                 {
+                    b.HasOne("Utal.Icc.Mm.Mvc.Models.IccTeacher", "Guide")
+                        .WithMany("MemoirsWhichIGuide")
+                        .HasForeignKey("GuideId");
+
                     b.HasOne("Utal.Icc.Mm.Mvc.Models.IccStudent", "Student")
                         .WithMany("MemoirsWhichIOwn")
                         .HasForeignKey("StudentId");
 
+                    b.Navigation("Guide");
+
                     b.Navigation("Student");
-                });
-
-            modelBuilder.Entity("Utal.Icc.Mm.Mvc.Models.IccVote", b =>
-                {
-                    b.HasOne("Utal.Icc.Mm.Mvc.Models.IccCommiteeRejection", null)
-                        .WithMany("IccVotes")
-                        .HasForeignKey("IccCommiteeRejectionId");
-
-                    b.HasOne("Utal.Icc.Mm.Mvc.Models.IccTeacher", "Issuer")
-                        .WithMany()
-                        .HasForeignKey("IssuerId");
-
-                    b.HasOne("Utal.Icc.Mm.Mvc.Models.IccMemoir", "Memoir")
-                        .WithMany()
-                        .HasForeignKey("MemoirId");
-
-                    b.Navigation("Issuer");
-
-                    b.Navigation("Memoir");
-                });
-
-            modelBuilder.Entity("Utal.Icc.Mm.Mvc.Models.IccStudentMemoir", b =>
-                {
-                    b.HasOne("Utal.Icc.Mm.Mvc.Models.IccTeacher", "GuideTeacher")
-                        .WithMany("MemoirsWhichIGuide")
-                        .HasForeignKey("GuideTeacherId");
-
-                    b.Navigation("GuideTeacher");
-                });
-
-            modelBuilder.Entity("Utal.Icc.Mm.Mvc.Models.IccTeacherMemoir", b =>
-                {
-                    b.HasOne("Utal.Icc.Mm.Mvc.Models.IccTeacher", "GuideTeacher")
-                        .WithMany()
-                        .HasForeignKey("GuideTeacherId");
-
-                    b.Navigation("GuideTeacher");
-                });
-
-            modelBuilder.Entity("Utal.Icc.Mm.Mvc.Models.IccCommiteeRejection", b =>
-                {
-                    b.HasOne("Utal.Icc.Mm.Mvc.Models.IccMemoir", "Memoir")
-                        .WithMany("CommiteeRejections")
-                        .HasForeignKey("MemoirId");
-
-                    b.Navigation("Memoir");
-                });
-
-            modelBuilder.Entity("Utal.Icc.Mm.Mvc.Models.IccTeacherRejection", b =>
-                {
-                    b.HasOne("Utal.Icc.Mm.Mvc.Models.IccStudentMemoir", null)
-                        .WithMany("TeacherRejections")
-                        .HasForeignKey("IccStudentMemoirId");
-
-                    b.HasOne("Utal.Icc.Mm.Mvc.Models.IccMemoir", "Memoir")
-                        .WithMany()
-                        .HasForeignKey("MemoirId");
-
-                    b.HasOne("Utal.Icc.Mm.Mvc.Models.IccTeacher", "Teacher")
-                        .WithMany("MemoirsWhichIRejected")
-                        .HasForeignKey("TeacherId");
-
-                    b.Navigation("Memoir");
-
-                    b.Navigation("Teacher");
-                });
-
-            modelBuilder.Entity("Utal.Icc.Mm.Mvc.Models.IccTeacher", b =>
-                {
-                    b.HasOne("Utal.Icc.Mm.Mvc.Models.IccTeacherMemoir", null)
-                        .WithMany("AssistantTeachers")
-                        .HasForeignKey("IccTeacherMemoirId");
-                });
-
-            modelBuilder.Entity("Utal.Icc.Mm.Mvc.Models.IccMemoir", b =>
-                {
-                    b.Navigation("CommiteeRejections");
-                });
-
-            modelBuilder.Entity("Utal.Icc.Mm.Mvc.Models.IccStudentMemoir", b =>
-                {
-                    b.Navigation("TeacherRejections");
-                });
-
-            modelBuilder.Entity("Utal.Icc.Mm.Mvc.Models.IccTeacherMemoir", b =>
-                {
-                    b.Navigation("AssistantTeachers");
-                });
-
-            modelBuilder.Entity("Utal.Icc.Mm.Mvc.Models.IccCommiteeRejection", b =>
-                {
-                    b.Navigation("IccVotes");
                 });
 
             modelBuilder.Entity("Utal.Icc.Mm.Mvc.Models.IccStudent", b =>
@@ -665,8 +444,6 @@ namespace Utal.Icc.Mm.Mvc.Migrations
             modelBuilder.Entity("Utal.Icc.Mm.Mvc.Models.IccTeacher", b =>
                 {
                     b.Navigation("MemoirsWhichIGuide");
-
-                    b.Navigation("MemoirsWhichIRejected");
                 });
 #pragma warning restore 612, 618
         }

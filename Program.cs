@@ -19,8 +19,8 @@ using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
 var configuration = services.GetRequiredService<IConfiguration>();
 var environment = services.GetRequiredService<IWebHostEnvironment>();
-await CareerDirectorSeeder.SeedAsync(services, configuration, environment);
-await RoleSeeder.SeedAsync(services);
+await IccRoleSeeder.SeedAsync(services);
+await IccCareerDirectorSeeder.SeedAsync(services, configuration, environment);
 if (!app.Environment.IsDevelopment()) {
 	_ = app.UseExceptionHandler("/Home/Error");
 	_ = app.UseHsts();
@@ -32,5 +32,6 @@ _ = app.UseAuthentication();
 _ = app.UseAuthorization();
 _ = app.MapControllerRoute(
 	name: "default",
-	pattern: "{controller=Home}/{action=Index}/{id?}");
+	pattern: "{controller=Home}/{action=Index}/{id?}"
+);
 app.Run();

@@ -1,0 +1,93 @@
+﻿@{
+	this.ViewData["Title"] = "Crear memoria";
+	var action = this.User.IsInRole("IccRegular") ? "CreateStudentMemoir" : "CreateTeacherMemoir";
+}
+
+<div class="container">
+	<partial name="_Alerts" />
+	<div class="row justify-content-center">
+		<div class="col-10">
+			<div class="card">
+				<div class="card-header text-center">@this.ViewData["Title"]</div>
+				<div class="card-body">
+					@using (this.Html.BeginForm(action, "Memoir", new { area = string.Empty }, FormMethod.Post)) {
+						@this.Html.AntiForgeryToken()
+						<div class="row">
+							<div class="col">
+								<div class="form-group mb-3">
+									@this.Html.Label("memoirTitle", "Título", new { @class = "form-label" })
+									@this.Html.TextBox("memoirTitle", null, new { @class = "form-control", required = "required" })
+								</div>
+								<div class="form-group mb-3">
+									@this.Html.Label("description", "Descripción", new { @class = "form-label" })
+									@this.Html.TextArea("description", null, new { @class = "form-control", required = "required" })
+								</div>
+								@if (this.User.IsInRole("IccRegular")) {
+									<div class="form-group mb-3">
+										@this.Html.Label("guide", "Profesor guía", new { @class = "form-label" })
+										@this.Html.DropDownList("guide", new SelectList(this.ViewBag.Guides, "Id", "FullName"), "Selecciona un(a) profesor(a) guía", new { @class = "form-select", required = "required" })
+									</div>
+									<div class="form-group mb-3" id="officeShow">
+										@this.Html.Label("office", "Oficina", new { @class = "form-label" })
+										<pre id="office"></pre>
+									</div>
+									<div class="form-group mb-3" id="scheduleShow">
+										@this.Html.Label("schedule", "Horario", new { @class = "form-label" })
+										<pre id="schedule"></pre>
+									</div>
+									<div class="form-group mb-3" id="specializationShow">
+										@this.Html.Label("specialization", "Especialización", new { @class = "form-label" })
+										<pre id="specialization"></pre>
+									</div>
+								} else if (this.User.IsInRole("IccGuide")) {
+									<div class="form-group mb-3">
+										@this.Html.Label("requirements", "Requisitos", new { @class = "form-label" })
+										@this.Html.TextArea("requirements", null, new { @class = "form-control", required = "required" })
+									</div>
+								}
+							</div>
+						</div>
+						<div class="row text-center">
+							<div class="col">
+								<div class="btn-group">
+									@this.Html.ActionLink("Cancelar", "Index", "Memoir", new { area = string.Empty }, new { @class = "btn btn-secondary" })
+									<button type="submit" class="btn btn-success">Crear</button>
+								</div>
+							</div>
+						</div>
+					}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	<script>
+		$(document).ready(function () {
+			$("#officeShow").hide();
+			$("#scheduleShow").hide();
+			$("#specializationShow").hide();
+
+			$("#guide").change(function () {
+				var guideId = $(this).val();
+				if (guideId) {
+					$.getJSON("/Memoir/GetGuideDetails/" + guideId, function (data) {
+						console.log(data);
+						$("#officeShow").show();
+						$("#scheduleShow").show();
+						$("#specializationShow").show();
+						$("#office").text(data.office);
+						$("#schedule").text(data.schedule);
+						$("#specialization").text(data.specialization);
+					});
+				}
+				else {
+					$("#officeShow").hide();
+					$("#scheduleShow").hide();
+					$("#specializationShow").hide();
+				}
+			});
+		});
+	</script>
+}
