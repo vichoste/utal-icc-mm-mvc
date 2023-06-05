@@ -92,7 +92,7 @@ public class MemoirController : Controller {
 		return this.RedirectToAction("Index", "Memoir");
 	}
 
-	[Authorize(Roles = "IccRegular")]
+	[Authorize]
 	public IActionResult GetGuideDetails(string id) {
 		var teacher = this._dbContext.IccTeachers.Find(id);
 		return this.Json(new {
@@ -116,7 +116,7 @@ public class MemoirController : Controller {
 		return this.RedirectToAction("Index", "Memoir");
 	}
 
-	[Authorize(Roles = "IccGuide")]
+	[Authorize]
 	public IActionResult GetStudentDetails(string id) {
 		var student = this._dbContext.IccStudents.Find(id);
 		return this.Json(new {
@@ -244,5 +244,68 @@ public class MemoirController : Controller {
 		_ = await this._dbContext.SaveChangesAsync();
 		this.TempData["SuccessMessage"] = "Tu memoria ha sido enviada correctamente.";
 		return this.RedirectToAction("Index", "Memoir");
+	}
+
+	[Authorize(Roles = "IccCommittee,IccDirector")]
+	public IActionResult Admin(string sortOrder, string currentFilter, string searchString, int? pageNumber) {
+		var memoirs = this._dbContext.IccMemoirs.Where(m => m.Phase == IccMemoir.Phases.Request).ToList();
+		var parameters = new[] { "Title" };
+		foreach (var parameter in parameters) {
+			this.ViewData[$"{parameter}SortParam"] = sortOrder == parameter ? $"{parameter}Desc" : parameter;
+		}
+		this.ViewData["CurrentSort"] = sortOrder;
+		if (!string.IsNullOrEmpty(sortOrder)) {
+			foreach (var parameter in parameters) {
+				if (parameter == sortOrder) {
+					memoirs = memoirs.OrderBy(e => e.GetType().GetProperty(parameter)!.GetValue(e, null)).ToList();
+					break;
+				} else if ($"{parameter}Desc" == sortOrder) {
+					memoirs = memoirs.OrderByDescending(e => e.GetType().GetProperty(parameter)!.GetValue(e, null)).ToList();
+					break;
+				}
+			}
+		}
+		if (!string.IsNullOrEmpty(searchString)) {
+			pageNumber = 1;
+			this.ViewData["CurrentFilter"] = searchString;
+			var filtered = new List<IccMemoir>();
+			foreach (var parameter in parameters) {
+				var partials = memoirs.Where(vm => !(vm.GetType().GetProperty(parameter)!.GetValue(vm, null) as string)!.IsNullOrEmpty() && (vm.GetType().GetProperty(parameter)!.GetValue(vm, null) as string)!.Contains(searchString));
+				foreach (var partial in partials) {
+					if (!filtered.Any(vm => vm.Id == partial.Id)) {
+						filtered.Add(partial);
+					}
+				}
+			}
+			this.ViewBag.Memoirs = filtered.ToPagedList(pageNumber ?? 1, 10);
+			return this.View(new PaginatorPartialViewModel("Admin", pageNumber ?? 1, (int)Math.Ceiling((decimal)filtered.Count / 10), pageNumber > 1, pageNumber < (int)Math.Ceiling((decimal)filtered.Count / 10)));
+		}
+		searchString = currentFilter;
+		this.ViewBag.Memoirs = memoirs.ToPagedList(pageNumber ?? 1, 10);
+		return this.View(new PaginatorPartialViewModel("Admin", pageNumber ?? 1, (int)Math.Ceiling((decimal)memoirs.Count / 10), pageNumber > 1, pageNumber < (int)Math.Ceiling((decimal)memoirs.Count / 10)));
+	}
+
+	[Authorize(Roles = "IccCommittee,IccDirector")]
+	public async Task<IActionResult> Vote(string id) {
+		this.ViewBag.Id = id;
+		IQueryable<IccMemoir> memoirQuery;
+		if (this._dbContext.IccTeacherMemoirs.Any(m => m.Id == id)) {
+			memoirQuery = this._dbContext.IccTeacherMemoirs.Include(m => m.Student).Include(m => m.Guide).Where(m => m.Id == id);
+		} else {
+			memoirQuery = this._dbContext.IccMemoirs.Include(m => m.Student).Include(m => m.Guide).Where(m => m.Id == id);
+		}
+		var memoir = memoirQuery.FirstOrDefault();
+		this.ViewBag.MemoirTitle = memoir!.Title;
+		this.ViewBag.Description = memoir.Description;
+		var student = memoir.Student;
+		var guide = memoir.Guide;
+		this.ViewBag.Student = student is not null ? student.Id : string.Empty;
+		this.ViewBag.Guide = guide is not null ? guide.Id : string.Empty;
+		if (memoir is IccTeacherMemoir teacherMemoir) {
+			this.ViewBag.Requirements = teacherMemoir.Requirements;
+		}
+		this.ViewBag.StudentFullName = student is not null ? student.FullName : string.Empty;
+		this.ViewBag.GuideFullName = guide is not null ? guide.FullName : string.Empty;
+		return this.View();
 	}
 }
