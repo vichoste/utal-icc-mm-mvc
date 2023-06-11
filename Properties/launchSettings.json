@@ -1,5 +1,10 @@
-﻿{
+{
 	"profiles": {
+		"Docker": {
+			"commandName": "Docker",
+			"launchBrowser": true,
+			"launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}"
+		},
 		"http": {
 			"applicationUrl": "http://localhost:5000",
 			"commandName": "Project",
