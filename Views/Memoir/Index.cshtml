@@ -16,7 +16,7 @@
 			@this.Html.ActionLink("Crear", "Create", "Memoir", new { area = string.Empty }, new { @class = "btn btn-success"})
 		</div>
 		<div class="col-12 mb-3">
-			<partial name="_Filter" , model=@(new FilterPartialViewModel("Index", "Memoir")) />
+			<partial name="_Filter" , model=@(new FilterPartialViewModel("Index", "Memoir", true)) />
 		</div>
 	</div>
 	<div class="row justify-content-center">
@@ -30,7 +30,11 @@
 									Título
 								</a>
 							</th>
-							<th>Estado</th>
+							<th>
+								<a asp-action="Index" asp-route-sortOrder="@this.ViewData["PhaseSortParam"]" asp-route-currentFilter="@this.ViewData["CurrentFilter"]">
+									Estado
+								</a>
+							</th>
 							<th>Acciones</th>
 						</tr>
 					</thead>

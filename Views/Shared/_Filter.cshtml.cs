@@ -12,8 +12,15 @@ public class FilterPartialViewModel {
 	[Display(Name = "Filtro")]
 	public string SearchString { get; set; } = string.Empty;
 
-	public FilterPartialViewModel(string action, string controller) {
+	public bool IsMemoir { get; set; }
+
+	[Display(Name = "Estado de memoria")]
+	public string Phase { get; set; } = string.Empty;
+
+	public FilterPartialViewModel(string action, string controller, bool isMemoir = false, string phase = "") {
 		this.Action = action;
 		this.Controller = controller;
+		this.IsMemoir = isMemoir;
+		this.Phase = phase;
 	}
 }

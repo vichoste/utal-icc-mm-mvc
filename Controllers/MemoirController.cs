@@ -24,7 +24,7 @@ public class MemoirController : Controller {
 	}
 
 	[Authorize(Roles = "IccRegular,IccGuide")]
-	public IActionResult Index(string sortOrder, string currentFilter, string searchString, int? pageNumber) {
+	public IActionResult Index(string sortOrder, string currentFilter, string searchString, string phase, int? pageNumber) {
 		List<IccMemoir> memoirs = new();
 		if (this.User.IsInRole("IccRegular")) {
 			var memoirsQuery = this._dbContext.IccMemoirs.Include(m => m.Student).Where(m => (m.Phase == IccMemoir.Phases.Proposal || m.Phase == IccMemoir.Phases.Request) && m.Student!.Id == this.User.FindFirstValue(ClaimTypes.NameIdentifier)).ToList();
@@ -35,7 +35,10 @@ public class MemoirController : Controller {
 		} else if (this.User.IsInRole("IccGuide")) {
 			memoirs = this._dbContext.IccMemoirs.Include(m => m.Guide).Where(m => (m.Phase == IccMemoir.Phases.Proposal || m.Phase == IccMemoir.Phases.Request) && m.Guide!.Id == this.User.FindFirstValue(ClaimTypes.NameIdentifier)).ToList();
 		}
-		var parameters = new[] { "Title" };
+		if (!string.IsNullOrEmpty(phase)) {
+			_ = memoirs.RemoveAll(m => m.Phase != Enum.Parse<IccMemoir.Phases>(phase));
+		}
+		var parameters = new[] { "Title", "Phase" };
 		foreach (var parameter in parameters) {
 			this.ViewData[$"{parameter}SortParam"] = sortOrder == parameter ? $"{parameter}Desc" : parameter;
 		}
@@ -189,9 +192,12 @@ public class MemoirController : Controller {
 	}
 
 	[Authorize(Roles = "IccRegular")]
-	public IActionResult Application(string sortOrder, string currentFilter, string searchString, int? pageNumber) {
+	public IActionResult Application(string sortOrder, string currentFilter, string searchString, string phase, int? pageNumber) {
 		var memoirs = this._dbContext.IccTeacherMemoirs.Include(m => m.Candidates).Where(m => (m.Phase == IccMemoir.Phases.Proposal || m.Phase == IccMemoir.Phases.Request) && m.Phase == IccMemoir.Phases.Proposal && !m.Candidates!.Any(c => c.Id == this.User.FindFirstValue(ClaimTypes.NameIdentifier))).ToList();
-		var parameters = new[] { "Title" };
+		if (!string.IsNullOrEmpty(phase)) {
+			_ = memoirs.RemoveAll(m => m.Phase != Enum.Parse<IccMemoir.Phases>(phase));
+		}
+		var parameters = new[] { "Title", "Phase" };
 		foreach (var parameter in parameters) {
 			this.ViewData[$"{parameter}SortParam"] = sortOrder == parameter ? $"{parameter}Desc" : parameter;
 		}
@@ -249,9 +255,12 @@ public class MemoirController : Controller {
 	}
 
 	[Authorize(Roles = "IccCommittee,IccDirector")]
-	public IActionResult Admin(string sortOrder, string currentFilter, string searchString, int? pageNumber) {
+	public IActionResult Admin(string sortOrder, string currentFilter, string searchString, string phase, int? pageNumber) {
 		var memoirs = this._dbContext.IccMemoirs.Where(m => m.Phase == IccMemoir.Phases.Request).ToList();
-		var parameters = new[] { "Title" };
+		if (!string.IsNullOrEmpty(phase)) {
+			_ = memoirs.RemoveAll(m => m.Phase != Enum.Parse<IccMemoir.Phases>(phase));
+		}
+		var parameters = new[] { "Title", "Phase" };
 		foreach (var parameter in parameters) {
 			this.ViewData[$"{parameter}SortParam"] = sortOrder == parameter ? $"{parameter}Desc" : parameter;
 		}
@@ -335,7 +344,7 @@ public class MemoirController : Controller {
 	}
 
 	[Authorize(Roles = "IccMemorist,IccGuide,IccDirector")]
-	public IActionResult My(string sortOrder, string currentFilter, string searchString, int? pageNumber) {
+	public IActionResult My(string sortOrder, string currentFilter, string searchString, string phase, int? pageNumber) {
 		List<IccMemoir> memoirs = new();
 		if (this.User.IsInRole("IccMemorist")) {
 			memoirs = this._dbContext.IccMemoirs.Include(m => m.Student).Where(m => m.Phase != IccMemoir.Phases.Proposal && m.Phase != IccMemoir.Phases.Request && m.Student!.Id == this.User.FindFirstValue(ClaimTypes.NameIdentifier)).ToList();
@@ -344,7 +353,10 @@ public class MemoirController : Controller {
 		} else if (this.User.IsInRole("IccDirector")) {
 			memoirs = this._dbContext.IccMemoirs.Where(m => m.Phase != IccMemoir.Phases.Proposal && m.Phase != IccMemoir.Phases.Request).ToList();
 		}
-		var parameters = new[] { "Title" };
+		if (!string.IsNullOrEmpty(phase)) {
+			_ = memoirs.RemoveAll(m => m.Phase != Enum.Parse<IccMemoir.Phases>(phase));
+		}
+		var parameters = new[] { "Title", "Phase" };
 		foreach (var parameter in parameters) {
 			this.ViewData[$"{parameter}SortParam"] = sortOrder == parameter ? $"{parameter}Desc" : parameter;
 		}
