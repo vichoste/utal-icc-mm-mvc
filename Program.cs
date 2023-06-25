@@ -17,8 +17,6 @@ builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 var app = builder.Build();
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
-var dbContext = services.GetRequiredService<IccDbContext>();
-await dbContext.Database.MigrateAsync();
 var configuration = services.GetRequiredService<IConfiguration>();
 var environment = services.GetRequiredService<IWebHostEnvironment>();
 await IccRoleSeeder.SeedAsync(services);

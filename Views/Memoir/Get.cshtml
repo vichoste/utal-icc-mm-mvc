@@ -127,7 +127,7 @@
 									@this.Html.ActionLink("Cancelar", (bool)this.ViewBag.IsApplying ? "Application" : "Index", "Memoir", new { area = string.Empty }, new { @class = "btn btn-secondary" })
 									@if (!(bool)this.ViewBag.IsReadOnly && (bool)this.ViewBag.IsProposal) {
 										<button type="submit" id="editButton" class="btn btn-warning">Editar</button>
-									} else if ((bool)this.ViewBag.IsReadOnly && this.User.IsInRole("IccRegular") && !(bool)this.ViewBag.IsCandidate && (bool)this.ViewBag.IsProposal) {
+									} else if ((bool)this.ViewBag.IsProposal && (bool)this.ViewBag.IsReadOnly && this.User.IsInRole("IccRegular") && !(bool)this.ViewBag.IsCandidate) {
 										<button type="submit" class="btn btn-primary">Postular</button>
 									} else if ((bool)this.ViewBag.IsReadOnly && this.User.IsInRole("IccGuide") && (bool)this.ViewBag.IsProposal) {
 										<button type="submit" class="btn btn-success">Enviar a comité</button>
@@ -232,9 +232,21 @@
 		<script>
 			$('button').on('click', function (e) {
 				e.preventDefault();
+				if (!$('form')[0].reportValidity()) {
+					return;
+				}
+				var editButtonText = $('#editButton').text();
+				var swalText = "";
+				if (editButtonText === "Editar") {
+					swalText = "¿Deseas editar tu memoria?";
+				} else if (editButtonText === "Enviar a comité") {
+					swalText = "¿Deseas enviar tu memoria al comité?";
+				} else {
+					swalText = "Por favor confirma la acción.";
+				}
 				Swal.fire({
 					title: '¿Estás seguro?',
-					text: "¿Deseas editar tu memoria?",
+					text: swalText,
 					icon: 'warning',
 					showCancelButton: true,
 					confirmButtonText: 'Sí',
@@ -247,10 +259,13 @@
 				});
 			});
 		</script>
-	} else if ((bool)this.ViewBag.IsReadOnly && this.User.IsInRole("IccRegular") && !(bool)this.ViewBag.IsCandidate && (bool)this.ViewBag.IsProposal) {
+	} else if ((bool)this.ViewBag.IsProposal && (bool)this.ViewBag.IsReadOnly && this.User.IsInRole("IccRegular") && !(bool)this.ViewBag.IsCandidate) {
 		<script>
 			$('button').on('click', function (e) {
 				e.preventDefault();
+				if (!$('form')[0].reportValidity()) {
+					return;
+				}
 				Swal.fire({
 					title: '¿Estás seguro?',
 					text: "¿Deseas postular a esta memoria?",
@@ -270,9 +285,12 @@
 		<script>
 			$('button').on('click', function (e) {
 				e.preventDefault();
+				if (!$('form')[0].reportValidity()) {
+					return;
+				}
 				Swal.fire({
 					title: '¿Estás seguro?',
-					text: "¿Deseas enviar tu memoria al comité?",
+					text: "¿Deseas enviar esta memoria al comité?",
 					icon: 'warning',
 					showCancelButton: true,
 					confirmButtonText: 'Sí',

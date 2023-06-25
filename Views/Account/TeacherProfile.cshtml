@@ -60,6 +60,9 @@
 	<script>
 		$('button').on('click', function (e) {
 			e.preventDefault();
+			if (!$('form')[0].reportValidity()) {
+				return;
+			}
 			Swal.fire({
 				title: '¿Estás seguro?',
 				text: "¿Deseas editar tu perfil?",

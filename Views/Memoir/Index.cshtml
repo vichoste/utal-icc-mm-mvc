@@ -60,7 +60,11 @@
 											break;
 									}
 								</td>
-								@if (this.User.IsInRole("IccRegular") && item is IccStudentMemoir || this.User.IsInRole("IccGuide") && item is IccTeacherMemoir) {
+								@if (this.User.IsInRole("IccRegular") && item is IccStudentMemoir studentMemoir && studentMemoir.Phase == IccMemoir.Phases.Proposal) {
+									<td>
+										@this.Html.ActionLink("Editar", "Get", "Memoir", new { id = item.Id, isReadOnly = false, isApplying = false }, new { @class = "btn btn-warning mb-3" })
+									</td>
+								} else if (this.User.IsInRole("IccGuide") && item is IccTeacherMemoir teacherMemoir && teacherMemoir.Phase == IccMemoir.Phases.Proposal) {
 									<td>
 										@this.Html.ActionLink("Editar", "Get", "Memoir", new { id = item.Id, isReadOnly = false, isApplying = false }, new { @class = "btn btn-warning mb-3" })
 									</td>

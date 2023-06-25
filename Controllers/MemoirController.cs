@@ -31,6 +31,7 @@ public class MemoirController : Controller {
 			var teacherMemoirsQuery = this._dbContext.IccTeacherMemoirs.Include(m => m.Candidates).Where(m => (m.Phase == IccMemoir.Phases.Proposal || m.Phase == IccMemoir.Phases.Request) && m.Candidates!.Any(c => c.Id == this.User.FindFirstValue(ClaimTypes.NameIdentifier))).ToList();
 			memoirs.AddRange(memoirsQuery);
 			memoirs.AddRange(teacherMemoirsQuery);
+			memoirs = memoirs.Distinct().ToList();
 		} else if (this.User.IsInRole("IccGuide")) {
 			memoirs = this._dbContext.IccMemoirs.Include(m => m.Guide).Where(m => (m.Phase == IccMemoir.Phases.Proposal || m.Phase == IccMemoir.Phases.Request) && m.Guide!.Id == this.User.FindFirstValue(ClaimTypes.NameIdentifier)).ToList();
 		}
@@ -237,11 +238,18 @@ public class MemoirController : Controller {
 	}
 
 	[Authorize(Roles = "IccRegular,IccGuide"), HttpPost]
-	public async Task<IActionResult> Send(string id) {
+	public async Task<IActionResult> Send(string id, [FromForm] string student) {
 		var memoir = this._dbContext.IccMemoirs.FirstOrDefault(m => m.Id == id);
 		memoir!.Phase = IccMemoir.Phases.Request;
-		_ = this._dbContext.IccMemoirs.Update(memoir);
-		_ = await this._dbContext.SaveChangesAsync();
+		if (memoir is IccTeacherMemoir teacherMemoir && await this._userManager.FindByIdAsync(student) is IccStudent student1) {
+			memoir!.Student = student1;
+			_ = teacherMemoir!.Candidates!.Remove(student1);
+			_ = this._dbContext.IccTeacherMemoirs.Update(teacherMemoir);
+			_ = await this._dbContext.SaveChangesAsync();
+		} else {
+			_ = this._dbContext.IccMemoirs.Update(memoir);
+			_ = await this._dbContext.SaveChangesAsync();
+		}
 		this.TempData["SuccessMessage"] = "Tu memoria ha sido enviada correctamente.";
 		return this.RedirectToAction("Index", "Memoir");
 	}
