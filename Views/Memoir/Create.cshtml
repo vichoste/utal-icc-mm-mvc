@@ -89,5 +89,21 @@
 				}
 			});
 		});
+		$('button').on('click', function (e) {
+			e.preventDefault();
+			Swal.fire({
+				title: '¿Estás seguro?',
+				text: "¿Deseas crear tu memoria?",
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonText: 'Sí',
+				cancelButtonText: 'Cancelar',
+				reverseButtons: true
+			}).then((result) => {
+				if (result.isConfirmed) {
+					$('form').submit();
+				}
+			});
+		});
 	</script>
 }

@@ -59,3 +59,24 @@
 		</div>
 	</div>
 </div>
+
+@section Scripts {
+	<script>
+		$('button').on('click', function (e) {
+			e.preventDefault();
+			Swal.fire({
+				title: '¿Estás seguro?',
+				text: "¿Deseas crear al(la) profesor(a)?",
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonText: 'Sí',
+				cancelButtonText: 'Cancelar',
+				reverseButtons: true
+			}).then((result) => {
+				if (result.isConfirmed) {
+					$('form').submit();
+				}
+			});
+		});
+	</script>
+}

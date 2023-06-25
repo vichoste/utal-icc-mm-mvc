@@ -4,9 +4,9 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<PlatformTarget>x64</PlatformTarget>
-		<UserSecretsId>7ef4c82d-402d-4d5f-8256-ffae243b10f1</UserSecretsId>
 		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
 		<DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+		<UserSecretsId>14c5b4f7-7ad0-4df0-9519-6be26cdf8b16</UserSecretsId>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="CsvHelper" Version="30.0.1" />
