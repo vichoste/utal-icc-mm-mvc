@@ -21,7 +21,7 @@
 	</div>
 	<div class="form-group">
 		@if (this.Model.IsMemoir) {
-			@this.Html.DropDownListFor(m => m.Phase, phases, new { @class = "form-control mb-3" })
+			@this.Html.DropDownListFor(m => m.Phase, phases, new { @class = "form-select mb-3" })
 		}
 	</div>
 	<button type="submit" class="btn btn-primary">Filtrar</button>
