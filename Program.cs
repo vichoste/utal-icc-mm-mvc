@@ -6,6 +6,7 @@ using Utal.Icc.Mm.Mvc.Models;
 using Utal.Icc.Mm.Mvc.Seeders;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseSystemd();
 var defaultConnection = builder.Environment.IsDevelopment() ? builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Database string is not set") : Environment.GetEnvironmentVariable("DEFAULT_CONNECTION");
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<IccDbContext>(options => options.UseSqlServer(defaultConnection));
