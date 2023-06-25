@@ -62,9 +62,33 @@
 
 @section Scripts {
 	<script>
+		function validateRut(rut) {
+			var re = /^\d{1,8}-[\dKk]{1}$/;
+			if (!re.test(rut)) return false;
+			var parts = rut.split('-');
+			var number = parts[0], checkDigit = parts[1].toUpperCase();
+			var s = 0, series = [2, 3, 4, 5, 6, 7];
+			for (var i = 0; i < number.length; i++) {
+				s += number.charAt(number.length - 1 - i) * series[i % series.length];
+			}
+			s = 11 - (s % 11);
+			if (s === 11) s = 0;
+			if (s === 10) s = 'K';
+			return checkDigit === String(s);
+		}
 		$('button').on('click', function (e) {
 			e.preventDefault();
 			if (!$('form')[0].reportValidity()) {
+				return;
+			}
+			var rut = $('input[name="rut"]').val();
+			if (!validateRut(rut)) {
+				Swal.fire({
+					title: 'Error',
+					text: "RUT inválido. Por favor, revisa e inténtalo de nuevo.",
+					icon: 'error',
+					confirmButtonText: 'Aceptar'
+				});
 				return;
 			}
 			Swal.fire({
