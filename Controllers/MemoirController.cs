@@ -28,7 +28,7 @@ public class MemoirController : Controller {
 		List<IccMemoir> memoirs = new();
 		if (this.User.IsInRole("IccRegular")) {
 			var memoirsQuery = this._dbContext.IccMemoirs.Include(m => m.Student).Where(m => (m.Phase == IccMemoir.Phases.Proposal || m.Phase == IccMemoir.Phases.Request) && m.Student!.Id == this.User.FindFirstValue(ClaimTypes.NameIdentifier)).ToList();
-			var teacherMemoirsQuery = this._dbContext.IccTeacherMemoirs.Include(m => m.Candidates).Where(m => (m.Phase == IccMemoir.Phases.Proposal || m.Phase == IccMemoir.Phases.Request) && m.Candidates!.Any(c => c.Id == this.User.FindFirstValue(ClaimTypes.NameIdentifier))).ToList();
+			var teacherMemoirsQuery = this._dbContext.IccTeacherMemoirs.Include(m => m.Candidates).Where(m => (m.Phase == IccMemoir.Phases.Proposal && m.Candidates!.Any(c => c.Id == this.User.FindFirstValue(ClaimTypes.NameIdentifier) || m.Phase == IccMemoir.Phases.Request && m.Student!.Id == this.User.FindFirstValue(ClaimTypes.NameIdentifier)))).ToList();
 			memoirs.AddRange(memoirsQuery);
 			memoirs.AddRange(teacherMemoirsQuery);
 			memoirs = memoirs.Distinct().ToList();
@@ -177,12 +177,12 @@ public class MemoirController : Controller {
 
 	[Authorize(Roles = "IccGuide"), HttpPost]
 	public async Task<IActionResult> GetTeacherMemoir([FromForm] string id, [FromForm] string memoirTitle, [FromForm] string description, [FromForm] string student, [FromForm] string requirements) {
-		var teacherMemoir = await this._dbContext.IccTeacherMemoirs.FindAsync(id);
+		var teacherMemoir = this._dbContext.IccTeacherMemoirs.Include(m => m.Student).Where(m => m.Id == id).FirstOrDefault();
 		teacherMemoir!.Title = memoirTitle;
 		teacherMemoir.Description = description;
 		teacherMemoir.Student = await this._userManager.FindByIdAsync(student) as IccStudent;
 		teacherMemoir.Requirements = requirements;
-		_ = this._dbContext.IccMemoirs.Update(teacherMemoir);
+		_ = this._dbContext.IccTeacherMemoirs.Update(teacherMemoir);
 		_ = await this._dbContext.SaveChangesAsync();
 		this.TempData["SuccessMessage"] = "Tu memoria ha sido editada correctamente.";
 		return this.RedirectToAction("Index", "Memoir");
@@ -232,7 +232,7 @@ public class MemoirController : Controller {
 		var memoir = this._dbContext.IccTeacherMemoirs.Include(m => m.Candidates).FirstOrDefault(m => m.Id == id);
 		memoir!.Candidates!.Add((await this._userManager.FindByIdAsync(this.User.FindFirstValue(ClaimTypes.NameIdentifier)!) as IccStudent)!);
 		_ = this._dbContext.IccTeacherMemoirs.Update(memoir);
-		_ = this._dbContext.SaveChangesAsync();
+		_ = await this._dbContext.SaveChangesAsync();
 		this.TempData["SuccessMessage"] = "Te has postulado correctamente.";
 		return this.RedirectToAction("Index", "Memoir");
 	}
@@ -241,15 +241,9 @@ public class MemoirController : Controller {
 	public async Task<IActionResult> Send(string id, [FromForm] string student) {
 		var memoir = this._dbContext.IccMemoirs.FirstOrDefault(m => m.Id == id);
 		memoir!.Phase = IccMemoir.Phases.Request;
-		if (memoir is IccTeacherMemoir teacherMemoir && await this._userManager.FindByIdAsync(student) is IccStudent student1) {
-			memoir!.Student = student1;
-			_ = teacherMemoir!.Candidates!.Remove(student1);
-			_ = this._dbContext.IccTeacherMemoirs.Update(teacherMemoir);
-			_ = await this._dbContext.SaveChangesAsync();
-		} else {
-			_ = this._dbContext.IccMemoirs.Update(memoir);
-			_ = await this._dbContext.SaveChangesAsync();
-		}
+		memoir!.Student = await this._userManager.FindByIdAsync(student) as IccStudent;
+		_ = this._dbContext.IccMemoirs.Update(memoir);
+		_ = await this._dbContext.SaveChangesAsync();
 		this.TempData["SuccessMessage"] = "Tu memoria ha sido enviada correctamente.";
 		return this.RedirectToAction("Index", "Memoir");
 	}

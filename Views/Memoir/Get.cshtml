@@ -53,7 +53,7 @@
 										</div>
 										<div class="form-group mb-3">
 											@this.Html.Label("student", "Estudiante", new { @class = "form-label" })
-											@this.Html.DropDownList("student", new SelectList(this.ViewBag.Candidates, "Id", "FullName", selectedValue: (string)this.ViewBag.Student), "Selecciona un(a) estudiante", new { @class = "form-select", required = "required" })
+											@this.Html.DropDownList("student", new SelectList(this.ViewBag.Candidates, "Id", "FullName", selectedValue: (string)this.ViewBag.Student), "Selecciona un(a) estudiante", new { @class = "form-select" })
 										</div>
 										<div class="form-group mb-3" id="remainingCoursesShow">
 											@this.Html.Label("remainingCourses", "Cursos restantes", new { @class = "form-label" })
@@ -144,20 +144,7 @@
 
 @section Scripts {
 	<script>
-		$(document).ready(function () {	
-			$("#student").change(function () {
-				if ($(this).val()) {
-					$("form").attr("action", "/Memoir/Send");
-					$("#editButton").text("Enviar a comité");
-					$("#editButton").removeClass("btn-warning");
-					$("#editButton").addClass("btn-success");
-				} else {
-					$("#editButton").text("Editar");
-					$("#editButton").removeClass("btn-success");
-					$("#editButton").addClass("btn-warning");
-				}
-			});
-
+		$(document).ready(function () {
 			var isRegular = @(this.User.IsInRole("IccRegular").ToString().ToLower());
 			if (isRegular) {
 				let guideIdCheck = $("#guide").val();
@@ -195,6 +182,10 @@
 			} else {
 				let studentCheck = $("#student").val();
 				if (studentCheck) {
+					$("form").attr("action", "/Memoir/Send");
+					$("#editButton").text("Enviar a comité");
+					$("#editButton").removeClass("btn-warning");
+					$("#editButton").addClass("btn-success");
 					$.getJSON("/Memoir/GetStudentDetails/" + studentCheck, function (data) {
 						$("#remainingCoursesShow").show();
 						$("#isDoingThePracticeShow").show();
@@ -204,6 +195,10 @@
 						$("#isWorking").text(data.isWorking ? 'Sí' : 'No');
 					});
 				} else {
+					$("form").attr("action", "/Memoir/GetTeacherMemoir");
+					$("#editButton").text("Editar");
+					$("#editButton").removeClass("btn-success");
+					$("#editButton").addClass("btn-warning");
 					$("#remainingCoursesShow").hide();
 					$("#isDoingThePracticeShow").hide();
 					$("#isWorkingShow").hide();
@@ -211,6 +206,10 @@
 				$("#student").change(function () {
 					let studentId = $("#student").val();
 					if (studentId) {
+						$("form").attr("action", "/Memoir/Send");
+						$("#editButton").text("Enviar a comité");
+						$("#editButton").removeClass("btn-warning");
+						$("#editButton").addClass("btn-success");
 						$.getJSON("/Memoir/GetStudentDetails/" + studentId, function (data) {
 							$("#remainingCoursesShow").show();
 							$("#isDoingThePracticeShow").show();
@@ -220,6 +219,10 @@
 							$("#isWorking").text(data.isWorking ? 'Sí' : 'No');
 						});
 					} else {
+						$("form").attr("action", "/Memoir/GetTeacherMemoir");
+						$("#editButton").text("Editar");
+						$("#editButton").removeClass("btn-success");
+						$("#editButton").addClass("btn-warning");
 						$("#remainingCoursesShow").hide();
 						$("#isDoingThePracticeShow").hide();
 						$("#isWorkingShow").hide();
